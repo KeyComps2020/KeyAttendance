@@ -68,13 +68,23 @@ Virtualenv creates a new installation of python and the necessary libraries for 
 
 Systemmd is a task scheduler that runs the uWSGI and nginx servers whenever the virtual machine boots. This ensures that any downtime will be minimal.
 
+
 #### Important Files
 
 * `/etc/systemd/system/keyapi.service` contains the system job for starting uWSGI
 
+### cron
+
+Cron is a task scheduler that runs two comands: 
+
+* deleting the back-end logs (`/tmp/keyattendance.log`) at midnight on the 1st and 15th of every month. This is necessary, as otherwise the file becomes big enough that accidentally opening it will crash the server.
+* restarting the server service at midnight every Sunday. This is a memory leak precaution.
+
+You can access the first command using `crontab -e`, and the second using `sudo crontab -e` (needed root permission to restart the service)
+
 ### certbot
 
-Certbot is a program used to obtain and renew TLS certificates through letsencrypt.org. These certificates are trusted by the current versions of all major browsers, and, most importantly, are free.
+Certbot is a program used to obtain and automatically renew TLS certificates through letsencrypt.org. These certificates are trusted by the current versions of all major browsers, and, most importantly, are free. Ideally you shouldn't run into any issues here unless you change the domain name or IP address, as this renews itself automatically when the certificate is about to expire.
 
 #### Important Files
 
