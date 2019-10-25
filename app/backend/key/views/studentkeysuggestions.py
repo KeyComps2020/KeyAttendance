@@ -107,7 +107,9 @@ class StudentKeySuggestions(APIView):
             studentName = student.first_name + " " + student.last_name
             suggestions = []
             for knownStudent in CitySpanStudents.objects.all():
-                knownStudentName = knownStudent.first_name + " " + knownStudent.last_name
+                if knownStudent.first_name == None or knownStudent.last_name == None:
+                    continue
+                knownStudentName = knownStudent.first_name + " " + knownStudent.last_name # TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
                 result = {"name":knownStudentName, "studentKey": knownStudent.student_key, "editDistance":levenshtein(knownStudentName, studentName)}
                 suggestions.append(result)
             suggestions = sorted(suggestions, key=lambda item: item["editDistance"])

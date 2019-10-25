@@ -55,7 +55,9 @@ class StudentKeys extends React.Component {
             if (obj["Student Key"] === "" || obj["Student Key"] === null || obj["Student Key"] === undefined) {
                 continue;
             } 
-            output.push({first_name: obj["First Name"], last_name: obj["Last Name"], student_key: obj["Student Key"]})
+            let first = Object.values(obj).includes('First Name') ? obj["First Name"] : obj["First"]
+            let last = Object.values(obj).includes('Last Name') ? obj["Last Name"] : obj["Last"]
+            output.push({first_name: first, last_name: last, student_key: obj["Student Key"]})
         }
         httpPatch(`${protocol}://${domain}/api/suggestions/cityspanstudents/`, { "students": output })
             .then(function (result) {
