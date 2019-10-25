@@ -2,9 +2,9 @@ import React from 'react';
 import Autocomplete from './Autocomplete';
 import AssignStudentKeyModal from './AssignStudentKeyModal';
 import AssignStudentKeyButton from './AssignStudentKeyButton';
-import ReactCollapsingTable from 'react-collapsing-table';
 import { httpGet, httpPatch, domain, protocol } from './Helpers';
 import FileUploader from './FileUploader';
+import LinkTable from './LinkTable';
 
 class StudentKeys extends React.Component {
     constructor(props) {
@@ -14,6 +14,7 @@ class StudentKeys extends React.Component {
             citySpanStudents: [],
             suggestions: [],
             showModal: false,
+            page: 1,
             focusedStudent: -1,
         };
 
@@ -41,6 +42,10 @@ class StudentKeys extends React.Component {
         } catch (e) {
             console.log(e);
         }
+    }
+
+    componentDidUpdate() {
+        console.log(this.state);
     }
 
     handleCSVUpload(csv) {
@@ -145,8 +150,9 @@ class StudentKeys extends React.Component {
         const rows = this.state.unmatchedStudents.map(student =>
             (
                {
-                   name: `${student.first_name} ${student.last_name}`,
-                   id: student.id
+                    'action': "Assign Student Key",
+                    name: `${student.first_name} ${student.last_name}`,
+                    id: student.id
                }
            )
         ).sort((a, b) => {
@@ -173,6 +179,8 @@ class StudentKeys extends React.Component {
             }
         ];
 
+        const { page } = this.state;
+
         return (
             <div className="content">
                 <h1>Students Without Student Keys</h1>
@@ -187,14 +195,7 @@ class StudentKeys extends React.Component {
                 <div style={{float: 'right'}}>
                     <FileUploader extension=".csv" label="Upload Cityspan Student CSV:" upload={this.handleCSVUpload}/>
                 </div>
-                <ReactCollapsingTable
-                        rows = { rows }
-                        columns = { columns }
-                        column = {'name'}
-                        direction = {'descending'}
-                        showPagination={ true }
-                        callbacks = {{'edit':this.handleRowClick}}
-                />
+                <LinkTable data={rows} headers={['name', 'action']} onSelect={(data) => this.handleRowClick(data.id)}/>
             </div>
         );
     }
