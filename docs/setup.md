@@ -56,11 +56,18 @@ This will create the necessary tables in your postgres database and create a new
 * `INSERT INTO auth_group_permissions(group_id, permission_id) select 1, id from auth_permission;`
 * `INSERT INTO auth_user_groups(user_id, group_id) VALUES (1, 1);`
 
-This will create the 'Admin' role on the website, which has access to all endpoints and views, and assigns it to your new superuser.
+This will create the 'Admin' role on the website, which has access to all endpoints and views, and assigns it to your new superuser. Now, run:
+
+* `INSERT INTO activities (activity_id, is_showing, name, type, is_parent, ordering) VALUES (7, true, 'Key', 'boolean', false, 1);`
+* `INSERT INTO studentcolumns (info_id, is_showing, quick_add, name, type) VALUES (1, true, false, 'Birthday', 'date');`
+
+This creates basic activity type and student data information that the site expects when loading data.
 
 ## All together now!
 
-To see if everything is working properly, open two terminal windows. In the first:
+To see if everything is working properly, first edit `app/frontend/src/components/Helpers.js` such that the local development domain and protocol are uncommented and the remote domain and protocol are commented. This is pretty important, as it sets the front end to grab all its data locally instead of actually messing with live data.
+
+Then, open two terminal windows. In the first:
 
 * cd to `KeyAttendance/app/frontend/`
 * `npm start`

@@ -44,10 +44,6 @@ class StudentKeys extends React.Component {
         }
     }
 
-    componentDidUpdate() {
-        console.log(this.state);
-    }
-
     handleCSVUpload(csv) {
         var papa = require('papaparse');
         papa.parse(csv, {error: this.tmpfail, fastMode: true, complete: (result, file) => this.processCSV(result), header: true});

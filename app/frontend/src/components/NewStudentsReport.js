@@ -32,8 +32,6 @@ class NewStudentsReport extends React.Component {
 		// sheet should look like: 
 		// Student Name | Student Key 
 
-		console.log(ids);
-
 		for (let i in ids.newStudents) {
 			let studentName = "";
 			let studentKey = "";

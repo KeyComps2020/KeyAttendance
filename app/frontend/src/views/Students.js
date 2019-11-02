@@ -143,12 +143,9 @@ class Students extends Component {
       const studentProfileEx = await httpGet(`${protocol}://${domain}/api/student_info/?student_id=${state.id}`);
       
       for (var i in studentProfileEx) {
-        console.log(this.state.picUpdated);
         if (studentProfileEx[i].photo_url !== null && this.state.picUpdated == false) {
           var objectUrl = `${protocol}://${domain}/${studentProfileEx[i].photo_url}`;
           this.setState({src: objectUrl, uploadedPic: true});
-          console.log("src");
-          console.log(state.src);
         }
       }
       this.setState({picUpdated: false});
@@ -484,8 +481,6 @@ class Students extends Component {
     var startDate = new Date(startDateString.replace(/-/g, '/'));
     var endDate = new Date(endDateString.replace(/-/g, '/'));
     var dateToCompare = startDate;
-    //console.log("start date :", startDateString);
-    //console.log("end date :", endDateString);
     var currEntryDate;
     var currIdx = 0;
     var heatMapJson = this.state.heatMapJson;
@@ -519,7 +514,6 @@ class Students extends Component {
   
       //Time to convert updated JSON with missing dates added in into
     //a list called processedData of {"x": integer day of week, "y": integer week # of month, "color": int num engagements per day} objs
-    //console.log("unproc json: ", heatMapJson);
     var processedData = [];
     var dayOfWeek, weekNum, dayEntry;
     var currDateObj;
@@ -531,7 +525,6 @@ class Students extends Component {
       dayEntry = { "x": dayOfWeek, "y": (weekNum+1).toString(), "color": heatMapJson[i]['daily_visits']};
       processedData.push(dayEntry);
      }
-     //console.log("processed: ", processedData);
      return processedData;
    }
 

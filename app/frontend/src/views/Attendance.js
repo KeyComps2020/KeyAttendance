@@ -91,7 +91,6 @@ class Attendance extends React.Component {
     buildSheet() {
         const { activities, attendanceItems, students } = this.state;
         // Combine attendance items. Need to sort by student id.
-        console.log(attendanceItems);
         var entries = {};
         for (var i = 0; i < attendanceItems.length; i++) {
             if (attendanceItems[i].activity_id === -1) {
@@ -108,7 +107,6 @@ class Attendance extends React.Component {
             }
             entries[`${attendanceItems[i].student_id}`][attendanceItems[i].activity_id] = {'value':value, 'itemID':attendanceItems[i].id};
         }
-        console.log(entries);
 
         // Build table of the form [{name, activity1, ... , activityn, time}]
         var sheet = [];
@@ -286,7 +284,6 @@ class Attendance extends React.Component {
         if (permissions.indexOf('view_attendanceitems') < 0) {
             return (<Redirect to='/notfound'/>);
         }
-        console.log(this.state.attendance);
         const rows = this.state.attendance.map(item =>
             (
                {
