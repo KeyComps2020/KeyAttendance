@@ -73,9 +73,11 @@ class AssignStudentKeyModal extends React.Component {
 
     onSubmit() {
         // PATCH student
-        httpPatch(`${protocol}://${domain}/api/students/`, {'student_key': this.state.match, 'id': this.props.studentID});
-        this.setState({student: {}, match: "", suggestions: []});
-        this.props.onClose(this.props.studentID);
+        if (this.state.match !== "") { 
+            httpPatch(`${protocol}://${domain}/api/students/`, {'student_key': this.state.match, 'id': this.props.studentID});
+            this.setState({student: {}, match: "", suggestions: []});
+            this.props.onClose(this.props.studentID);
+        }
     }
 
     render() {

@@ -8,6 +8,7 @@ from rest_framework import status
 from django.db import transaction
 from django.db import IntegrityError
 from django.contrib.auth.models import User
+import json
 
 class Attendance(APIView):
 
@@ -64,8 +65,10 @@ class Attendance(APIView):
 
     def get(self, request):
         if not request.user.has_perm('key.view_attendanceitems'):
+            print("401 Unauthorized: GET /api/attendance/")
             return Response({'error':'You are not authorized to view attendance items.'}, status='401')
         if not self.validateGet(request):
+            print("400 Bad Request: GET /api/attendance/")
             return Response({'error':'Invalid Parameters'}, status='400')
 
         items = AttendanceItems.objects.all()
@@ -81,8 +84,10 @@ class Attendance(APIView):
 
     def delete(self, request):
         if not request.user.has_perm('key.delete_attendanceitems'):
+            print("401 Unauthorized: DELETE /api/attendance/")
             return Response({'error':'You are not authorized to delete attendance items.'}, status='401')
         if not self.validateDelete(request):
+            print("400 Bad Request: DELETE /api/attendance/")
             return Response({'error':'Invalid Parameters'}, status='400')
 
         attendanceItem = AttendanceItems.objects.get(pk=request.query_params['key'])
@@ -91,8 +96,11 @@ class Attendance(APIView):
 
     def post(self, request):
         if not request.user.has_perm('key.add_attendanceitems'):
+            print("401 Unauthorized: POST /api/attendance/")
             return Response({'error':'You are not authorized to create attendance items.'}, status='401')
         if not self.validatePost(request):
+            print("400 Bad Request: POST /api/attendance/")
+            print(json.dumps(request.data))
             return Response({'error':'Invalid Parameters'}, status='400')
         
         serializer = AttendanceItemSerializer(data=request.data)

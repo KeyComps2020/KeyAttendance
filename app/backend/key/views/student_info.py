@@ -104,7 +104,6 @@ class StudentInfo(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             serializer = StudentInfoSerializer(data=request.data, partial=True, many=is_many)
-            print(serializer)
             if serializer.is_valid():
               serializer.save()
               return Response(serializer.data, status=status.HTTP_201_CREATED)
