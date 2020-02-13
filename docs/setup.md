@@ -2,23 +2,11 @@
 
 ## Backend Setup
 
-Make sure that you have pip and python3 installed. At this point, you can choose to use either Pipenv or Virtualenv to manage your local dependencies.
-
-### Pipenv
-
-First, to [install pipenv](https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv), run:
-
-* `pip install --user pipenv`
-
-Then, once this is complete, cd to `KeyAttendance/app/backend/` and run:
-
-* `pipenv install`
-
-This will load the dependencies of the project from our pipenv files.
+Make sure that you have pip and python3 installed.
 
 ### Virtualenv
 
-First, to [install virtualenv](https://virtualenv.pypa.io/en/stable/installation/), run:
+First, install virtualenv:
 
 * `pip install --user virtualenv`
 
