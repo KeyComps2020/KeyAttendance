@@ -61,7 +61,7 @@ Then, open two terminal windows. In the first:
 * cd to `KeyAttendance/app/frontend/`
 * `npm start`
 
-Then, in the second, activate the virtual environment of your choice and run:
+Then, in the second, activate the virtual environment of your choice in `KeyAttendance/app/backend`and run:
 
 * `python manage.py runserver` if you're on a Windows machine, or `python3 manage.py runserver` if you're on a Unix machine.
 
