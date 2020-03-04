@@ -31,7 +31,7 @@ First, you'll want to [download postgres](https://www.postgresql.org/download/).
 
 Now, open up the postgres CLI, and run:
 
-* `CREATE DATABASE keydb`
+* `CREATE DATABASE keydb;`
 
 Close postgres. Now, change directories to make sure you're in `KeyAttendance/app/backend`, activate your virtual environment, and run: 
 
