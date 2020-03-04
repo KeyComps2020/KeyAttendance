@@ -37,6 +37,7 @@ Close postgres. Now, change directories to make sure you're in `KeyAttendance/ap
 
 * `python manage.py migrate`
 * `python manage.py createsuperuser`
+* `python manage.py dbshell`
 
 This will create the necessary tables in your postgres database and create a new admin account to access our website. Now, open the postgres CLI again, and run:
 
