@@ -35,8 +35,8 @@ Now, open up the postgres CLI, and run:
 
 Close postgres. Now, change directories to make sure you're in `KeyAttendance/app/backend`, activate your virtual environment(`source env/bin/activate`), and run: 
 
-* `python3 manage.py migrate`
-* `python3 manage.py createsuperuser`
+* `python manage.py migrate`
+* `python manage.py createsuperuser`
 
 This will create the necessary tables in your postgres database and create a new admin account to access our website. Now, open the postgres CLI again, and run:
 
@@ -62,6 +62,6 @@ Then, open two terminal windows. In the first:
 
 Then, in the second, activate the virtual environment of your choice and run:
 
-* `python3 manage.py runserver` if you're on a Windows machine, or `python3 manage.py runserver` if you're on a Unix machine.
+* `python manage.py runserver` if you're on a Windows machine, or `python3 manage.py runserver` if you're on a Unix machine.
 
 If everything was installed correctly, this should open a browser pointed at `localhost:3000` with the website in it, and the username and password for the superuser you created in the database should grant access to the local site.
