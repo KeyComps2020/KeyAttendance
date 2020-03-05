@@ -37,9 +37,10 @@ Close postgres. Now, change directories to make sure you're in `KeyAttendance/ap
 
 * `python manage.py migrate`
 * `python manage.py createsuperuser`
-* `python manage.py dbshell` -- perhapbs unnecessary? 
+* `python manage.py dbshell` -- perhaps unnecessary? 
 
-This will create the necessary tables in your postgres database and create a new admin account to access our website. Now, open the postgres CLI again, and run -- perhaps unnecessary?
+
+This will create the necessary tables in your postgres database and create a new admin account to access our website. Now, open the postgres CLI (`psql keydb -U postgres`) again, and run -- perhaps unnecessary?
 
 * `INSERT INTO auth_group VALUES (1, 'Admin');`
 * `INSERT INTO auth_group_permissions(group_id, permission_id) select 1, id from auth_permission;`
