@@ -33,7 +33,7 @@ class FileUploader extends React.Component {
 		if (this.state.file !== undefined) {
 			this.props.upload(this.state.file);
 			this.setState({file: undefined});
-			his.setState({error: "Upload Successful"});
+			this.setState({error: "Upload Successful"});
 		}
 	}
   
@@ -53,5 +53,5 @@ class FileUploader extends React.Component {
 	  );
 	}
   }
-  //hello test
+  
   export default FileUploader;
