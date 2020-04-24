@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "history": "^4.10.1",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "papaparse": "^4.6.3",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
