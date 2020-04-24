@@ -72,6 +72,8 @@ class VolunteerAttendance(APIView):
         elif 'enddate' in request.query_params and not isValidDateTime(request.query_params['enddate']):
             return False
         return True
+        
+    #test comment
 
     # Validate input for the DELETE request of this endpoint - should reference a valid key
     def validateDelete(self, request):
