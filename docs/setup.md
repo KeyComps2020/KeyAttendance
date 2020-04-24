@@ -2,25 +2,27 @@
 
 ## Backend Setup
 
-Make sure that you have pip and python3 installed.
+Make sure that you have python3 and pip installed. If you are using Homebrew on MacOS, `brew install python` [takes care of both](https://docs.brew.sh/Homebrew-and-Python). 
 
-### Virtualenv
+### Setting up the Virtual Development Environment
 
-First, install virtualenv:
+First, install [virtualenv](https://pypi.org/project/virtualenv/):
 
-* `pip install --user virtualenv`
+* `pip install virtualenv`
 
-Then, once this is complete, cd to `KeyAttendance/app/backend/` and run:
+This is a package that allows you to isolate a python environment. Any changes you make to a virtual environment will be present anytime you re-open the virtual environment. 
 
-* `virtualenv env`
-* `"env/Scripts/activate"` if you're using Windows, or `source env/bin/activate` if you're using a Unix-based OS
-* `pip install -r requirements.txt`
+Once this is complete, cd to `KeyAttendance/app/backend/` and run:
 
-This will create a virtual environment for you in the project folder and install the python dependencies.
+* `virtualenv env`. This creates a virtual environment named `env/`. All the settings/packages/etc that you make will now be recorded in the folders `env/bin`, `env/lib`, etc.
+* `"env/Scripts/activate"` if you're using Windows, or `source env/bin/activate` if you're using a Unix-based OS. This activates the virtual environment. You'll see an indicator that you're in the virtual environment named `(env)`. To exit the virtual environment use `deactivate` or hit Ctrl-d.
+* `pip install -r requirements.txt`. This installs the python dependencies listed in `requirements.txt` into your virtual environment. Remember that these are isolated in your virtual environment `env`, so these packages won't work elsewhere unless you also have them installed elsewhere. You can check this by running `pip list` inside and outside your virtual environment.
+
+Huzzah! You now have a virtual environment in the project folder will the necessary python dependencies.
 
 ## Frontend Setup
 
-Make sure you have node / npm installed. You'll want to make sure that npm is added to your system path.
+Make sure you have node and npm installed. You'll want to make sure that npm is added to your system path.
 
 * `cd KeyAttendance/app/frontend`
 * `npm install`
