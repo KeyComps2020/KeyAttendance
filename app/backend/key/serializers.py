@@ -23,10 +23,8 @@ class VolunteerAttendanceItemSerializer(serializers.ModelSerializer):
             'checked_out',
             'location',
             'description',
-
         )
         model = VolunteerAttendanceItems
-
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
