@@ -15,11 +15,11 @@ class VolunteerSerializer(serializers.ModelSerializer):
 class VolunteerAttendanceItemSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
-            'id',
             'volunteer_id',
             'date',
             'check_in',
             'check_out',
+            'id',
             'checked_out',
             'location',
             'description',

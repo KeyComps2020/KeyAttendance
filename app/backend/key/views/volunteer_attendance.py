@@ -90,10 +90,12 @@ class VolunteerAttendance(APIView):
     # Makes sure that a duplicate attendance item doesn't exist.
     def validatePost(self, request):
         if not 'volunteer_id' in request.data:
+            print('1')
             return False
         try:
             Volunteers.objects.get(id=request.data['volunteer_id'])
         except:
+            print('2')
             return False
         try: 
             if 'date' in request.data:
@@ -101,13 +103,16 @@ class VolunteerAttendance(APIView):
             else:
                 date = getCurrentDate()
             if len(VolunteerAttendanceItems.objects.filter(date=date).filter(volunteer_id=request.data['volunteer_id'])) > 0:
+                print('3')
                 return False
         except: 
             return True
 
         if 'date' in request.data and request.data['date'] != '' and not isValidDateTime(request.data['date']):
+            print('4')
             return False
-        if 'time' in request.data and request.data['date'] != '' and not isValidTime(request.data['check_in']):
+        if 'check_in' in request.data and request.data['date'] != '' and not isValidTime(request.data['check_in']):
+            print('5')
             return False
         return True
 
