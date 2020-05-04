@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactCollapsingTable from 'react-collapsing-table';
-import AttendanceOptions from '../components/AttendanceOptions';
+import VolunteerAttendanceOptions from '../components/VolunteerAttendanceOptions';
 import AddVolunteerModal from '../components/AddVolunteerModal';
 import Autocomplete from "../components/Autocomplete";
 import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
@@ -80,11 +80,11 @@ class Volunteers extends React.Component {
 
     buildSheet() {
         const {volunteerAttendanceItems, volunteers } = this.state;
-        // Combine attendance items. Need to sort by student id.
+        // Combine attendance items. Need to sort by volunteer id.
         var entries = {};
         for (var i = 0; i < volunteerAttendanceItems.length; i++) {
             if (entries[`${volunteerAttendanceItems[i].volunteer_id}`] == null) {
-                entries[`${volunteerAttendanceItems[i].volunteer_id}`] = {'check_in':volunteerAttendanceItems[i].check_in};
+                entries[`${volunteerAttendanceItems[i].volunteer_id}`] = {'check_in':volunteerAttendanceItems[i].check_in, 'itemID': volunteerAttendanceItems[i].id};
             }
         }
 
@@ -93,15 +93,16 @@ class Volunteers extends React.Component {
         const ids = Object.keys(entries);
         for (var i = 0; i < ids.length; i++) {
             var row = {}
-            // match student data to current id
-            for (var j = 0; j < volunteers.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
+            // match volunteer data to current id
+            for (var j = 0; j < volunteers.length; j++) { // unfortunately, volunteer data isn't in any particular order. O(n) it is!
                 if (volunteers[j].id === parseInt(ids[i])) {
                     row['name'] = `${volunteers[j].first_name} ${volunteers[j].last_name}`;
-                    row['studentID'] = volunteers[j].id;
+                    row['volunteerID'] = volunteers[j].id;
                     break;
                 }
             } 
             row['check_in'] = entries[ids[i]].check_in;
+            row['volunteerAttendanceItemID'] = entries[ids[i]].itemID;
             sheet.push(row)
         }
 
@@ -116,7 +117,7 @@ class Volunteers extends React.Component {
         const today = new Date();
         const self = this;
 
-        // make sure we don't already have this student.
+        // make sure we don't already have this volunteer.
         for (let i = 0; i < volunteerAttendance.length; i++) {
             if (parseInt(volunteerID) === volunteerAttendance[i].volunteerID) {
                 return;
@@ -154,7 +155,7 @@ class Volunteers extends React.Component {
                 // activityList['Key']['value'] = true;
                 // activityList['Key']['attendanceItemID'] = result.id;
 
-                const row = { 'name': name, 'volunteer_id': parseInt(volunteerID), 'check_in': result.check_in };
+                const row = { 'name': name, 'volunteerID': parseInt(volunteerID), 'check_in': result.check_in , 'volunteerAttendanceItemID' : result.id};
                 volunteerAttendance.push(row);
                 self.setState({ volunteerAttendance: volunteerAttendance });
             }
@@ -201,6 +202,7 @@ class Volunteers extends React.Component {
             }
         }
         this.setState({volunteerAttendance: volunteerAttendance});
+        this.fetchAndBuild();
     }
 
     openModal() {
@@ -245,7 +247,8 @@ class Volunteers extends React.Component {
                    name: item.name,
                    check_in: item.check_in,
                    volunteerId: item.volunteer_id,
-                   date: this.state.date
+                   date: this.state.date,
+                   volunteerAttendanceItemID: item.volunteerAttendanceItemID
                }
            )
         ).sort((a, b) => {
@@ -270,7 +273,7 @@ class Volunteers extends React.Component {
                 sortable: true
             },
             {
-                accessor: 'check_in',
+                accessor: 'volunteerAttendanceItemID',
                 label: 'Check-Out Time',
                 priorityLevel: 3,
                 position: 3,
@@ -282,7 +285,7 @@ class Volunteers extends React.Component {
                 label: 'Options',
                 priorityLevel: 4,
                 position: 4,
-                CustomComponent: AttendanceOptions,
+                CustomComponent: VolunteerAttendanceOptions,
                 sortable: false,
                 minWidth: 100
             },
@@ -308,7 +311,7 @@ class Volunteers extends React.Component {
 
         return (
             <div className='content'>
-                <AddVolunteerModal studentFields={this.state.studentFields} show={this.state.showVolunteerModal} onSubmit={this.closeModal}/>
+                <AddVolunteerModal  show={this.state.showVolunteerModal} onSubmit={this.closeModal}/>
                 <h1>Volunteer Attendance for {this.state.date}</h1>
                 <br/>
                 {buttonToolbar}
@@ -330,7 +333,7 @@ class Volunteers extends React.Component {
                         column = {'check_in'}
                         direction = {'descending'}
                         showPagination={ true }
-                        callbacks = {{'options':this.removeAttendanceRow}}
+                        callbacks = {{'options':this.removeVolunteerAttendanceRow}}
                 />
             </div>
         )
