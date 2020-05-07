@@ -5,8 +5,9 @@ import VolunteerCheckboxes from'../components/VolunteerCheckboxes';
 import AddVolunteerModal from '../components/AddVolunteerModal';
 import Autocomplete from "../components/Autocomplete";
 import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
-import { Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 import { getPermissions, downloadVolunteerAttendanceCSV, borderStyle, whiteBorderStyle } from '../components/Helpers';
+import { Button, ButtonToolbar, Form } from 'react-bootstrap';
+import { getPermissions, downloadAttendanceCSV } from '../components/Helpers';
 import { Redirect } from 'react-router-dom';
 import CheckoutVolunteer from '../components/CheckoutVolunteer';
 
@@ -85,7 +86,7 @@ class Volunteers extends React.Component {
         const {volunteerAttendanceItems, volunteers } = this.state;
         // Combine attendance items. Need to sort by volunteer id.
         var entries = {};
-        for (var i = 0; i < volunteerAttendanceItems.length; i++) {
+        for (let i = 0; i < volunteerAttendanceItems.length; i++) {
             if (entries[`${volunteerAttendanceItems[i].volunteer_id}`] == null) {
                 entries[`${volunteerAttendanceItems[i].volunteer_id}`] = {'check_in':volunteerAttendanceItems[i].check_in, 
                                                                             'check_out': volunteerAttendanceItems[i].check_out,
@@ -98,10 +99,10 @@ class Volunteers extends React.Component {
         // Build table of the form [{name, check_in,...}]
         var sheet = [];
         const ids = Object.keys(entries);
-        for (var i = 0; i < ids.length; i++) {
+        for (let i = 0; i < ids.length; i++) {
             var row = {}
             // match volunteer data to current id
-            for (var j = 0; j < volunteers.length; j++) { // unfortunately, volunteer data isn't in any particular order. O(n) it is!
+            for (let j = 0; j < volunteers.length; j++) { // unfortunately, volunteer data isn't in any particular order. O(n) it is!
                 if (volunteers[j].id === parseInt(ids[i])) {
                     row['name'] = `${volunteers[j].first_name} ${volunteers[j].last_name}`;
                     row['volunteerID'] = volunteers[j].id;
@@ -149,7 +150,7 @@ class Volunteers extends React.Component {
             } else {
                 // Add new row to table
                 let name = "";
-                for (var j = 0; j < volunteers.length; j++) {
+                for (let j = 0; j < volunteers.length; j++) {
                     if (volunteers[j].id === parseInt(volunteerID)) {
                         name = `${volunteers[j].first_name} ${volunteers[j].last_name}`;
                         break;
@@ -297,6 +298,7 @@ class Volunteers extends React.Component {
     }
 
     render() {
+        console.log("attendance", this)
         const permissions = getPermissions();
         if (permissions.indexOf('view_volunteerattendanceitems') < 0) {
             return (<Redirect to='/notfound'/>);
@@ -415,10 +417,10 @@ class Volunteers extends React.Component {
                     <div 
                     >
                     {<Form inline >
-                        <FormGroup >
-                            <ControlLabel>Date:</ControlLabel>{' '}
-                            <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
-                        </FormGroup>
+                        <Form.Group >
+                            <Form.Label>Date:</Form.Label>{' '}
+                            <Form.Control onChange={this.updateDate} value={this.state.date} type="date"/>
+                        </Form.Group>
                     </Form>}
                     </div>
                     :

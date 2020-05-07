@@ -1,76 +1,94 @@
+/* 
+  This is the general structure for all of the views except for login.js.
+
+*/
+
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { Navbar, Nav } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { getPermissions } from './Helpers';
+import keyLogo from '../images/NUY30x30.png';
 
 class Layout extends Component {
 
   constructor(props) {
     super(props);
     this.state ={
-        activeItem: 'home'
+        activeItem: 'home' //this is never used....
       }
   }
-
-  handleItemClick = (name) => () => {
-    this.props.history.push(`/${name}`);
+  componentDidMount() {
+    console.log("layout has mounted!")
   }
 
-  logout = () => () => {
-    window.localStorage.removeItem("key_credentials");
-    window.localStorage.removeItem("permissions")
-    this.props.history.push(`/`)
-  }
-
-  render() {
-    if (!this.props.show) { return this.props.children }
+  render() { 
+    console.log("navbar has rendered", this)
     const permissions = getPermissions();
-    let nav = [];
-    if (permissions.indexOf('view_attendanceitems') >= 0) {
-      nav.push(<NavItem key={0} onClick={this.handleItemClick('attendance')}>Attendance</NavItem>)
+    // shouldn't need to check if permissions is null before using because all the views it's used in do that already.
+    //construct the navigation bar based on the permissions of the user. eventuall move this out of render and into a (fat arrow) function of the class!
+    let navList = [];
+    if (permissions.includes('view_attendanceitems')) {
+      navList.push('attendance')
     }
-    if (permissions.indexOf('view_students') >= 0) {
-      nav.push(<NavItem key={1} onClick={this.handleItemClick('students')}>Students</NavItem>)
+    if (permissions.includes('view_students')) {
+      navList.push('students')
     }
-    if (permissions.indexOf('view_group') >= 0 || permissions.indexOf('view_user') >= 0 
-      || permissions.indexOf('change_activity') >= 0 || permissions.indexOf('add_activity') >= 0
-      || permissions.indexOf('change_studentcolumn') >= 0 || permissions.indexOf('add_studentcolumn') >= 0) {
-      nav.push(<NavItem key={2} onClick={this.handleItemClick('admin')}>Admin</NavItem>)
+    if (permissions.includes('view_group') || permissions.includes('view_user') 
+      || permissions.includes('change_activity') || permissions.includes('add_activity')
+      || permissions.includes('change_studentcolumn') || permissions.includes('add_studentcolumn')) {
+      navList.push('admin')
     }
-    if (permissions.indexOf('view_reports') >= 0) {
-      nav.push(<NavItem key={3} onClick={this.handleItemClick('reports')}>Reports</NavItem>)
+    if (permissions.includes('view_reports')) {
+      navList.push('reports')
     }
-    if ((permissions.indexOf('view_volunteers') >= 0) && (permissions.indexOf('view_volunteerattendanceitems') >= 0)){
-      nav.push(<NavItem key={4} onClick={this.handleItemClick('volunteers')}>Volunteers</NavItem>)
+    if ((permissions.includes('view_volunteers')) && (permissions.includes('view_volunteerattendanceitems'))){
+      navList.push('volunteers')
     }
-    const navItems = <Nav>{nav}</Nav>
+
+    const navItems = navList.map((nav, index) => //note that key={index} is never used --  it's just required in a js link. 
+        <Link to={`/${nav}`} key={index} className='react-bootstrap-link-manual'> 
+          {nav}
+        </Link>
+    ) //use Link from react-router-dom instead of Nav.Link from react-boostrap!
+      //this way it's still being managed by <BrowserRouter>. In other words, 
+      //you now don't manually need to do this.props.history.push(`/${nav}`)} 
+      //if you're confused, go check out the `troubleshooting` entry on this.
     return (
       <div>
-        <Navbar>
-            <Navbar.Header>
-                <Navbar.Brand onClick={this.handleItemClick('attendance')}>
-                    Key
-                </Navbar.Brand>
-                <Navbar.Toggle />
-            </Navbar.Header>
-            <Navbar.Collapse>
+        <Navbar variant='light' bg='light' expand='sm' sticky='top'>
+          <Navbar.Brand>
+            <img
+              src={keyLogo}
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+              alt="Key Logo"
+            />{' '}
+            KEY
+          </Navbar.Brand>
+
+          <Navbar.Toggle/>
+
+          <Navbar.Collapse>
+            {/*Add the navigation tabs we assembled above to left side and link them to the clicky click*/}
+            <Nav className="mr-auto" activeKey='eventKey'>
               {navItems}
-              <Nav pullRight>
-                <NavItem onClick={this.logout()}>Logout</NavItem>
-              </Nav>
-            </Navbar.Collapse>
+            </Nav>
+            {/*Add the logout button on the right side*/}
+            <Nav className="ml-auto">
+                <Link to='/' 
+                      onClick={()=>{window.localStorage.removeItem('key_credentials')}} 
+                      className='react-bootstrap-link-manual'
+                    >
+                    logout
+                </Link>
+            </Nav>
+          </Navbar.Collapse>
         </Navbar>
-        {this.props.children}
       </div>
     );
   }
 }
 
-Layout.propTypes = {
-  history: PropTypes.shape({
-      push: PropTypes.func.isRequired,
-  }),
-};
 
-export default withRouter(Layout);
+export default Layout;

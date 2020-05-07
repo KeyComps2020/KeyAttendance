@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { httpGet, protocol, domain, downloadReportsCSV } from './Helpers';
 
 class MilestoneReport extends React.Component {
@@ -75,16 +75,19 @@ class MilestoneReport extends React.Component {
 				<div style={{margin: '20px'}}>
 				<p>Downloads a spreadsheet containing a list of students who reached a given attendance milestone between two dates.</p>
 				<p>For instance, if the milestone was set to 30, the spreadsheet would list the students to attended the Key for their 30th time between two given dates</p>
-                <Form style={{paddingRight: '5px', paddingLeft: '5px'}}>
-                  <FormGroup>
-										<ControlLabel>Milestone:</ControlLabel>{' '}
-                    <FormControl onChange={this.updateMilestone} value={this.state.milestone} type="number"/>{'  '}
-                    <ControlLabel>Start Date:</ControlLabel>{' '}
-                    <FormControl onChange={this.updateStartDate} value={this.state.startDate} type="date"/>{'  '}
-                    <ControlLabel>End Date:</ControlLabel>{' '}
-                    <FormControl onChange={this.updateEndDate} value={this.state.endDate} type="date"/>{'  '}
-                    <Button style={{marginTop: '10px'}} onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>
-                  </FormGroup>
+                <Form inline style={{paddingRight: '5px', paddingLeft: '5px'}}>
+                  <Form.Group>
+					<Form.Label>Milestone:</Form.Label>{' '}
+                    <Form.Control onChange={this.updateMilestone} value={this.state.milestone} type="number"/>{'  '}
+
+                    <Form.Label>Start Date:</Form.Label>{' '}
+                    <Form.Control onChange={this.updateStartDate} value={this.state.startDate} type="date"/>{'  '}
+
+                    <Form.Label>End Date:</Form.Label>{' '}
+                    <Form.Control onChange={this.updateEndDate} value={this.state.endDate} type="date"/>{'  '}
+					
+                    <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>
+                  </Form.Group>
                 </Form>
 			</div>
 			</div>

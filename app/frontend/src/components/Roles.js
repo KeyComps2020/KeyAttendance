@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, ButtonToolbar } from 'react-bootstrap';
+import ReactCollapsingTable from 'react-collapsing-table';
 import AddRoleModal from './AddRoleModal';
 import EditRoleButton from './EditRoleButton';
-import ReactCollapsingTable from 'react-collapsing-table';
 import { httpGet, domain, protocol, whiteBorderStyle } from './Helpers';
 
 

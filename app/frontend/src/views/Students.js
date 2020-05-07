@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, ButtonToolbar, Form, FormControl, FormGroup, Label, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Button, ButtonToolbar, Form, ListGroup, Badge } from "react-bootstrap";
 import { Redirect } from 'react-router-dom';
 import Autocomplete from '../components/Autocomplete';
 import Heatmap from '../components/Heatmap';
@@ -9,6 +9,8 @@ import AddFlagModal from '../components/AddFlagModal';
 import FlagOptions from '../components/FlagOptions';
 import ReactCollapsingTable from 'react-collapsing-table';
 import continuousColorLegend from 'react-vis/dist/legends/continuous-color-legend';
+import Layout from '../components/Layout';
+
 
 class Students extends Component {
 
@@ -176,7 +178,7 @@ class Students extends Component {
       state.status = studentStatus['status'];
 
       for (var i in studentProfileEx) {
-        if (studentProfileEx[i].photo_url !== null && this.state.picUpdated == false) {
+        if (studentProfileEx[i].photo_url !== null && this.state.picUpdated === false) {
           var objectUrl = `${protocol}://${domain}/${studentProfileEx[i].photo_url}`;
           this.setState({src: objectUrl, uploadedPic: true});
         }
@@ -189,12 +191,12 @@ class Students extends Component {
         try {
           const studentInfoJson = await httpGet(`${protocol}://${domain}/api/student_info/?student_id=${state.id}`);
           if (studentInfoJson.length === 0) {
-            var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+            let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
             state.profileInfo = this.parseCols(studentColumnJson);
             state.profileInfoPrelim = this.parseCols(studentColumnJson);
             state = this.addTypes(state);
           } else {
-            var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+            let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
             state.profileInfo = this.parseCols(studentColumnJson);
             state.profileInfoPrelim = this.parseCols(studentColumnJson);
             state = this.addTypes(state);
@@ -205,7 +207,7 @@ class Students extends Component {
           }
         }
         catch (e) {
-          var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+          let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
           state.profileInfo = this.parseCols(studentColumnJson);
         }
       }
@@ -359,11 +361,11 @@ class Students extends Component {
       const studentInfoJson = await httpGet(`${protocol}://${domain}/api/student_info/?student_id=${state.id}`);
 
       if (studentInfoJson.length === 0) {
-        var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+        let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
         newState.profileInfo = this.parseCols(studentColumnJson);
         newState = this.addTypes(newState);
       } else {
-        var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+        let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
         newState.profileInfo = this.parseCols(studentColumnJson);
         newState = this.addTypes(newState);
 
@@ -372,7 +374,7 @@ class Students extends Component {
       }
     } 
     catch (e) {
-      var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+      let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
       newState.profileInfo = this.parseCols(studentColumnJson);
     }
 
@@ -461,11 +463,11 @@ class Students extends Component {
       httpPatch(`${protocol}://${domain}/api/students/`, state.profileData);
     }
     var posted = false;
-    for (var field in state.profileInfo) {
-      var field = state.profileInfo[field];
+    state.profileInfo.array.forEach(field => { //originally: for (let field of state.profileInfo) {
       if (field.updated) {
+        
         if (field.studentInfoId) {
-          if (field.colInfo.name == 'photopath') {
+          if (field.colInfo.name === 'photopath') {
             httpPatchFile(`${protocol}://${domain}/api/student_info/?id=` + field.studentInfoId, field.patchPost)
               .then(function (result) {
                 if ('error' in result) {
@@ -482,7 +484,7 @@ class Students extends Component {
           }
         } else {
             field.patchPost.student_id = state.id;
-            if (field.colInfo.name == 'photopath') {
+            if (field.colInfo.name === 'photopath') {
               httpPostFile(`${protocol}://${domain}/api/student_info/`, field.patchPost)
                 .then(function (result) {
                   if ('error' in result) {
@@ -504,7 +506,7 @@ class Students extends Component {
             }
         }
       }
-    }
+    })
     
     if (posted) {
       this.updateStudentInfo();
@@ -612,14 +614,14 @@ class Students extends Component {
     let info = [];
     
     var fields = this.state.profileInfo;
-    for (var field in fields) {
-      if (fields[field].colInfo.is_showing === true) {
+    for (let field of fields) {
+      if (field.colInfo.is_showing === true) {
         var value = 'N/A';
-        if (fields[field].value !== null && fields[field].value !== null !== '') {
-          value = fields[field].value;
+        if (field.value !== null && field.value !== null !== '') {
+          value = field.value;
         }
-        var innerHtml = fields[field].colInfo.name + ': ' + value;
-        info.push(<ListGroupItem key={field}>{innerHtml}</ListGroupItem>);
+        var innerHtml = field.colInfo.name + ': ' + value;
+        info.push(<ListGroup.Item key={field}>{innerHtml}</ListGroup.Item>);
       }
     }
 
@@ -633,10 +635,10 @@ class Students extends Component {
     for (var entry in this.state.profileInfo) {
       var label = this.state.profileInfo[entry].colInfo.name + ': ';
       if (this.state.profileInfo[entry].colInfo.is_showing) {
-        info.push(<Label key={entry + 'label'}>{label}</Label>)
+        info.push(<Badge key={entry + 'label'}>{label}</Badge>)
 
         var type = this.state.profileInfo[entry].colInfo.type;
-        info.push(<FormControl key={label} type={type} id={entry} defaultValue={this.state.profileInfo[entry].value} onChange={evt => this.handleInfoChange(evt, this.state)} />);
+        info.push(<Form.Control key={label} type={type} id={entry} defaultValue={this.state.profileInfo[entry].value} onChange={evt => this.handleInfoChange(evt, this.state)} />);
         info.push(<br key={entry + 'break'}/>);
       }
     }
@@ -747,21 +749,29 @@ class Students extends Component {
                   suggestions={this.state.suggestionsArray}
                   handler={this.handler}
                 />
+    console.log("students", this)
+    const permissions = getPermissions()
+    if (permissions.includes('view_students')) {
+
+      if (this.state.mode === 'search') {
+        return (
+          <div className='content'>
+            <Layout/>
+            <h1> Key Students </h1>
+            <div className='container-fluid no-padding'>
+              <div className='row justify-content-start'>
+                <div className='col-md-12 to-front top-bottom-padding'>
+                  <Autocomplete
+                    suggestions={this.state.suggestionsArray}
+                    handler={this.handler}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      );
-    }
-
-    else if (this.state.mode === 'display') {
-      let heatmap = [];
-      if (this.state.canViewHeatmap) {
-        heatmap = <div><h3>Student Attendance</h3>
-          <p>Number of engagements for this individual student in the past month.</p>
-          <p><b>Note:</b> Data is displayed chronologically, with row 1 representing the oldest week and row 5 representing the current week.</p> 
-          <Heatmap data={this.formatData(this.state)} heatMapType="individualStudent" /></div>
+        );
       }
+      //////////////////////
       let stuFlags = []
       if (this.state.canViewFlags){
         stuFlags =
@@ -857,6 +867,84 @@ class Students extends Component {
                     {deleteButton}
                   </FormGroup>
                 </Form>
+////////////////////////////
+      else if (this.state.mode === 'display') {
+        let heatmap = [];
+        if (this.state.canViewHeatmap) {
+          heatmap = <div><h3>Student Attendance</h3>
+            <p>Number of engagements for this individual student in the past month.</p>
+            <p><b>Note:</b> Data is displayed chronologically, with row 1 representing the oldest week and row 5 representing the current week.</p> 
+            <Heatmap data={this.formatData(this.state)} heatMapType="individualStudent" /></div>
+        }
+        return (
+          <div className='content'>
+            <Layout/>
+            <h1> Student Profile </h1>
+            <div className='container-fluid no-padding'>
+              <div className='row justify-content-start'>
+                <div className='col-md-4 to-front top-bottom-padding'>
+                  <Autocomplete
+                    suggestions={this.state.suggestionsArray}
+                    handler={this.handler}
+                  />
+                </div>
+                <div className='col-md-8 top-bottom-padding'>
+                  <img id="studentPhoto" src={this.getPic(this.state.parsedInfo)} width="196" height="196" alt="Student Pic"/><br />
+                  <ListGroup>
+                    <ListGroup.Item>Name: {this.state.profileData.first_name} {this.state.profileData.last_name}</ListGroup.Item>
+                    {this.renderDisplayInfo(this.state.parsedInfo)}
+                  </ListGroup>
+                  <Button variant="btn btn-primary" onClick={this.edit}>
+                    Edit
+                  </Button>
+                </div>
+              </div>
+            </div>
+            {heatmap}
+          </div>
+        );
+      }
+      else if (this.state.mode === 'edit') {
+        let deleteButton = []
+        if (this.state.canDeleteStudent) {
+          deleteButton = <ButtonToolbar>
+            <Button variant="danger" onClick={evt => { if (window.confirm('Are you sure you wish to delete this student?')) this.delete(evt, this.state) }}>Delete</Button>
+          </ButtonToolbar>
+        }
+        return (
+          <div className='content'>
+            <Layout/>
+            <h1> Student Profile </h1>
+            <div className='container-fluid no-padding'>
+              <div className='row justify-content-start'>
+                <div className='col-md-4 to-front top-bottom-padding'>
+                  <Autocomplete
+                    suggestions={this.state.suggestionsArray}
+                    handler={this.handler}
+                  />
+                </div>
+                <div className='col-md-8 top-bottom-padding'>
+                  <img id="studentPhoto" src={this.getPic(this.state.parsedInfo)} width="196" height="196" alt="Student Pic"/>
+                  <p> Upload Student Profile Photo </p>
+                  <input id="upload-button" type="file" accept="image/*" name={this.state.profileInfo[0].patchPost.student_id} onChange={evt => this.readImage(evt, this.state)} /><br />
+                  <Form inline className='col-md-8 top-bottom-padding' onSubmit={evt => this.handleSubmit(evt, this.state)}>
+                    <Form.Group>
+                      <Form.Label>First Name: </Form.Label>
+                      <Form.Control type="text" id="first_name" defaultValue={this.state.profileData.first_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
+                      <Form.Label>Last Name: </Form.Label>
+                      <Form.Control type="text" id="last_name" defaultValue={this.state.profileData.last_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
+                      {this.renderEditInfo(this.state.parsedInfo)}
+                      <br/>
+                      <ButtonToolbar>
+                        <Button variant="primary" type="submit">Submit</Button>
+                        <Button variant="default" onClick={this.display}>Cancel</Button>
+                      </ButtonToolbar>
+                      <br />
+                      {deleteButton}
+                    </Form.Group>
+                  </Form>
+                </div>
+              /////////////////
               </div>
             </div>
       
@@ -933,8 +1021,10 @@ class Students extends Component {
             <br/>
             <Button bsStyle="default" onClick={this.openModal}>Add a New Flag</Button>
           </div>
-        </div>
-      );
+        );
+      }
+    } else { //no permission
+      return (<Redirect to='/notfound' />);
     }
   }
 }

@@ -379,14 +379,14 @@ class Users extends React.Component {
         let buttonToolbar;
         if (permissions.indexOf('add_user') >= 0) {
             buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
-                <Button className={this.state.showingAllUsers ? 'hidden' : ''} bsStyle='link' onClick={this.showAllUsers}>Show All Users</Button>
                 
+                <Button className={this.state.showingAllUsers ? 'hidden' : ''} variant='link' onClick={this.showAllUsers}>Show All Users</Button>
                 {!this.state.mobile && <Button onClick={this.openModal}>New User</Button>}
                 {this.state.mobile && <Button style={{marginTop: '25px'}} onClick={this.openModal}>New User</Button>}
             </ButtonToolbar>
         } else {
             buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
-                <Button className={this.state.showingAllUsers ? 'hidden' : ''} bsStyle='link' onClick={this.showAllUsers}>Show All Users</Button>
+                <Button className={this.state.showingAllUsers ? 'hidden' : ''} variant='link' onClick={this.showAllUsers}>Show All Users</Button>
             </ButtonToolbar>
         }
         return (

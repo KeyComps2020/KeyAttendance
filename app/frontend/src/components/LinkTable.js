@@ -119,7 +119,7 @@ class LinkTable extends React.Component {
 			let columns = [];
 			for (let j in headers) {
 				if (headers[j] in pages[page - 1][i]) {
-					if (j == 1) { // This is a dumb fix lmao.
+					if (j === 1) { // This is a dumb fix lmao.
 						columns.push(<td key={`row${j}${i}`}><Button variant="link" onClick={this.select(pages[page - 1][i])}>{pages[page - 1][i][headers[j]]}</Button></td>)
 					} else {
 						columns.push(<td key={`row${j}${i}`}>{pages[page - 1][i][headers[j]]}</td>)

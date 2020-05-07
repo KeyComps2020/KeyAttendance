@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import { Alert, Button, FormControl, Form, Modal } from 'react-bootstrap';
 import { httpPost, domain, protocol } from './Helpers';
 
 class AddStudentFieldModal extends React.Component {
@@ -131,11 +131,11 @@ class AddStudentFieldModal extends React.Component {
 				</Modal.Header>
 
 				<Modal.Body>
-					<form>
-                        <FormGroup
+					<Form>
+                        <Form.Group
                             validationState={this.validateInput()}>
-                            <ControlLabel>Field Name</ControlLabel>
-                            <FormControl
+                            <Form.Label>Field Name</Form.Label>
+                            <Form.Control
                                 type="text"
                                 name="name"
                                 value={this.state.name}
@@ -143,7 +143,7 @@ class AddStudentFieldModal extends React.Component {
                                 onChange={this.handleChange}
 							/>
                             <br/>
-                            <FormControl componentClass="select" 
+                            <Form.Control componentClass="select" 
                             name="type" 
                             onChange={this.handleChange}
                             defaultValue={this.state.type}
@@ -151,32 +151,32 @@ class AddStudentFieldModal extends React.Component {
                                 <option value="date">Date</option>
                                 <option value="str">Text</option>
                                 <option value="int">Number</option>
-                            </FormControl>
+                            </Form.Control>
 							<br/>
-                            <ControlLabel>Currently in Use</ControlLabel>
-							<FormControl
+                            <Form.Label>Currently in Use</Form.Label>
+							<Form.Control
                                 type="checkbox"
                                 checked={this.state.inUse}
 								value={this.state.inUse}
                                 onChange={this.handleInUseCheckbox}
 							/>
                             <br/>
-                            <ControlLabel>Show in Quick Add</ControlLabel>
-							<FormControl
+                            <Form.Label>Show in Quick Add</Form.Label>
+							<Form.Control
                                 type="checkbox"
                                 checked={this.state.quickAdd}
 								value={this.state.quickAdd}
                                 onChange={this.handleQuickAddCheckbox}
 							/>
 							<FormControl.Feedback />
-						</FormGroup>
-					</form>
+						</Form.Group>
+					</Form>
 				</Modal.Body>
 
 				<Modal.Footer>
-                    {this.state.error && <Alert bsStyle='danger'>{this.state.errorMsg}</Alert>}
+                    {this.state.error && <Alert variant='danger'>{this.state.errorMsg}</Alert>}
 					<Button onClick={this.cancel}>Cancel</Button>
-					<Button onClick={this.submit} bsStyle="primary">Create</Button>
+					<Button onClick={this.submit} variant="primary">Create</Button>
 				</Modal.Footer>
 			</Modal>
         )

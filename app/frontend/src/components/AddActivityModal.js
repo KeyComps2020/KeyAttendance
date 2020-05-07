@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, FormControl, Modal } from 'react-bootstrap'; //FromControl different from Form.Control in this case because of FormControl.Feedback
 import { httpPost, domain, protocol } from './Helpers';
 
 class AddActivityModal extends React.Component {
@@ -127,11 +127,11 @@ class AddActivityModal extends React.Component {
 				</Modal.Header>
 
 				<Modal.Body>
-					<form>
-                        <FormGroup
+					<Form>
+                        <Form.Group
                             validationState={this.validateInput()}>
-                            <ControlLabel>Activity Name</ControlLabel>
-                            <FormControl
+                            <Form.Label>Activity Name</Form.Label>
+                            <Form.Control
                                 type="text"
                                 name="name"
                                 value={this.state.name}
@@ -139,7 +139,7 @@ class AddActivityModal extends React.Component {
                                 onChange={this.handleChange}
 							/>
                             <br/>
-                            <FormControl componentClass="select" 
+                            <Form.Control componentClass="select" 
                             name="type" 
                             onChange={this.handleChange}
                             defaultValue={this.state.type}
@@ -147,24 +147,24 @@ class AddActivityModal extends React.Component {
                                 <option value="boolean">Checkbox</option>
                                 <option value="string">Text</option>
                                 <option value="float">Number</option>
-                            </FormControl>
+                            </Form.Control>
 							<br/>
-                            <ControlLabel>Currently in Use</ControlLabel>
-							<FormControl
+                            <Form.Label>Currently in Use</Form.Label>
+							<Form.Control
                                 type="checkbox"
                                 checked={this.state.inUse}
 								value={this.state.inUse}
                                 onChange={this.handleCheckbox}
 							/>
 							<FormControl.Feedback />
-						</FormGroup>
-					</form>
+						</Form.Group>
+					</Form>
 				</Modal.Body>
 
 				<Modal.Footer>
-                    {this.state.error && <Alert bsStyle='danger'>{this.state.errorMsg}</Alert>}
+                    {this.state.error && <Alert variant='danger'>{this.state.errorMsg}</Alert>}
 					<Button onClick={this.cancel}>Cancel</Button>
-					<Button onClick={this.submit} bsStyle="primary">Create</Button>
+					<Button onClick={this.submit} variant="primary">Create</Button>
 				</Modal.Footer>
 			</Modal>
         )

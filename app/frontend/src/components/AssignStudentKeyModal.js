@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonToolbar, ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
+import { Button, ButtonToolbar, ListGroup, Modal } from 'react-bootstrap';
 import { httpGet, httpPatch, domain, protocol } from './Helpers';
 import Autocomplete from './Autocomplete';
 
@@ -91,9 +91,9 @@ class AssignStudentKeyModal extends React.Component {
                     <h4>Suggestions:</h4>
                     {this.state.suggestions.length === 3 
                     && <ListGroup>
-                        <ListGroupItem><ButtonToolbar style={{float: 'right'}} ><Button onClick={() => this.setMatch(this.state.suggestions[0].match_key)} bsStyle="primary">Select</Button></ButtonToolbar><p style={{paddingTop: '4px'}}>{this.state.suggestions[0].match_name}</p></ListGroupItem>
-                        <ListGroupItem><ButtonToolbar style={{float: 'right'}} ><Button onClick={() => this.setMatch(this.state.suggestions[1].match_key)} bsStyle="primary">Select</Button></ButtonToolbar><p style={{paddingTop: '4px'}}>{this.state.suggestions[1].match_name}</p></ListGroupItem>
-                        <ListGroupItem><ButtonToolbar style={{float: 'right'}} ><Button onClick={() => this.setMatch(this.state.suggestions[2].match_key)} bsStyle="primary">Select</Button></ButtonToolbar><p style={{paddingTop: '4px'}}>{this.state.suggestions[2].match_name}</p></ListGroupItem>
+                        <ListGroup.Item><ButtonToolbar style={{float: 'right'}} ><Button onClick={() => this.setMatch(this.state.suggestions[0].match_key)} variant="primary">Select</Button></ButtonToolbar><p style={{paddingTop: '4px'}}>{this.state.suggestions[0].match_name}</p></ListGroup.Item>
+                        <ListGroup.Item><ButtonToolbar style={{float: 'right'}} ><Button onClick={() => this.setMatch(this.state.suggestions[1].match_key)} variant="primary">Select</Button></ButtonToolbar><p style={{paddingTop: '4px'}}>{this.state.suggestions[1].match_name}</p></ListGroup.Item>
+                        <ListGroup.Item><ButtonToolbar style={{float: 'right'}} ><Button onClick={() => this.setMatch(this.state.suggestions[2].match_key)} variant="primary">Select</Button></ButtonToolbar><p style={{paddingTop: '4px'}}>{this.state.suggestions[2].match_name}</p></ListGroup.Item>
                       </ListGroup>}
                     <br/>
                     <h4>Search for match:</h4>
@@ -104,7 +104,7 @@ class AssignStudentKeyModal extends React.Component {
 
 				<Modal.Footer>
 					<Button onClick={this.onCancel}>Cancel</Button>
-					<Button onClick={this.onSubmit} bsStyle="primary">Save</Button>
+					<Button onClick={this.onSubmit} variant="primary">Save</Button>
 				</Modal.Footer>
 			</Modal>
         )

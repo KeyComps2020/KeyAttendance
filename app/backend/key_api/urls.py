@@ -36,5 +36,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-token-auth/', token_auth.TokenAuth.as_view()),
 
-    re_path('^((?!media/).).*', TemplateView.as_view(template_name='index.html')), #regex path... TODO don't know what it does
+    re_path('^((?!media/).).*', TemplateView.as_view(template_name='index.html')), #regex path
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, FormGroup, FormControl, ControlLabel, Alert } from 'react-bootstrap';
+import { Button, Modal, Form, FormControl, Alert } from 'react-bootstrap';
 import { httpPatch, httpDelete, domain, protocol } from './Helpers';
 
 class EditUserModal extends React.Component {
@@ -219,11 +219,11 @@ class EditUserModal extends React.Component {
     render() {
         let passwordBlock;
         if (!this.state.editPassword) {
-            passwordBlock = <Button bsStyle="link" onClick={this.handlePasswordButton}>Change Password</Button>
+            passwordBlock = <Button variant="link" onClick={this.handlePasswordButton}>Change Password</Button>
         } else {
             passwordBlock = <div>
-                <ControlLabel>Password</ControlLabel>
-                <FormControl
+                <Form.Label>Password</Form.Label>
+                <Form.Control
                     type="password"
                     name="password"
                     value={this.state.password}
@@ -231,8 +231,8 @@ class EditUserModal extends React.Component {
                     onChange={this.handleChange}
                 />
                 <br />
-                <ControlLabel>Confirm Password</ControlLabel>
-                <FormControl
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control
                     type="password"
                     name="confirmPassword"
                     value={this.state.confirmPassword}
@@ -240,7 +240,7 @@ class EditUserModal extends React.Component {
                     onChange={this.handleChange}
                 />
                 <br />
-                <Button bsStyle="warning" onClick={this.handlePasswordButton}>Discard Password Changes</Button>
+                <Button variant="warning" onClick={this.handlePasswordButton}>Discard Password Changes</Button>
                 <br />
             </div>
         }
@@ -256,15 +256,15 @@ class EditUserModal extends React.Component {
 				</Modal.Header>
 
 				<Modal.Body>
-					<form>
-						<FormGroup
+					<Form>
+						<Form.Group
                             validationState={this.validateInput()}
 						>
-							<ControlLabel>Username</ControlLabel>
+							<Form.Label>Username</Form.Label>
 							<p>{this.state.row.username}</p>
 							<br/>
-                            <ControlLabel>First Name</ControlLabel>
-							<FormControl
+                            <Form.Label>First Name</Form.Label>
+							<Form.Control
                                 type="text"
                                 name="first_name"
 								value={this.state.first_name || ''}
@@ -272,8 +272,8 @@ class EditUserModal extends React.Component {
 								onChange={this.handleChange}
 							/>
 							<br/>
-                            <ControlLabel>Last Name</ControlLabel>
-							<FormControl
+                            <Form.Label>Last Name</Form.Label>
+							<Form.Control
                                 type="text"
                                 name="last_name"
 								value={this.state.last_name || ''}
@@ -281,29 +281,28 @@ class EditUserModal extends React.Component {
 								onChange={this.handleChange}
 							/>
 							<br/>
-                            <ControlLabel>Active</ControlLabel>
-                            <FormControl
-                                style={{width: 'auto'}}
+                            <Form.Label>Active</Form.Label>
+							<Form.Control
                                 type="checkbox"
                                 checked={this.state.is_active || false}
 								value={this.state.is_active}
 								onChange={this.handleActiveCheckbox}
 							/>
                             <br />
-                            <ControlLabel>User Role</ControlLabel>
+                            <Form.Label>User Role</Form.Label>
                             {this.createRadioOptions()}
                             {passwordBlock}
 							<FormControl.Feedback />
-						</FormGroup>
-					</form>
+						</Form.Group>
+					</Form>
 				</Modal.Body>
 
 				<Modal.Footer>
-                    {this.state.error && <Alert bsStyle='danger'>Invalid password. Please make sure they match and try again.</Alert>}
-                    {this.state.backendError && <Alert bsStyle='danger'>{errorMsg}</Alert>}
+                    {this.state.error && <Alert variant='danger'>Invalid password. Please make sure they match and try again.</Alert>}
+                    {this.state.backendError && <Alert variant='danger'>{errorMsg}</Alert>}
 					<Button onClick={this.cancel}>Cancel</Button>
-					<Button onClick={() => {if (window.confirm('Are you sure you want to save these changes?')) this.submit()}} bsStyle="primary">Save</Button>
-                    <Button onClick={() => { if (window.confirm('Are you sure you wish to delete this user?')) this.delete() } } bsStyle="danger">Delete</Button>
+					<Button onClick={() => {if (window.confirm('Are you sure you want to save these changes?')) this.submit()}} variant="primary">Save</Button>
+                    <Button onClick={() => { if (window.confirm('Are you sure you wish to delete this user?')) this.delete() } } variant="danger">Delete</Button>
 				</Modal.Footer>
 			</Modal>
         )

@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactCollapsingTable from 'react-collapsing-table';
+import { Button, ButtonToolbar, Form } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
+import Layout from '../components/Layout';
 import ActivityCheckboxes from '../components/ActivityCheckboxes';
 import AttendanceOptions from '../components/AttendanceOptions';
 import AddStudentModal from '../components/AddStudentModal';
 import Autocomplete from "../components/Autocomplete";
-import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
-import { Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 import { getPermissions, downloadAttendanceCSV, compareActivities, dateToString, getEarlierDate, borderStyle, whiteBorderStyle } from '../components/Helpers';
-import { Redirect } from 'react-router-dom';
+import { httpPost, httpGet, domain, protocol, getPermissions, downloadAttendanceCSV, compareActivities } from '../components/Helpers';
 
 class Attendance extends React.Component {
 
@@ -22,12 +23,12 @@ class Attendance extends React.Component {
             suggestionsArray: [],
             attendance: [],
             showStudentModal: false,
-            date: '',
+            date: this.getCurrentDate(),
             prevDate: '',
             canCreateStudent: false,
-            mobile: false,
             canVeiwFlags: false,
             studentFlags: {},
+            mobile: (window.innerWidth < 768),
         }
 
         this.downloadCSV = this.downloadCSV.bind(this);
@@ -41,7 +42,7 @@ class Attendance extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({date: this.getCurrentDate(), mobile: (window.innerWidth < 768)})
+        console.log("attendance has mounted")
     }
 
     componentDidUpdate() {
@@ -68,7 +69,7 @@ class Attendance extends React.Component {
             const permissions = getPermissions()
             let studentFields = [];
             let canCreateStudent = false;
-            if (permissions.indexOf('add_students') >= 0) {
+            if (permissions.includes('add_students')) {
                 studentFields = await httpGet(`${protocol}://${domain}/api/student_column/?quick_add=True`);
                 canCreateStudent = true;
             }
@@ -98,15 +99,14 @@ class Attendance extends React.Component {
         } catch (e) {
             console.log(e);
         }
-        
-        this.buildSheet();
+        this.buildSheet(); //TODO: figure out if this should be moved into the try statement
     }
 
     buildSheet() {
         const { activities, attendanceItems, students, studentFlags } = this.state;
         // Combine attendance items. Need to sort by student id.
         var entries = {};
-        for (var i = 0; i < attendanceItems.length; i++) {
+        for (let i = 0; i < attendanceItems.length; i++) {
             if (attendanceItems[i].activity_id === -1) {
                 continue;
             }
@@ -131,13 +131,13 @@ class Attendance extends React.Component {
         var weekEarlier = getEarlierDate(7);
         var weekEarlierString = dateToString(weekEarlier);
 
-        for (var i = 0; i < activities.length; i++) {
+        for (let i = 0; i < activities.length; i++) {
             columns.push(activities[i].name);
         }
-        for (var i = 0; i < ids.length; i++) {
+        for (let i = 0; i < ids.length; i++) {
             var row = {}
             // match student data to current id
-            for (var j = 0; j < students.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
+            for (let j = 0; j < students.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
                 if (students[j].id === parseInt(ids[i])) {
                     row['name'] = `${students[j].first_name} ${students[j].last_name}`;
                     row['studentID'] = students[j].id;
@@ -147,7 +147,7 @@ class Attendance extends React.Component {
             row['time'] = entries[ids[i]].time;
             row['activities'] = {};
             // fill in activities data
-            for (var j = 0; j < activities.length; j++) {
+            for (let j = 0; j < activities.length; j++) {
                 let value;
                 if (!entries[ids[i]][activities[j].activity_id]) {
                     if (activities[j].type === 'boolean') {
@@ -199,7 +199,7 @@ class Attendance extends React.Component {
             } else {
                 // Add new row to table
                 let name = "";
-                for (var j = 0; j < students.length; j++) {
+                for (let j = 0; j < students.length; j++) {
                     if (students[j].id === parseInt(studentID)) {
                         name = `${students[j].first_name} ${students[j].last_name}`;
                         break;
@@ -207,7 +207,7 @@ class Attendance extends React.Component {
                 }
 
                 let activityList = {};
-                for (var j = 0; j < activities.length; j++) {
+                for (let j = 0; j < activities.length; j++) {
                     const type = activities[j].type;
                     const value = type === 'boolean' ? false : '';
                     activityList[activities[j].name] = {
@@ -303,7 +303,9 @@ class Attendance extends React.Component {
     }
 
     render() {
+        console.log("attendance has rendered", this)
         const permissions = getPermissions();
+        ////////////
         if (permissions.indexOf('view_attendanceitems') < 0) {
             return (<Redirect to='/notfound'/>);
         }
@@ -448,6 +450,110 @@ class Attendance extends React.Component {
             </div>
             </div>
         )
+                ////////////////
+        if (permissions.includes('view_attendanceitems')) {
+
+            const rows = this.state.attendance.map(item =>
+                (
+                {
+                    name: item.name,
+                    time: item.time,
+                    activities: item.activities,
+                    studentID: item.studentID,
+                    date: this.state.date
+                }
+            )
+            ).sort((a, b) => {
+                return b.time.localeCompare(a.time); // For some reason the table doesn't automatically sort.
+            });
+
+            const columns = [
+                {
+                    accessor: 'name',
+                    label: 'Name',
+                    priorityLevel: 1,
+                    position: 1,
+                    minWidth: 100,
+                    sortable: true
+                },
+                {
+                    accessor: 'time',
+                    label: 'Check-in Time',
+                    priorityLevel: 2,
+                    position: 2,
+                    minWidth: 100,
+                    sortable: true
+                },
+                {
+                    accessor: 'options',
+                    label: 'Options',
+                    priorityLevel: 3,
+                    position: 3,
+                    CustomComponent: AttendanceOptions,
+                    sortable: false,
+                    minWidth: 100
+                },
+                { 
+                    accessor: 'activities',
+                    label: 'Activities',
+                    priorityLevel: 4,
+                    position: 4,
+                    minWidth: 2000,
+                    CustomComponent: ActivityCheckboxes,
+                    sortable: false, 
+                }
+            ];
+
+            const buildingCSV = this.state.buildingCSV;
+
+            let buttonToolbar;
+            if (this.state.canCreateStudent) {
+                buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
+                    <Button onClick={this.refresh}>Refresh</Button>
+                    {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
+                    {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
+                    <Button onClick={this.openModal}>Create New Student</Button>
+                </ButtonToolbar>
+            } else {
+                buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
+                    <Button onClick={this.refresh}>Refresh</Button>
+                    {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
+                    {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
+                </ButtonToolbar>
+            }
+
+            return (
+                <div className='content'>
+                    <Layout {...this.history}/>
+                    <AddStudentModal studentFields={this.state.studentFields} show={this.state.showStudentModal} onSubmit={this.closeModal}/>
+                    <h1>Attendance for {this.state.date}</h1>
+                    <br/>
+                    {buttonToolbar}
+                    {!this.state.mobile && <Form inline style={{ float: 'right', paddingRight: '5px', paddingLeft: '5px'}}>
+                        <Form.Group>
+                            <Form.Label>Date:</Form.Label>{' '}
+                            <Form.Control onChange={this.updateDate} value={this.state.date} type="date"/>
+                        </Form.Group>
+                    </Form>}
+                    <Autocomplete
+                        label={'Check-in Student:'}
+                        suggestions={this.state.suggestionsArray}
+                        handler={this.addStudent}
+                    />
+                    <br/>
+                    <ReactCollapsingTable
+                            rows = { rows }
+                            columns = { columns }
+                            column = {'time'}
+                            direction = {'descending'}
+                            showPagination={ true }
+                            callbacks = {{'options':this.removeAttendanceRow}}
+                    />
+                </div>
+            );
+        } else {
+            return (<Redirect to='/notfound' />);
+        }
     }
 }
 

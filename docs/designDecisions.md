@@ -42,3 +42,5 @@ Options: .gitignore
 Decision: adding all folders of auto-generated files made during instance startup to the .gitignore file
 Reason: For the sake of 1) robustness, 2) not encountering unexpected problems during re-instancing, 3) allowing the students working on this project to see how Django, 
 
+## Routing through the app
+Options: component, [render](https://reacttraining.com/react-router/web/api/Route/render-func)

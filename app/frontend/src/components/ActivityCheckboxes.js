@@ -1,6 +1,6 @@
 import React from 'react';
+import { Badge } from 'react-bootstrap';
 import ActivityCheckbox from'./ActivityCheckbox.js'
-import { Label } from 'react-bootstrap';
 import { httpDelete, httpPost, domain, protocol } from './Helpers';
 
 class ActivityCheckboxes extends React.Component {
@@ -156,8 +156,8 @@ class ActivityCheckboxes extends React.Component {
             <span className="container">
                 <span className="row">
                     <span className="col-sm-12">
-                        {this.state.numChecked < 2 && <Label bsStyle="warning">At least one box must be checked</Label>}
-                        {this.state.error !== "" && <Label bsStyle="danger">Error {this.state.error}: {errorMsg} </Label>}
+                        {this.state.numChecked < 2 && <Badge variant="warning">At least one box must be checked</Badge>}
+                        {this.state.error !== "" && <Badge variant="danger">Error {this.state.error}: {errorMsg} </Badge>}
                         {this.createCheckboxes()}
                     </span>
                 </span>

@@ -14,17 +14,18 @@ code {
 }
 
 .login-container {
-    margin: 0 auto;
-		width: 300px; 
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, 35%);
+	margin: auto;
+	margin-top: 20px;
+	width: 270px; 
 }
 
 .center {
   position: relative;
   top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.center-text {
+	text-align: center;
 }
 
 .content {
@@ -51,4 +52,11 @@ code {
 .to-front {
 	position: relative;
 	z-index: 100;
+}
+
+.react-bootstrap-link-manual {
+	color: rgba(0, 0, 0, 0.5);
+	padding-right: 0.5rem;
+	padding-left: 0.5rem;
+	display: block;
 }

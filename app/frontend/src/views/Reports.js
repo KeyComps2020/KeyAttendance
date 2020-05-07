@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, ButtonToolbar, Form, ControlLabel, FormControl, FormGroup, Tabs, Tab } from 'react-bootstrap';
+import { Button, ButtonToolbar, Form, Tabs, Tab } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import Heatmap from '../components/Heatmap';
 import { domain, downloadReportsCSV, getEarlierDate, dateToString, getNextSaturday, getPrevSunday, getPermissions, httpGet, protocol, downloadAttendanceCSV, whiteBorderStyle } from '../components/Helpers';
@@ -7,10 +7,9 @@ import BarChart from './../components/BarChart.js';
 import AttendanceByProgramReport from '../components/AttendanceByProgramReport';
 import NewStudentsReport from '../components/NewStudentsReport';
 import MilestoneReport from '../components/MilestoneReport';
+import Layout from '../components/Layout';
 
 class Reports extends Component {
-
-    
     //Initialize state vars that will be reused thru various functions in this component!
     constructor(props) {
         super(props);
@@ -59,7 +58,7 @@ class Reports extends Component {
           var endDateStringYear = dateToString(endDateYear);
           const byDayJson = await httpGet(`${protocol}://${domain}/api/reports/byDayAttendance/?startdate=${startDateStringYear}&enddate=${endDateStringYear}`);
           //Call helper funcs to format the datasets broken down by day and hour
-          await this.formatDayData(byDayJson, startDateStringYear, endDateStringYear, startDateWeek);
+          await this.formatDayData(byDayJson, startDateStringYear, endDateStringYear, startDateWeek); //TODO: remove await?
           await this.formatHourData(byHourJson, startDateStringWeek, endDateStringWeek);
         } catch (e) {
           console.log(e);
@@ -79,7 +78,7 @@ class Reports extends Component {
         this.setState({dateTwo: e.target.value});
       }
 
-      async downloadCSV() {
+      async downloadCSV() { //if your gonna refactor this to use fat arrow notation, just do downloadcsv = async() =>
           if (this.state.dateOne === "" || this.state.dateTwo === "") {
             return
           }
@@ -154,7 +153,7 @@ class Reports extends Component {
           currEntryDate = new Date(byDayJson[currIdx]["date"].replace(/-/g, '/'));
           //identified missing date, so add dummy date entry for missing date
           if (this.sameDay(dateToCompare, currEntryDate) === false) {
-            var dateEntryZeroEngagements = { "date": dateToCompare.toISOString().slice(0, 10), "daily_visits": 0 };
+            let dateEntryZeroEngagements = { "date": dateToCompare.toISOString().slice(0, 10), "daily_visits": 0 };
             //add entry in place if not at end of json OR final date entry has not been added yet/surpassed
             //else add to very end of json 
             if (currIdx !== byDayJson.length - 1 || this.compareTime(currEntryDate, dateToCompare)) {
@@ -171,16 +170,15 @@ class Reports extends Component {
         var byDayJsonForDownload = [];
         var byDayInPastWeekForDownload = [];
         var entryAsList;
-        var currDateObj;
         var startPastWeek = startDateWeek;
         startPastWeek.setDate(startPastWeek.getDate()-1);
         var endPastWeek = getEarlierDate(0);
-        for(var i=0; i<byDayJson.length; i++){
+        for(let i=0; i<byDayJson.length; i++){
           entryAsList = Object.values(byDayJson[i]);
           byDayJsonForDownload.push(entryAsList);
           //add to daily attendance csv if date is within past week
-          currDateObj = new Date(byDayJson[i]['date'].replace(/-/g, '/'));
-          if(this.compareTime(currDateObj,startPastWeek) && (this.compareTime(currDateObj,endPastWeek) == false) ){
+          let currDateObj = new Date(byDayJson[i]['date'].replace(/-/g, '/'));
+          if(this.compareTime(currDateObj,startPastWeek) && (this.compareTime(currDateObj,endPastWeek) === false) ){
             byDayInPastWeekForDownload.push(entryAsList);
           }
         }
@@ -191,10 +189,9 @@ class Reports extends Component {
         var processedDataAnnual = [];
         var byDayInPastWeekJson = [];
         var dayOfWeek, weekNum, dayEntry, annualHeatMapEntry, dayOfWeekConverted;
-        var currDateObj;
         var strDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        for (var i = 0; i < byDayJson.length; i++) {
-          currDateObj = new Date(byDayJson[i]['date'].replace(/-/g, '/'));
+        for (let i = 0; i < byDayJson.length; i++) {
+          let currDateObj = new Date(byDayJson[i]['date'].replace(/-/g, '/'));
           dayOfWeek = currDateObj.getDay();
           dayOfWeekConverted = strDays[dayOfWeek];
           weekNum = Math.floor(i / 7);
@@ -203,7 +200,7 @@ class Reports extends Component {
           dayEntry = {"y": byDayJson[i]['daily_visits'], "x": dayOfWeekConverted};
           processedData.push(dayEntry);
           //add to daily attendance dataset if date is within past week
-          if(this.compareTime(currDateObj,startPastWeek) && (this.compareTime(currDateObj,endPastWeek) == false) ){
+          if(this.compareTime(currDateObj,startPastWeek) && (this.compareTime(currDateObj,endPastWeek) === false) ){
             byDayInPastWeekJson.push(dayEntry);
           }
         }
@@ -260,7 +257,7 @@ class Reports extends Component {
           currHour = byHourJson[currIdx]["time"];
           //identified missing date, so add dummy date entry for missing date
           if (this.sameDay(dateToCompare, currEntryDate) === false) {
-            var dateEntryZeroEngagements = { "date": dateToCompare.toISOString().slice(0, 10), "time": hourToCompare, "count": 0 };
+            let dateEntryZeroEngagements = { "date": dateToCompare.toISOString().slice(0, 10), "time": hourToCompare, "count": 0 };
             //add entry in place if not at end of json OR final date entry has not been added yet/surpassed
             //else add to very end of json
             if (currIdx !== byHourJson.length - 1 || (this.compareTime(currEntryDate, dateToCompare))){
@@ -271,7 +268,7 @@ class Reports extends Component {
           }
           //the two date-hour combos are on SAME DAY, but different hours so add the missing hour as a dummy entry
           else if(hourToCompare !== currHour){
-            var dateEntryZeroEngagements = { "date": dateToCompare.toISOString().slice(0, 10), "time": hourToCompare, "count": 0 };
+            let dateEntryZeroEngagements = { "date": dateToCompare.toISOString().slice(0, 10), "time": hourToCompare, "count": 0 };
             //add entry in place if not at end of json OR final date entry has not been added yet/surpassed
             //else add to very end of json
             if (currIdx !== byHourJson.length - 1 || currHour > hourToCompare){
@@ -309,10 +306,9 @@ class Reports extends Component {
         //a list called processedData of {"x": string hour of day, "y": string day of week, "color": int num engagements per day} objs
         var processedData = [];
         var dayOfWeek, hourEntry, hourOfDay;
-        var currDateObj;
         var strDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        for (var i = 0; i < byHourJson.length; i++) {
-          currDateObj = new Date(byHourJson[i]['date'].replace(/-/g, '/'));
+        for (let i = 0; i < byHourJson.length; i++) {
+          let currDateObj = new Date(byHourJson[i]['date'].replace(/-/g, '/'));
           dayOfWeek = strDays[currDateObj.getDay()];
           hourOfDay = byHourJson[i]['time'].slice(0,5);
           hourEntry = {"x": hourOfDay, "y": dayOfWeek, "color": byHourJson[i]['count']};
@@ -331,12 +327,9 @@ class Reports extends Component {
       }
 
     render() {
-        const buildingCSV = this.state.buildingCSV;
+        console.log("reports", this)
         const permissions = getPermissions();
-        if (permissions.indexOf('view_reports') < 0) {
-            return (<Redirect to='/attendance'/>);
-        }
-
+        /////////
         return (
           
           <div className="content" style={{minWidth: 'fit-content'}}>
@@ -436,6 +429,86 @@ class Reports extends Component {
         );
     }
 }
+/////////
+        if (permissions.includes('view_reports')) {
+          return (
+            <div className="content">
+              <Layout/>
+              <Tabs activeKey={this.state.tab} onSelect={this.handleTabSelect}>
+                
+                <Tab key={1} eventKey={1} title="Hourly Attendance">
+                  <h3> Hourly Attendance </h3>
+                  <ButtonToolbar style={{ float: 'right'}}>
+                    <Button onClick={this.downloadHourlyCSV} disabled={this.state.buildingCSV}>
+                      {this.state.buildingCSV ? 'Downloading...' : 'Download Hourly'}
+                    </Button>
+                  </ButtonToolbar>
+                  <p> Number of engagements per hour in <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
+                  <p><b>Note:</b> Data is displayed chronologically, with the top row representing the oldest day and the bottom row representing the current day.</p>
+                  <Heatmap
+                    data = {this.state.byHourJson}
+                    heatMapType = "weekly" />
+                </Tab>
+
+                <Tab key={2} eventKey={2} title="Daily Attendance">
+                  <h3> Daily Attendance </h3>
+                  <ButtonToolbar style={{ float: 'right'}}>
+                    <Button onClick={this.downloadWeeklyCSV} disabled={this.state.buildingCSV}>
+                      {this.state.buildingCSV ? 'Downloading...' : 'Download Daily'}
+                    </Button>
+                  </ButtonToolbar>
+                  <p> Number of engagements per day in the past week from <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
+                  <BarChart data = {this.state.byDayInPastWeekJson}/>
+                </Tab>
+
+                <Tab key={3} eventKey={3} title="Annual Attendance">
+                  <h3> Annual Daily Attendance </h3>
+                  <ButtonToolbar style={{ float: 'right'}}>
+                    <Button onClick={this.downloadYearlyCSV} disabled={this.state.buildingCSV}>
+                      {this.state.buildingCSV ? 'Downloading...' : 'Download Annual'}
+                    </Button>
+                  </ButtonToolbar>
+                  <p> Number of engagements per day in the past year from <b>{this.state.startDateStringYear}</b> to <b>{this.state.endDateStringYear}</b>.</p>
+                  <p><b>Note:</b> Data is displayed chronologically, with the leftmost column representing the oldest week and the rightmost column representing the current week.</p> 
+                  <Heatmap data = {this.state.byDayHeatMap} heatMapType = "annual" />
+                </Tab>
+
+                <Tab key={4} eventKey={4} title="Multi-Date Attendance Sheet">
+                  <h3> Download Multi-Date Attendance Sheet </h3>
+                  <p>Combines and downloads attendance sheets from multiple dates</p>
+                  <Form inline style={{paddingRight: '5px', paddingLeft: '5px'}}>
+                    <Form.Group>
+                      <Form.Label>Start Date</Form.Label>{' '}
+                      <Form.Control onChange={this.updateDateOne} value={this.state.dateOne} type="date"/>{'  '}
+                      <Form.Label>End Date</Form.Label>{' '}
+                      <Form.Control onChange={this.updateDateTwo} value={this.state.dateTwo} type="date"/>{'  '}
+                      <Button onClick={this.downloadCSV} disabled={this.state.buildingCSV}>
+                        {this.state.buildingCSV ? 'Downloading...' : 'Download'}
+                      </Button>
+                    </Form.Group>
+                  </Form>
+                </Tab>
+
+                <Tab key={5} eventKey={5} title="Attendance By Program">
+                  <AttendanceByProgramReport/>
+                </Tab>
+
+                <Tab key={6} eventKey={6} title="New Students">
+                  <NewStudentsReport/>
+                </Tab>
+
+                <Tab key={7} eventKey={7} title="Attendance Milestones">
+                  <MilestoneReport/>
+                </Tab>
+
+              </Tabs>
+            </div>
+          );
+        } else {
+            return (<Redirect to='/notfound'/>);
+        }
+      }
+  }
 
 // List of students who attended a particular category over a given time span
 // List of students who attended for the first time

@@ -1,6 +1,6 @@
 import React from 'react';
+import { Alert, Button, FormControl, Form, Modal } from 'react-bootstrap';
 import { httpDelete, httpPatch, domain, protocol } from './Helpers';
-import { Alert, Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
 
 class EditRoleModal extends React.Component {
     
@@ -145,22 +145,22 @@ class EditRoleModal extends React.Component {
 				</Modal.Header>
 
 				<Modal.Body>
-					<form>
-						<FormGroup>
-							<ControlLabel>User Role</ControlLabel>
+					<Form>
+						<Form.Group>
+							<Form.Label>User Role</Form.Label>
 							<p>{this.state.row.name}</p>
                             {this.createCheckboxes()}
 							<FormControl.Feedback />
-						</FormGroup>
-					</form>
+						</Form.Group>
+					</Form>
 				</Modal.Body>
 
 				<Modal.Footer>
-                    {this.state.error && <Alert bsStyle='danger'>{errorMsg}</Alert>}
+                    {this.state.error && <Alert variant='danger'>{errorMsg}</Alert>}
 					<Button onClick={this.cancel}>Cancel</Button>
-					<Button onClick={() => { if (window.confirm('Are you sure you wish to save these changes? All users with this role will experience these changes.')) this.submit() }} bsStyle="primary">Save</Button>
+					<Button onClick={() => { if (window.confirm('Are you sure you wish to save these changes? All users with this role will experience these changes.')) this.submit() }} variant="primary">Save</Button>
                     <Button onClick={() => { if (window.confirm('Are you sure you wish to delete this role? All users with this role will be set to inactive.')) this.delete() }}
-                        bsStyle="danger"
+                        variant="danger"
                         disabled={this.state.row.name === "Admin"}>Delete</Button>
 				</Modal.Footer>
 			</Modal>

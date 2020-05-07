@@ -15,15 +15,17 @@ From requirements.txt:
 
  ## Javascript
  From package-lock.json:
- * [history](https://www.npmjs.com/package/history) - API for managing session history
  * [node-sass](https://www.npmjs.com/package/node-sass) - bindings for node to SASS stylesheet processor
- * papaparse - 
- * prop-types - 
- * react - 
- * react-bootstrap - 
- * react-collapsing-table - 
- * react-dom - 
- * react-router - 
- * react-router-dom - 
- * react-scripts - 
- * react-vis - 
+ * papaparse - csv parser.
+ * prop-types - used to typecheck the prop types for react components. not currently implemented.
+ * react - bigboi
+ * react-bootstrap - bootstrap styling for react apps (Alert, Form, etc.).
+ * bootstrap - the actual css files that react-bootstrap uses to build its the components we use for styling.
+    * Note: this dependency was added in 2020, because we decided hard-coding a version of bootstrap in as link in `index.html` could break react-bootstrap, which counts on the most recent version (read: it did break it, so we had to fix it).
+ * react-collapsing-table - DOM structure thats not in bootstrap but is useful
+ * react-dom - used for testing in tests.js. Allows react components to be rendered in an HTML file directly.
+ * react-router-dom - wrapper for react-router that adds web functionality (as opposed to native)
+   * react-router - Used for navigating between pages in a react app
+   * [history](https://www.npmjs.com/package/history) - API for managing session history.
+ * react-scripts - allows react commands from command line through npm.
+ * react-vis - used for creating the heatmap
