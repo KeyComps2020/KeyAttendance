@@ -341,8 +341,8 @@ class Reports extends Component {
             <Tabs activeKey={this.state.tab} onSelect={this.handleTabSelect}>
               <Tab key={1} eventKey={1} title="Hourly Attendance">
                 <h3> Hourly Attendance </h3>
-                <ButtonToolbar style={{ float: 'right'}}>
-                <Button onClick={this.downloadHourlyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Hourly'}</Button>
+                <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
+                <Button ostyle={{marginTop: '10px'}} nClick={this.downloadHourlyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Hourly'}</Button>
                 </ButtonToolbar>
                 <p> Number of engagements per hour in <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
                 <p><b>Note:</b> Data is displayed chronologically, with the top row representing the oldest day and the bottom row representing the current day.</p>
@@ -352,16 +352,16 @@ class Reports extends Component {
               </Tab>
               <Tab key={2} eventKey={2} title="Daily Attendance">
                 <h3> Daily Attendance </h3>
-                <ButtonToolbar style={{ float: 'right'}}>
-                <Button onClick={this.downloadWeeklyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Daily'}</Button>
+                <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
+                <Button style={{marginTop: '10px'}} onClick={this.downloadWeeklyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Daily'}</Button>
                 </ButtonToolbar>
                 <p> Number of engagements per day in the past week from <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
                 <BarChart data = {this.state.byDayInPastWeekJson}/>
               </Tab>
               <Tab key={3} eventKey={3} title="Annual Attendance">
                 <h3> Annual Daily Attendance </h3>
-                <ButtonToolbar style={{ float: 'right'}}>
-                <Button onClick={this.downloadYearlyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Annual'}</Button>
+                <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
+                <Button style={{marginTop: '10px'}} onClick={this.downloadYearlyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Annual'}</Button>
                 </ButtonToolbar>
                 <p> Number of engagements per day in the past year from <b>{this.state.startDateStringYear}</b> to <b>{this.state.endDateStringYear}</b>.</p>
                 <p><b>Note:</b> Data is displayed chronologically, with the leftmost column representing the oldest week and the rightmost column representing the current week.</p> 
@@ -376,7 +376,7 @@ class Reports extends Component {
                     <FormControl onChange={this.updateDateOne} value={this.state.dateOne} type="date"/>{'  '}
                     <ControlLabel>End Date</ControlLabel>{' '}
                     <FormControl onChange={this.updateDateTwo} value={this.state.dateTwo} type="date"/>{'  '}
-                    <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>
+                    <Button style={{marginTop: '10px'}} onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>
                   </FormGroup>
                 </Form>
               </Tab>

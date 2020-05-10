@@ -6,7 +6,6 @@ import Heatmap from '../components/Heatmap';
 import { dateToString, getPermissions, domain, getEarlierDate, getNextSaturday, getPrevSunday, httpDelete, httpGet, httpPatch, httpPost, protocol, httpPostFile, httpPatchFile, httpGetFile } from '../components/Helpers';
 import blankPic from '../images/blank_profile_pic.jpg';
 
-
 class Students extends Component {
 
   constructor(props) {
@@ -23,13 +22,14 @@ class Students extends Component {
     this.handler = this.handler.bind(this);
   }
 
+
   async componentDidMount() {
     try {
       var studentsJson = await httpGet(`${protocol}://${domain}/api/students/`);
       var suggestionsArray = this.makeSuggestionsArray(studentsJson);
-      
       let permissions = getPermissions()
       let canViewStudentInfo = false;
+      let canViewStudentKey = false;
       if (permissions.indexOf('view_studentinfo') >= 0) {
         var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
         var profileInfo = this.parseCols(studentColumnJson);
@@ -40,11 +40,14 @@ class Students extends Component {
       if (permissions.indexOf('view_reports') >= 0) {
         canViewHeatmap = true;
       }
+      // fix this (only check if admin)
+      if (permissions.indexOf('view_cityspanstudents') >= 0){
+        canViewStudentKey = true;
+      }
       let canDeleteStudent = false;
       if (permissions.indexOf('delete_students') >= 0) {
         canDeleteStudent = true;
       }
-
       this.setState(function (previousState, currentProps) {
         return {
           mode: 'search',
@@ -58,8 +61,10 @@ class Students extends Component {
           uploadedPic: false,
           src: null,
           picUpdated: false,
-          canDeleteStudent: canDeleteStudent
+          canDeleteStudent: canDeleteStudent,
+          canViewStudentKey: canViewStudentKey,
         };
+        
       });
     } catch (e) {
       console.log(e);
@@ -82,6 +87,7 @@ class Students extends Component {
         lastHolder2 = "";
       }
       array.push({
+        studentKey: suggestions[object]['student_key'],
         firstName: suggestions[object]['first_name'],
         lastName1: lastHolder1,
         lastName2: lastHolder2,
@@ -441,6 +447,7 @@ class Students extends Component {
     while (entryFound === false) {
       if (state.suggestionsArray[entryIndex].id === state.profileData['id']) {
         state.suggestionsArray[entryIndex] = {
+          studentKey: state.profileData['student_key'],
           firstName: state.profileData['first_name'],
           id: state.profileData['id'],
           lastName1: state.profileData['last_name'],
@@ -458,11 +465,18 @@ class Students extends Component {
     state.id = state.profileData.id;
     state.mode = 'display';
 
-
+    //this is not doing anything, need to change to render the edit view
     this.setState(function (previousState, currentProps) {
-      return state;
+      return {
+        studentKey: state.profileData['student_key'],
+          firstName: state.profileData['first_name'],
+          id: state.profileData['id'],
+          lastName1: state.profileData['last_name'],
+          lastName2: ''
+      }
     });
-  }
+
+  } //end of handlesubmit
 
   sameDay(d1, d2) {
     return d1.getFullYear() === d2.getFullYear() &&
@@ -528,6 +542,7 @@ class Students extends Component {
      return processedData;
    }
 
+
   renderDisplayInfo = () => {
     let info = [];
     
@@ -542,6 +557,7 @@ class Students extends Component {
         info.push(<ListGroupItem key={field}>{innerHtml}</ListGroupItem>);
       }
     }
+
     
 
     return info;
@@ -586,6 +602,7 @@ class Students extends Component {
   }
 
   render() {
+    
     let permissions = getPermissions()
     if (permissions.indexOf('view_students') < 0) {
       return (<Redirect to='/attendance' />);
@@ -595,7 +612,7 @@ class Students extends Component {
         <div className='content'>
           <h1> Key Students </h1>
           <div className='container-fluid no-padding'>
-            <div className='row justify-content-start'>
+            <div className='row justify-content-start' style={{display: 'grid'}}>
               <div className='col-md-12 to-front top-bottom-padding'>
                 <Autocomplete
                   suggestions={this.state.suggestionsArray}
@@ -620,7 +637,7 @@ class Students extends Component {
         <div className='content'>
           <h1> Student Profile </h1>
           <div className='container-fluid no-padding'>
-            <div className='row justify-content-start'>
+            <div className='row justify-content-start' style={{display: 'grid'}}>
               <div className='col-md-4 to-front top-bottom-padding'>
                 <Autocomplete
                   suggestions={this.state.suggestionsArray}
@@ -628,9 +645,9 @@ class Students extends Component {
                 />
               </div>
               <div className='col-md-8 top-bottom-padding'>
-                <img id="studentPhoto" src={this.getPic(this.state.parsedInfo)} width="196" height="196" /><br />
                 <ListGroup>
                   <ListGroupItem>Name: {this.state.profileData.first_name} {this.state.profileData.last_name}</ListGroupItem>
+                  { this.state.canViewStudentKey? <ListGroupItem>Student Key: {this.state.profileData.student_key} </ListGroupItem>: <ListGroupItem>Student Key: N/A </ListGroupItem>}
                   {this.renderDisplayInfo(this.state.parsedInfo)}
                 </ListGroup>
                 <Button variant="btn btn-primary" onClick={this.edit}>
@@ -643,6 +660,8 @@ class Students extends Component {
 		</div>
       );
     }
+
+
     else if (this.state.mode === 'edit') {
       let deleteButton = []
       if (this.state.canDeleteStudent) {
@@ -650,28 +669,30 @@ class Students extends Component {
           <Button bsStyle="danger" onClick={evt => { if (window.confirm('Are you sure you wish to delete this student?')) this.delete(evt, this.state) }}>Delete</Button>
         </ButtonToolbar>
       }
+      
       return (
         <div className='content'>
           <h1> Student Profile </h1>
           <div className='container-fluid no-padding'>
-            <div className='row justify-content-start'>
+            <div className='row justify-content-start' style={{display: 'grid'}}>
               <div className='col-md-4 to-front top-bottom-padding'>
                 <Autocomplete
                   suggestions={this.state.suggestionsArray}
                   handler={this.handler}
                 />
               </div>
-              <div className='col-md-8 top-bottom-padding'>
-                <img id="studentPhoto" src={this.getPic(this.state.parsedInfo)} width="196" height="196" />
-                <p> Upload Student Profile Photo </p>
-                <input id="upload-button" type="file" accept="image/*" name={this.state.profileInfo[0].patchPost.student_id} onChange={evt => this.readImage(evt, this.state)} /><br />
+              <div className='col-md-8 top-bottom-padding' id="root">
                 <Form inline className='col-md-8 top-bottom-padding' onSubmit={evt => this.handleSubmit(evt, this.state)}>
                   <FormGroup>
                     <Label>First Name: </Label>
                       <FormControl type="text" id="first_name" defaultValue={this.state.profileData.first_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
                     <Label>Last Name: </Label>
                       <FormControl type="text" id="last_name" defaultValue={this.state.profileData.last_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
+                      <Label>Student Key: </Label>
+                      <FormControl type="text" id="student_key" defaultValue={this.state.profileData.student_key} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
+                    
                     {this.renderEditInfo(this.state.parsedInfo)}
+
                     <br/>
                     <ButtonToolbar>
                       <Button bsStyle="primary" type="submit">Submit</Button>
@@ -684,7 +705,7 @@ class Students extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </div>   
       );
     }
   }

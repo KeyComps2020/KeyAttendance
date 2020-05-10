@@ -339,14 +339,14 @@ class Attendance extends React.Component {
 
         let buttonToolbar;
         if (this.state.canCreateStudent) {
-            buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
+            buttonToolbar = <ButtonToolbar style={{ marginBottom: '2em'}}>
                 <Button onClick={this.refresh}>Refresh</Button>
                 {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
                 {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
                 <Button onClick={this.openModal}>Create New Student</Button>
             </ButtonToolbar>
         } else {
-            buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
+            buttonToolbar = <ButtonToolbar style={{  marginBottom: '2em'}}>
                 <Button onClick={this.refresh}>Refresh</Button>
                 {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
                 {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
