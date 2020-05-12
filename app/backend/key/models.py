@@ -15,6 +15,7 @@ from simple_history.models import HistoricalRecords
 class Volunteers(models.Model):
     first_name = models.TextField(blank=True, null=True)
     last_name = models.TextField(blank=True, null=True)
+    default_shift = models.DurationField(default='2:00')
     id = models.AutoField(blank=True, primary_key=True)
     history = HistoricalRecords()
 
@@ -38,11 +39,9 @@ class VolunteerAttendanceItems(models.Model):
     volunteer_id = models.IntegerField(blank=True, null=True)
     date = models.DateField(default=getCurrentDate)
     check_in = models.TimeField(default=getCurrentTime)
-    check_out = models.TimeField(default=getCurrentTime)
-    checked_out = models.BooleanField(blank = True, null = True)
+    check_out = models.TimeField(null=True, defaul=None)
     location = models.CharField(max_length=255, blank=True, null=True)
     description = models.CharField(max_length=20000, blank=True, null=True)
-    visit_number = models.IntegerField(blank=True, null=True)
     history = HistoricalRecords()
     id = models.AutoField(primary_key=True, unique=True)
 
