@@ -5,7 +5,7 @@ import AddVolunteerModal from '../components/AddVolunteerModal';
 import Autocomplete from "../components/Autocomplete";
 import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
 import { Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
-import { getPermissions, downloadAttendanceCSV } from '../components/Helpers';
+import { getPermissions, downloadVolunteerAttendanceCSV } from '../components/Helpers';
 import { Redirect } from 'react-router-dom';
 
 class Volunteers extends React.Component {
@@ -189,7 +189,7 @@ class Volunteers extends React.Component {
 
     async downloadCSV() {
         this.setState({ buildingCSV: true });
-        await downloadAttendanceCSV(`${this.state.date}`)
+        await downloadVolunteerAttendanceCSV(`${this.state.date}`)
         this.setState({ buildingCSV: false });
     }
 
