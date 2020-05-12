@@ -378,7 +378,7 @@ whiteBorderStyle() {
         }
 
         return (
-            <div className='content'>
+            <div className='content' style={{minWidth: 'fit-content'}}>
                 <AddStudentModal studentFields={this.state.studentFields} show={this.state.showStudentModal} onSubmit={this.closeModal}/>
                 <div style={{textAlign: 'center'}}>
                 <h1

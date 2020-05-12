@@ -36,6 +36,28 @@ class Volunteers extends React.Component {
         this.refresh = this.refresh.bind(this);
     }
 
+    borderStyle() {
+        return {
+            background: '#f8f8f8',
+            margin: '5px',
+            borderRadius: 'inherit',
+            padding: '15px',
+            borderColor: '#e7e7e7',
+            borderStyle: 'solid',
+            borderWidth: 'thin'
+        }
+        }
+        whiteBorderStyle() {
+            return {
+                background: 'white',
+                borderRadius: 'inherit',
+                padding: '10px',
+                borderColor: '#e7e7e7',
+                borderStyle: 'solid',
+                borderWidth: 'thin'
+            }
+            }
+
     componentDidMount() {
         this.setState({date: this.getCurrentDate(), mobile: (window.innerWidth < 768)})
     }
@@ -51,7 +73,7 @@ class Volunteers extends React.Component {
         const today = new Date();
         const month = today.getMonth() + 1;
         const day = today.getDate();
-        return `${today.getFullYear()}-${month >= 10 ? month : `0${month}`}-${day >= 10 ? day : `0${day}`}`
+        return `${month >= 10 ? month : `0${month}`}-${day >= 10 ? day : `0${day}`}-${today.getFullYear()}`
     }
 
     async fetchAndBuild() {
@@ -295,14 +317,14 @@ class Volunteers extends React.Component {
 
         let buttonToolbar;
         if (this.state.canCreateVolunteer) {
-            buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
+            buttonToolbar = <ButtonToolbar>
                 <Button onClick={this.refresh}>Refresh</Button>
                 {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
                 {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
                 <Button onClick={this.openModal}>Create New Volunteer</Button>
             </ButtonToolbar>
         } else {
-            buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
+            buttonToolbar = <ButtonToolbar>
                 <Button onClick={this.refresh}>Refresh</Button>
                 {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
                 {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
@@ -310,23 +332,55 @@ class Volunteers extends React.Component {
         }
 
         return (
-            <div className='content'>
+            <div className='content' style={{minWidth: 'fit-content'}}>
                 <AddVolunteerModal  show={this.state.showVolunteerModal} onSubmit={this.closeModal}/>
-                <h1>Volunteer Attendance for {this.state.date}</h1>
+                <div style={{textAlign: 'center'}}>
+                <h1
+                style={{fontSize: '25px'}}
+                >{this.state.date}</h1> 
+                <h1
+                style={{marginTop: '0px', fontSize: '30px'}}
+                >Volunteer Attendance</h1>
+                </div>
                 <br/>
-                {buttonToolbar}
-                {!this.state.mobile && <Form inline style={{ float: 'right', paddingRight: '5px', paddingLeft: '5px'}}>
-                    <FormGroup>
-                        <ControlLabel>Date:</ControlLabel>{' '}
-                        <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
-                    </FormGroup>
-                </Form>}
+                <div style={{marginLeft:'10px'}} >
                 <Autocomplete
                     label={'Check-in Volunteer:'}
 					suggestions={this.state.suggestionsArray}
 					handler={this.addVolunteer}
 				/>
-                <br/>
+                </div>
+                <div style={this.borderStyle()}>
+                
+                {this.state.mobile?
+                    <div 
+                    >
+                    {<Form inline >
+                        <FormGroup >
+                            <ControlLabel>Date:</ControlLabel>{' '}
+                            <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
+                        </FormGroup>
+                    </Form>}
+                    </div>
+                    :
+                    
+                    <div 
+                style = {{float: 'right'}}>
+                {<Form inline >
+                    <FormGroup >
+                        <ControlLabel>Date:</ControlLabel>{' '}
+                        <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
+                    </FormGroup>
+                </Form>}
+                </div>
+                }
+                
+                <div>
+                {buttonToolbar}
+                </div>
+                <br />
+                <div
+                style={this.whiteBorderStyle()}>
                 <ReactCollapsingTable
                         rows = { rows }
                         columns = { columns }
@@ -335,6 +389,8 @@ class Volunteers extends React.Component {
                         showPagination={ true }
                         callbacks = {{'options':this.removeVolunteerAttendanceRow}}
                 />
+                </div>
+            </div>
             </div>
         )
     }
