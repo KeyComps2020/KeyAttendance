@@ -282,7 +282,8 @@ class EditUserModal extends React.Component {
 							/>
 							<br/>
                             <ControlLabel>Active</ControlLabel>
-							<FormControl
+                            <FormControl
+                                style={{width: 'auto'}}
                                 type="checkbox"
                                 checked={this.state.is_active || false}
 								value={this.state.is_active}
