@@ -8,6 +8,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
         fields = (
             'first_name',
             'last_name',
+            'default_shift',
             'id',
         )
         model = Volunteers
