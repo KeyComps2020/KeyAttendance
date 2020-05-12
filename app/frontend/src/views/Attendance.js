@@ -76,7 +76,7 @@ whiteBorderStyle() {
         const today = new Date();
         const month = today.getMonth() + 1;
         const day = today.getDate();
-        return `${today.getFullYear()}-${month >= 10 ? month : `0${month}`}-${day >= 10 ? day : `0${day}`}`
+        return `${month >= 10 ? month : `0${month}`}-${day >= 10 ? day : `0${day}`}-${today.getFullYear()}`
     }
 
     async fetchAndBuild() {
