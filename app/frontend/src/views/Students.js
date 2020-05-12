@@ -718,7 +718,11 @@ class Students extends Component {
                     <Label>Last Name: </Label>
                       <FormControl type="text" id="last_name" defaultValue={this.state.profileData.last_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
                       <Label>Student Key: </Label>
-                      <FormControl type="text" id="student_key" defaultValue={this.state.profileData.student_key} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
+                      
+                      { this.state.canViewStudentKey?
+                      <FormControl type="text" id="student_key" defaultValue={this.state.profileData.student_key} onChange={evt => this.handleNameChange(evt, this.state)} />:
+                      <FormControl type="text" id="student_key" defaultValue="N/A" disabled={true} onChange={evt => this.handleNameChange(evt, this.state)} />}
+                      <br/>
                     
                     {this.renderEditInfo(this.state.parsedInfo)}
 

@@ -397,7 +397,7 @@ whiteBorderStyle() {
 					handler={this.addStudent}
                 />
                 </div>
-                <br />
+                
                 <div style={this.borderStyle()}>
                 {this.state.mobile?
                     <div 
