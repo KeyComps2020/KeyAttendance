@@ -20,8 +20,14 @@ class Students extends Component {
     this.display = this.display.bind(this);
     this.edit = this.edit.bind(this);
     this.handler = this.handler.bind(this);
+    this.refresh = this.refresh.bind(this);
+
   }
 
+
+  refresh() {
+    this.getStudentProfile(this.state)
+}
 
   async componentDidMount() {
     try {
@@ -40,7 +46,6 @@ class Students extends Component {
       if (permissions.indexOf('view_reports') >= 0) {
         canViewHeatmap = true;
       }
-      // fix this (only check if admin)
       if (permissions.indexOf('view_cityspanstudents') >= 0){
         canViewStudentKey = true;
       }
@@ -269,6 +274,18 @@ class Students extends Component {
     return state;
   }
 
+  styleDesign()  {
+    return {
+      background: '#f8f8f8',
+      margin: '5px',
+      borderRadius: 'inherit',
+      padding: '10px',
+      borderColor: '#e7e7e7',
+      borderStyle: 'solid',
+      borderWidth: 'thin'
+  }
+  };
+
   search() {
     var preState = {
       mode: 'search',
@@ -465,16 +482,11 @@ class Students extends Component {
     state.id = state.profileData.id;
     state.mode = 'display';
 
-    //this is not doing anything, need to change to render the edit view
+
     this.setState(function (previousState, currentProps) {
-      return {
-        studentKey: state.profileData['student_key'],
-          firstName: state.profileData['first_name'],
-          id: state.profileData['id'],
-          lastName1: state.profileData['last_name'],
-          lastName2: ''
-      }
+      return state;
     });
+    
 
   } //end of handlesubmit
 
@@ -566,6 +578,10 @@ class Students extends Component {
   renderEditInfo = () => {
     let info = [];
 
+
+
+
+
     for (var entry in this.state.profileInfo) {
       var label = this.state.profileInfo[entry].colInfo.name + ': ';
       if (this.state.profileInfo[entry].colInfo.is_showing) {
@@ -610,8 +626,10 @@ class Students extends Component {
     if (this.state.mode === 'search') {
       return (
         <div className='content'>
-          <h1> Key Students </h1>
-          <div className='container-fluid no-padding'>
+          <h1
+          style={{textAlign: 'center', fontSize: '30px'}}
+          > Key Students </h1>
+          <div className='container-fluid no-padding' style={{display: 'table'}}>
             <div className='row justify-content-start' style={{display: 'grid'}}>
               <div className='col-md-12 to-front top-bottom-padding'>
                 <Autocomplete
@@ -633,17 +651,27 @@ class Students extends Component {
           <p><b>Note:</b> Data is displayed chronologically, with row 1 representing the oldest week and row 5 representing the current week.</p> 
           <Heatmap data={this.formatData(this.state)} heatMapType="individualStudent" /></div>
       }
+
+      //display
       return (
         <div className='content'>
-          <h1> Student Profile </h1>
-          <div className='container-fluid no-padding'>
-            <div className='row justify-content-start' style={{display: 'grid'}}>
-              <div className='col-md-4 to-front top-bottom-padding'>
+          <h1
+          style={{textAlign: 'center', fontSize: '30px'}}
+          > Student Profile </h1>
+          <br />
+          <div style={{display:'grid'}}>
+          <div className='col-md-4 to-front top-bottom-padding'>
                 <Autocomplete
                   suggestions={this.state.suggestionsArray}
                   handler={this.handler}
                 />
               </div>
+              
+              <div 
+              style={this.styleDesign()}>
+
+          <div className='container-fluid no-padding'>
+            <div className='row justify-content-start' style={{display: 'inline'}}>
               <div className='col-md-8 top-bottom-padding'>
                 <ListGroup>
                   <ListGroupItem>Name: {this.state.profileData.first_name} {this.state.profileData.last_name}</ListGroupItem>
@@ -653,14 +681,17 @@ class Students extends Component {
                 <Button variant="btn btn-primary" onClick={this.edit}>
                   Edit
                 </Button>
+                <Button style={{marginLeft:'10px'}} onClick={this.refresh}>Refresh</Button>
 			  </div>
         	</div>
 		  </div>
       {heatmap}
+      </div>
+      </div>
 		</div>
       );
     }
-
+    //if editing
 
     else if (this.state.mode === 'edit') {
       let deleteButton = []
@@ -672,17 +703,15 @@ class Students extends Component {
       
       return (
         <div className='content'>
-          <h1> Student Profile </h1>
-          <div className='container-fluid no-padding'>
-            <div className='row justify-content-start' style={{display: 'grid'}}>
-              <div className='col-md-4 to-front top-bottom-padding'>
-                <Autocomplete
-                  suggestions={this.state.suggestionsArray}
-                  handler={this.handler}
-                />
-              </div>
-              <div className='col-md-8 top-bottom-padding' id="root">
-                <Form inline className='col-md-8 top-bottom-padding' onSubmit={evt => this.handleSubmit(evt, this.state)}>
+          <h1
+          style={{textAlign: 'center', fontSize: '30px'}}
+          > Student Profile </h1>
+          <br />
+              <div 
+              style={this.styleDesign()}
+              className='col-md-8 top-bottom-padding' id="root">
+                <Form inline 
+                className='col-md-8 top-bottom-padding' onSubmit={evt => this.handleSubmit(evt, this.state)}>
                   <FormGroup>
                     <Label>First Name: </Label>
                       <FormControl type="text" id="first_name" defaultValue={this.state.profileData.first_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
@@ -704,8 +733,7 @@ class Students extends Component {
                 </Form>
               </div>
             </div>
-          </div>
-        </div>   
+      
       );
     }
   }
