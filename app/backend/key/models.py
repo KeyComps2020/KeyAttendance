@@ -9,13 +9,14 @@ from django.db import models
 from .helpers import getCurrentDate, getCurrentTime
 import datetime
 from simple_history.models import HistoricalRecords
+from datetime import timedelta
 
 
 
 class Volunteers(models.Model):
     first_name = models.TextField(blank=True, null=True)
     last_name = models.TextField(blank=True, null=True)
-    default_shift = models.DurationField(default='2:00')
+    default_shift = models.DurationField(default=timedelta(hours=2))
     id = models.AutoField(blank=True, primary_key=True)
     history = HistoricalRecords()
 
@@ -39,7 +40,7 @@ class VolunteerAttendanceItems(models.Model):
     volunteer_id = models.IntegerField(blank=True, null=True)
     date = models.DateField(default=getCurrentDate)
     check_in = models.TimeField(default=getCurrentTime)
-    check_out = models.TimeField(null=True, defaul=None)
+    check_out = models.TimeField(null=True, default=None)
     location = models.CharField(max_length=255, blank=True, null=True)
     description = models.CharField(max_length=20000, blank=True, null=True)
     history = HistoricalRecords()

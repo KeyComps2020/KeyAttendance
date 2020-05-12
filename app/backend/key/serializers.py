@@ -8,6 +8,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
         fields = (
             'first_name',
             'last_name',
+            'default_shift',
             'id',
         )
         model = Volunteers
@@ -20,7 +21,6 @@ class VolunteerAttendanceItemSerializer(serializers.ModelSerializer):
             'check_in',
             'check_out',
             'id',
-            'checked_out',
             'location',
             'description',
         )
