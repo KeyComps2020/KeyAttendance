@@ -240,52 +240,48 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 	const url = (startDate === endDate || endDate === null) ? `${protocol}://${domain}/api/volunteer_attendance/?day=${startDate}` : `${protocol}://${domain}/api/volunteer_attendance/?startdate=${startDate}&enddate=${endDate}`;
 	const attendanceData = await httpGet(url);
 	const volunteerData = await httpGet(`${protocol}://${domain}/api/volunteers/`);
-	//const activityData = await httpGet(`${protocol}://${domain}/api/activities/`);
-	// activityData.sort(compareActivities) // Make sure that our columns are in a consistent order
+	
 	// Make sure we got the data we came for.
 	if (attendanceData.length === 0) {
 		return
 	}
 	// Build activity lookup table
-	var activities = {}
-	for (var i = 0; i < activityData.length; i++) {
-		if (activityData[i].is_showing) {
-			activities[activityData[i].name] = {'id': activityData[i].activity_id, 'ordering': activityData[i].ordering, 'type': activityData[i].type}
-		}
-	}
+	// var activities = {}
+	// for (var i = 0; i < activityData.length; i++) {
+	// 	if (activityData[i].is_showing) {
+	// 		activities[activityData[i].name] = {'id': activityData[i].activity_id, 'ordering': activityData[i].ordering, 'type': activityData[i].type}
+	// 	}
+	// }
 
 	// Combine attendance items. Need to sort by date and student id.
 	var entries = {}
 	for (var i = 0; i < attendanceData.length; i++) {
-		if (entries[`${attendanceData[i].student_id}${attendanceData[i].date}`] == null) {
-			entries[`${attendanceData[i].student_id}${attendanceData[i].date}`] = {'date':attendanceData[i].date, 'id': attendanceData[i].student_id}
+		if (entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`] == null) {
+			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`] = {'date':attendanceData[i].date, 'id': attendanceData[i].volunteer_id, 'check_in':attendanceData[i].check_in}
 		}
-		if (attendanceData[i].str_value !== null) {
-			entries[`${attendanceData[i].student_id}${attendanceData[i].date}`][attendanceData[i].activity_id] = attendanceData[i].str_value;
-		} else if (attendanceData[i].num_value !== null) {
-			entries[`${attendanceData[i].student_id}${attendanceData[i].date}`][attendanceData[i].activity_id] = attendanceData[i].num_value;
-		} else {
-			entries[`${attendanceData[i].student_id}${attendanceData[i].date}`][attendanceData[i].activity_id] = 'Y';
+		if (attendanceData[i].check_out !== null) {
+			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`][attendanceData[i].check_out] = attendanceData[i].check_out;
+		} else if (attendanceData[i].location !== null) {
+			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`][attendanceData[i].location] = attendanceData[i].location;
+		} else if (attendanceData[i].description !== null) {
+			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`][attendanceData[i].description] = attendanceData[i].description;
 		}
+		// else {
+		// 	entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`][attendanceData[i].activity_id] = 'Y';
+		// }
 	}
 
 	// Build spreadsheet
 	var sheet = []
-	var columns = ['Date','First', 'Last', 'Student Key']
-	for (var i = 0; i < activityData.length; i++) {
-		if (activityData[i].is_showing) {
-			columns.push(activityData[i].name)
-		}
-	}
+	var columns = ['Date','First', 'Last', 'Check-In Time', 'Check-Out Time', 'Duration','Location', 'Description', 'Visit Number']
 	const keys = Object.keys(entries)
 	for (var i = 0; i < keys.length ; i++) {
 		var row = []
 		// match student data to current id
-		for (var j = 0; j < studentData.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
-			if (studentData[j].id === entries[keys[i]].id) {
-				row[1] = studentData[j].first_name;
-				row[2] = studentData[j].last_name;
-				row[3] = (studentData[j]["student_key"] !== null ? studentData[j]["student_key"] : 'N/A')
+		for (var j = 0; j < volunteerData.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
+			if (volunteerData[j].id === entries[keys[i]].id) {
+				row[1] = volunteerData[j].first_name;
+				row[2] = volunteerData[j].last_name;
 				break;
 			}
 		} 
@@ -298,19 +294,15 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 					break;
 				case 'Last':
 					break;
-				case 'Student Key':
+				case 'Check-In Time':
+					row[j] = entries[keys[i].check_in]
 					break;
 				default:
-					// If this row has a value for this column, put it in the table. Else plop an 'N' in this column.
-					const activity = activities[columns[j]];
-					if (entries[keys[i]][activity.id] === undefined) {
-						if (activity.type === 'boolean') {
-							row[j] = 'N';
-						} else {
-							row[j] = 'N/A';
-						}
-					} else {
-						row[j] = entries[keys[i]][activity.id];
+					if (entries[keys[i]] == null){
+						row[j] = 'N/A';
+					}
+					else{
+						row[j] = entries[keys[i]]
 					}
 			}
 		}
@@ -521,4 +513,4 @@ function dateToString(date){
     return dateString;
 }
 
-export { getPermissions, protocol, domain, downloadReportsCSV, downloadVolunteerAttendanceCSV, downloadAttendanceCSV, compareActivities, httpPost, httpPostFile, httpPatch, httpPatchFile, httpGet, httpGetFile, httpDelete, checkCredentials, history, withRole, getEarlierDate, getPrevSunday, getNextSaturday, dateToString }
+export { getPermissions, protocol, domain, downloadReportsCSV,downloadVolunteerAttendanceCSV , downloadAttendanceCSV, compareActivities, httpPost, httpPostFile, httpPatch, httpPatchFile, httpGet, httpGetFile, httpDelete, checkCredentials, history, withRole, getEarlierDate, getPrevSunday, getNextSaturday, dateToString }

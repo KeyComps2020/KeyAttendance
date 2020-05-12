@@ -20,7 +20,6 @@ class VolunteerAttendanceItemSerializer(serializers.ModelSerializer):
             'check_in',
             'check_out',
             'id',
-            'checked_out',
             'location',
             'description',
         )
