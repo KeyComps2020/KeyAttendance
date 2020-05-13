@@ -73,7 +73,7 @@ class Volunteers extends React.Component {
         const today = new Date();
         const month = today.getMonth() + 1;
         const day = today.getDate();
-        return `${month >= 10 ? month : `0${month}`}-${day >= 10 ? day : `0${day}`}-${today.getFullYear()}`
+        return `${today.getFullYear()}-${month >= 10 ? month : `0${month}`}-${day >= 10 ? day : `0${day}`}`
     }
 
     async fetchAndBuild() {
@@ -318,10 +318,10 @@ class Volunteers extends React.Component {
         let buttonToolbar;
         if (this.state.canCreateVolunteer) {
             buttonToolbar = <ButtonToolbar>
+                <Button onClick={this.openModal}>Create New Volunteer</Button>
                 <Button onClick={this.refresh}>Refresh</Button>
                 {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
                 {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
-                <Button onClick={this.openModal}>Create New Volunteer</Button>
             </ButtonToolbar>
         } else {
             buttonToolbar = <ButtonToolbar>
