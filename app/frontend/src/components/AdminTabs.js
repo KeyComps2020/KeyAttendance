@@ -25,7 +25,7 @@ class AdminTabs extends React.Component {
 
     toggleRefreshRoles(boolean) {
       this.setState({ refreshRoles: boolean });
-    }
+    } //test comment
   
     render() {
       let tabs = [];
