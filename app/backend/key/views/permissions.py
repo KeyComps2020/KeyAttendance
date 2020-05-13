@@ -14,7 +14,7 @@ class Permissions(APIView):
             return Response({'error':'You are not authorized to view group permissions.'}, status='401')
         content_types = ContentType.objects.filter(Q(model='activity') | 
             Q(model='attendanceitems') | Q(model='studentcolumn') | Q(model='studentinfo') |
-            Q(model = 'volunteers')|Q(model = 'volunteerattendanceitems') | Q(model='students') | 
+            Q(model = 'volunteers')|Q(model = 'volunteerattendanceitems') | Q(model='students') | Q(model='studentflags') |
             Q(model='group') | Q(model='reports') | Q(model='user') | Q(model='cityspanstudents'))
         permissionsList = []
         for content_type in content_types:
@@ -24,7 +24,7 @@ class Permissions(APIView):
                 ~Q(codename = 'delete_studentcolumn') & ~Q(codename = 'view_studentcolumn') &
                 ~Q(codename = 'delete_studentinfo') & ~Q(codename = 'change_reports') & ~Q(codename = 'delete_reports') &
                 ~Q(codename = 'add_reports') & ~Q(codename = 'add_cityspanstudents') & ~Q(codename = 'delete_cityspanstudents') & 
-                ~Q(codename = 'view_cityspanstudents'))
+                ~Q(codename = 'view_cityspanstudents') & ~Q(codename = 'veiw_flags') & ~Q(codename = 'change_flags') & ~Q(codename= 'delete_flags'))
             permissionsList.extend(list(permissions))
         serializer = PermissionSerializer(permissionsList, many=True)
         return Response(serializer.data, content_type='application/json')

@@ -6,7 +6,7 @@ import AddStudentModal from '../components/AddStudentModal';
 import Autocomplete from "../components/Autocomplete";
 import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
 import { Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
-import { getPermissions, downloadAttendanceCSV, compareActivities } from '../components/Helpers';
+import { getPermissions, downloadAttendanceCSV, compareActivities, dateToString, getEarlierDate } from '../components/Helpers';
 import { Redirect } from 'react-router-dom';
 
 class Attendance extends React.Component {
@@ -26,6 +26,8 @@ class Attendance extends React.Component {
             prevDate: '',
             canCreateStudent: false,
             mobile: false,
+            canVeiwFlags: false,
+            studentFlags: {}
         }
 
         this.downloadCSV = this.downloadCSV.bind(this);
@@ -81,6 +83,7 @@ whiteBorderStyle() {
 
     async fetchAndBuild() {
         const { date } = this.state;
+        let {studentFlags} = this.state;
         try {
 
             const students = await httpGet(`${protocol}://${domain}/api/students/`);
@@ -93,9 +96,18 @@ whiteBorderStyle() {
                 studentFields = await httpGet(`${protocol}://${domain}/api/student_column/?quick_add=True`);
                 canCreateStudent = true;
             }
+            let canViewFlags = false;
+            if(permissions.indexOf('add_studentflags') >= 0) {
+                canViewFlags = true;
+                for (var i = 0; i < attendanceItems.length; i++) {
+                    let flags = await httpGet(`${protocol}://${domain}/api/flags/?student_id=${attendanceItems[i].student_id}&date=${date}&startdate=${dateToString(getEarlierDate(7))}&type=${"notifications"}`);
+                    studentFlags[attendanceItems[i].student_id] = flags;
+                }
+            }
             activities = activities.filter(item => item.is_showing === true);
             activities.sort(compareActivities)
             const suggestions = this.makeSuggestionsArray(students);
+         
 
             this.setState({
                 suggestionsArray: suggestions,
@@ -103,16 +115,19 @@ whiteBorderStyle() {
                 activities: activities,
                 studentFields : studentFields,
                 attendanceItems: attendanceItems,
-                canCreateStudent: canCreateStudent
+                canCreateStudent: canCreateStudent,
+                canViewFlags: canViewFlags,
+                studentFlags: studentFlags
             });
         } catch (e) {
             console.log(e);
         }
+        
         this.buildSheet();
     }
 
     buildSheet() {
-        const { activities, attendanceItems, students } = this.state;
+        const { activities, attendanceItems, students, studentFlags } = this.state;
         // Combine attendance items. Need to sort by student id.
         var entries = {};
         for (var i = 0; i < attendanceItems.length; i++) {
@@ -135,6 +150,11 @@ whiteBorderStyle() {
         var sheet = [];
         const ids = Object.keys(entries);
         var columns = ['Name'];
+        var today = getEarlierDate(0);
+        var todayDateString = dateToString(today);
+        var weekEarlier = getEarlierDate(7);
+        var weekEarlierString = dateToString(weekEarlier);
+
         for (var i = 0; i < activities.length; i++) {
             columns.push(activities[i].name);
         }
@@ -168,6 +188,11 @@ whiteBorderStyle() {
                     'type': activities[j].type,
                     'attendanceItemID': (entries[ids[i]][activities[j].activity_id]) ? entries[ids[i]][activities[j].activity_id].itemID : 0,
                 }
+            }
+            if (this.state.canViewFlags === true){
+                let flags = studentFlags[row['studentID']].notifications;
+                row['notifications'] = flags;
+                
             }
             sheet.push(row)
         }
@@ -314,7 +339,8 @@ whiteBorderStyle() {
                    time: item.time,
                    activities: item.activities,
                    studentID: item.studentID,
-                   date: this.state.date
+                   date: this.state.date,
+                   notifications: item.notifications
                }
            )
         ).sort((a, b) => {
@@ -347,11 +373,19 @@ whiteBorderStyle() {
                 sortable: false,
                 minWidth: 100
             },
+            {
+                accessor: 'notifications',
+                label: 'Notifications',
+                priorityLevel: 4,
+                position: 4,
+                sortable: false,
+                minWidth: 100
+            },
             { 
                 accessor: 'activities',
                 label: 'Activities',
-                priorityLevel: 4,
-                position: 4,
+                priorityLevel: 5,
+                position: 5,
                 minWidth: 2000,
                 CustomComponent: ActivityCheckboxes,
                 sortable: false, 
