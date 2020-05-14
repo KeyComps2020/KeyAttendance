@@ -11,6 +11,23 @@ from django.contrib.auth.models import User
 import json
 
 class VolunteerAttendance(APIView):
+    # Update a volunteer attendance item
+    def patch(self,request):
+        if not request.user.has_perm('key.change_volunteerattendanceitems'):
+            print("401 Unauthorized: PATCH /api/volunteer_attendance/")
+            return Response({'error':'You are not authorized to update volunteer attendance items.'}, status='401')
+        if not self.validatePatch(request):
+            print("400 Bad Request: PATCH /api/volunteer_attendance/ - We caught the error.")
+            print(json.dumps(request.data))
+            return Response({'error':'Invalid Parameters'}, status='400')
+        obj = VolunteerAttendanceItems.objects.get(pk=request.data['id'])
+        serializer = VolunteerAttendanceItemSerializer(obj, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            print("SUCCESSFULLY PATCHED VOLUNTEER")
+            print(json.dumps(request.data))
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     # Create new volunteer attendance item 
     def post(self, request):
         if not request.user.has_perm('key.add_volunteerattendanceitems'):
@@ -60,7 +77,14 @@ class VolunteerAttendance(APIView):
         serializer = VolunteerAttendanceItemSerializer(items, many=True)
         return Response(serializer.data, content_type='application/json')
 
- 
+    
+    def validatePatch(self, request):
+        try:
+            VolunteerAttendanceItems.objects.get(pk=request.data['id'])
+        except:
+            return False
+        return True
+
 
     # Validate input for the.query_params request of this endpoint - if there are parameters that we care 
     # about, they should be valid dates that won't make django yell at me.

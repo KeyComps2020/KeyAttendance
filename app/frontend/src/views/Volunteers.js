@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactCollapsingTable from 'react-collapsing-table';
 import VolunteerAttendanceOptions from '../components/VolunteerAttendanceOptions';
+import VolunteerCheckboxes from'../components/VolunteerCheckboxes';
 import AddVolunteerModal from '../components/AddVolunteerModal';
 import Autocomplete from "../components/Autocomplete";
 import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
@@ -106,7 +107,7 @@ class Volunteers extends React.Component {
         var entries = {};
         for (var i = 0; i < volunteerAttendanceItems.length; i++) {
             if (entries[`${volunteerAttendanceItems[i].volunteer_id}`] == null) {
-                entries[`${volunteerAttendanceItems[i].volunteer_id}`] = {'check_in':volunteerAttendanceItems[i].check_in, 'itemID': volunteerAttendanceItems[i].id};
+                entries[`${volunteerAttendanceItems[i].volunteer_id}`] = {'check_in':volunteerAttendanceItems[i].check_in, 'itemID': volunteerAttendanceItems[i].id, 'location': volunteerAttendanceItems[i].location};
             }
         }
 
@@ -124,12 +125,15 @@ class Volunteers extends React.Component {
                 }
             } 
             row['check_in'] = entries[ids[i]].check_in;
+            row['location'] = entries[ids[i]].location;
             row['volunteerAttendanceItemID'] = entries[ids[i]].itemID;
             sheet.push(row)
         }
 
         this.setState({ volunteerAttendance: sheet });
     }
+
+
 
     async addVolunteer(e, volunteerID) {
         // Refresh attendance page.
@@ -265,11 +269,12 @@ class Volunteers extends React.Component {
         }
         const rows = this.state.volunteerAttendance.map(item =>
             (
-               {
+               {    
                    name: item.name,
                    check_in: item.check_in,
                    volunteerId: item.volunteer_id,
                    date: this.state.date,
+                   location: this.state.location,
                    volunteerAttendanceItemID: item.volunteerAttendanceItemID
                }
            )
@@ -310,6 +315,15 @@ class Volunteers extends React.Component {
                 CustomComponent: VolunteerAttendanceOptions,
                 sortable: false,
                 minWidth: 100
+            },
+            { 
+                accessor: 'location',
+                label: 'Location',
+                priorityLevel: 5,
+                position: 5,
+                minWidth: 2000,
+                CustomComponent: VolunteerCheckboxes,
+                sortable: false, 
             },
         ];
 
