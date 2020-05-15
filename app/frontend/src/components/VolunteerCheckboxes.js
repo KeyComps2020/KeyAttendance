@@ -46,7 +46,7 @@ class VolunteerCheckboxes extends React.Component {
             // Add attendanceItem to database
             let body = {
                 "volunteer_id": volunteerID,
-                "volunteer_attendance_item_id": volunteerAttendanceItemID,
+                "id": volunteerAttendanceItemID,
                 "date":`${date}`,
             };
             httpPatch(`${protocol}://${domain}/api/volunteer_attendance/`, body)
@@ -63,7 +63,7 @@ class VolunteerCheckboxes extends React.Component {
         } else{
             let body = {
                 "volunteer_id": volunteerID,
-                "volunteer_attendance_item_id": volunteerAttendanceItemID,
+                "id": volunteerAttendanceItemID,
                 "date":`${date}`,
             };
             httpPatch(`${protocol}://${domain}/api/volunteer_attendance/`, body)
