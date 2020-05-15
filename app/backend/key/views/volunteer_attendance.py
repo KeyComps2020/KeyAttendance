@@ -24,7 +24,7 @@ class VolunteerAttendance(APIView):
         serializer = VolunteerAttendanceItemSerializer(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            print("SUCCESSFULLY PATCHED VOLUNTEER")
+            print("SUCCESSFULLY PATCHED VOLUNTEER ATTENDANCE ITEM")
             print(json.dumps(request.data))
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
