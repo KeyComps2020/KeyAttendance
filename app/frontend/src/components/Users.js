@@ -5,7 +5,7 @@ import ReactCollapsingTable from 'react-collapsing-table';
 import AddUserModal from './AddUserModal';
 import EditUserButton from './EditUserButton';
 import UserHistoryButton from './UserHistoryButton';
-import { getPermissions, httpGet, domain, protocol } from './Helpers';
+import { getPermissions, httpGet, domain, protocol, whiteBorderStyle } from './Helpers';
 import UserHistory from './UserHistory';
 
 class Users extends React.Component {
@@ -32,17 +32,6 @@ class Users extends React.Component {
         this.showAllUsers = this.showAllUsers.bind(this);
         this.getUserHistory = this.getUserHistory.bind(this);
         this.closeHistoryView = this.closeHistoryView.bind(this);
-    }
-
-    whiteBorderStyle() {
-        return {
-            background: 'white',
-            borderRadius: 'inherit',
-            padding: '10px',
-            borderColor: '#e7e7e7',
-            borderStyle: 'solid',
-            borderWidth: 'thin',
-        }
     }
 
     async componentDidMount() {
@@ -418,7 +407,7 @@ class Users extends React.Component {
                 />
                 <br/>
                 <div
-                style = {this.whiteBorderStyle()}>
+                style = {whiteBorderStyle()}>
                 {!this.state.mobile &&
                     <ReactCollapsingTable
                     rows = { rows }

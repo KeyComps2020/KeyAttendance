@@ -3,7 +3,7 @@ import { Button, ButtonToolbar } from 'react-bootstrap';
 import AddRoleModal from './AddRoleModal';
 import EditRoleButton from './EditRoleButton';
 import ReactCollapsingTable from 'react-collapsing-table';
-import { httpGet, domain, protocol } from './Helpers';
+import { httpGet, domain, protocol, whiteBorderStyle } from './Helpers';
 
 
 class Roles extends React.Component {
@@ -18,17 +18,6 @@ class Roles extends React.Component {
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.deleteRole = this.deleteRole.bind(this);
-    }
-
-    whiteBorderStyle() {
-        return {
-            background: 'white',
-            borderRadius: 'inherit',
-            padding: '10px',
-            borderColor: '#e7e7e7',
-            borderStyle: 'solid',
-            borderWidth: 'thin',
-        }
     }
 
     async componentDidMount() {
@@ -120,7 +109,7 @@ class Roles extends React.Component {
                     show={this.state.showModal}
                     onSubmit={this.closeModal} />
                     <div
-                style = {this.whiteBorderStyle()}>
+                style = {whiteBorderStyle()}>
                 <ReactCollapsingTable
                         rows = { rows }
                         columns = { columns }

@@ -2,7 +2,7 @@ import React from 'react';
 import Autocomplete from './Autocomplete';
 import AssignStudentKeyModal from './AssignStudentKeyModal';
 import AssignStudentKeyButton from './AssignStudentKeyButton';
-import { httpGet, httpPatch, domain, protocol } from './Helpers';
+import { httpGet, httpPatch, domain, protocol, whiteBorderStyle } from './Helpers';
 import FileUploader from './FileUploader';
 import LinkTable from './LinkTable';
 
@@ -24,17 +24,6 @@ class StudentKeys extends React.Component {
         this.handleSearch = this.handleSearch.bind(this);
         this.handleCSVUpload = this.handleCSVUpload.bind(this);
         this.processCSV = this.processCSV.bind(this);
-    }
-
-    whiteBorderStyle() {
-        return {
-            background: 'white',
-            borderRadius: 'inherit',
-            padding: '10px',
-            borderColor: '#e7e7e7',
-            borderStyle: 'solid',
-            borderWidth: 'thin',
-        }
     }
 
     async componentDidMount() {
@@ -201,7 +190,7 @@ class StudentKeys extends React.Component {
                         handler={this.handleSearch}
                     />
                 </div>
-                <div style={this.whiteBorderStyle()}>
+                <div style={whiteBorderStyle()}>
                 <div style={{float: 'right'}}>
                 <FileUploader extension=".csv" label="Upload Cityspan Student CSV:" upload={this.handleCSVUpload}/>
                 </div>

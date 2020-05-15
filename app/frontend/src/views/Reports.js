@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, ButtonToolbar, Form, ControlLabel, FormControl, FormGroup, Tabs, Tab } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import Heatmap from '../components/Heatmap';
-import { domain, downloadReportsCSV, getEarlierDate, dateToString, getNextSaturday, getPrevSunday, getPermissions, httpGet, protocol, downloadAttendanceCSV } from '../components/Helpers';
+import { domain, downloadReportsCSV, getEarlierDate, dateToString, getNextSaturday, getPrevSunday, getPermissions, httpGet, protocol, downloadAttendanceCSV, whiteBorderStyle } from '../components/Helpers';
 import BarChart from './../components/BarChart.js';
 import AttendanceByProgramReport from '../components/AttendanceByProgramReport';
 import NewStudentsReport from '../components/NewStudentsReport';
@@ -41,17 +41,6 @@ class Reports extends Component {
         this.downloadCSV = this.downloadCSV.bind(this);
         this.handleTabSelect = this.handleTabSelect.bind(this);
       }
-
-      whiteBorderStyle() {
-        return {
-            background: 'white',
-            borderRadius: 'inherit',
-            padding: '10px',
-            borderColor: '#e7e7e7',
-            borderStyle: 'solid',
-            borderWidth: 'thin'
-        }
-        }
 
       async componentDidMount() {
         try {
@@ -364,7 +353,7 @@ class Reports extends Component {
                 <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
                 <Button ostyle={{marginTop: '10px'}} nClick={this.downloadHourlyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Hourly'}</Button>
                 </ButtonToolbar>
-                <div style={this.whiteBorderStyle()}>
+                <div style={whiteBorderStyle()}>
                 <p> Number of engagements per hour in <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
                 <p><b>Note:</b> Data is displayed chronologically, with the top row representing the oldest day and the bottom row representing the current day.</p>
                 {!this.state.mobile && 
@@ -386,7 +375,7 @@ class Reports extends Component {
                 <Button style={{marginTop: '10px'}} onClick={this.downloadWeeklyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Daily'}</Button>
                 </ButtonToolbar>
                 
-                <div style={this.whiteBorderStyle()}>
+                <div style={whiteBorderStyle()}>
                 <p> Number of engagements per day in the past week from <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
                 {!this.state.mobile && 
                 <BarChart data = {this.state.byDayInPastWeekJson}/>
@@ -404,7 +393,7 @@ class Reports extends Component {
                 <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
                 <Button style={{marginTop: '10px'}} onClick={this.downloadYearlyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Annual'}</Button>
                 </ButtonToolbar>
-                <div style={this.whiteBorderStyle()}>
+                <div style={whiteBorderStyle()}>
                 <p> Number of engagements per day in the past year from <b>{this.state.startDateStringYear}</b> to <b>{this.state.endDateStringYear}</b>.</p>
                 <p><b>Note:</b> Data is displayed chronologically, with the leftmost column representing the oldest week and the rightmost column representing the current week.</p> 
                 {!this.state.mobile && 

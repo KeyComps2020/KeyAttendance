@@ -3,7 +3,7 @@ import { Button, ButtonToolbar, Form, FormControl, FormGroup, Label, ListGroup, 
 import { Redirect } from 'react-router-dom';
 import Autocomplete from '../components/Autocomplete';
 import Heatmap from '../components/Heatmap';
-import { dateToString, getPermissions, domain, getEarlierDate, getNextSaturday, getPrevSunday, httpDelete, httpGet, httpPatch, httpPost, protocol, httpPostFile, httpPatchFile, httpGetFile } from '../components/Helpers';
+import { dateToString, getPermissions, domain, getEarlierDate, getNextSaturday, getPrevSunday, httpDelete, httpGet, httpPatch, httpPost, protocol, httpPostFile, httpPatchFile, httpGetFile, borderStyle, whiteBorderStyle } from '../components/Helpers';
 import blankPic from '../images/blank_profile_pic.jpg';
 import AddFlagModal from '../components/AddFlagModal';
 import FlagOptions from '../components/FlagOptions';
@@ -407,6 +407,7 @@ class Students extends Component {
   //Closes AddFlagModal
   closeModal() {
     this.setState({showFlagModal: false});
+    this.refresh();
   }
 
   handleNameChange(evt, state) {
@@ -767,12 +768,12 @@ class Students extends Component {
             {this.state.flags['Acedemics/Employment'] && <Label bsStyle="success"> Acedemics/Employment </Label>}
             {this.state.flags['Housing Insecurity'] && <Label bsStyle="info"> Housing Insecurity </Label>}
           </div>
-        viewFlags = 
-        <div>
-          <Button variant="btn btn-primary" onClick={this.flag}>
-            Report One-on-One
-          </Button>
-        </div>
+      //   viewFlags = 
+
+      //     <Button align="right" variant="btn btn-primary" onClick={this.flag}>
+      //       View/Add Flags
+      //     </Button>
+
       }
       return (
         <div className='content'>
@@ -804,8 +805,7 @@ class Students extends Component {
                   Edit
                 </Button>
                 <Button style={{marginLeft:'10px'}} onClick={this.refresh}>Refresh</Button>
-                <br/>
-                {viewFlags}
+                {this.state.canViewFlags && <Button style={{marginLeft:'10px'}} variant="btn btn-primary" onClick={this.flag}>View/Add Flags</Button>}
 			        </div>
         	</div>
 		  </div>
@@ -865,9 +865,6 @@ class Students extends Component {
       );
     }
     else if(this.state.mode === 'flag'){
-      
-      // -->need to get the flags to show up upon checkin
-      // -->test to see if a non admin can access the flags
       const rows = this.state.flagRows.map(item =>
         (
            {
@@ -917,22 +914,25 @@ class Students extends Component {
       },
     ];
       return(
-        <div className='col-md-8 top-bottom-padding'>
+        <div style={borderStyle()}>
           <AddFlagModal studentInfo={this.state.profileData} student_id={this.state.id} show={this.state.showFlagModal} onSubmit={this.closeModal}/>
           <h1> Recent Notification Flags for {this.state.profileData.first_name} {this.state.profileData.last_name}</h1>
           <br/>
           <Button bsStyle='link' onClick={this.display}>Return to Student Porofile Display</Button>
           <br/>
-          <ReactCollapsingTable
+          <div style={whiteBorderStyle()}>
+            <ReactCollapsingTable
               rows = { rows }
               columns = { columns }
               column = {'time'}
               direction = {'descending'}
               showPagination={ true }
               callbacks = {{'options': this.removeFlagRow}}
-          />
-          <br/>
+            />
+            <br/>
+          </div>
           <div align="right">
+            <br/>
             <Button bsStyle="default" onClick={this.openModal}>Add a New Flag</Button>
           </div>
         </div>

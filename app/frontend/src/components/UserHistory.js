@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, ButtonToolbar } from 'react-bootstrap';
 import ReactCollapsingTable from 'react-collapsing-table';
+import {whiteBorderStyle} from './Helpers';
 
 class UserHistory extends React.Component {
     constructor(props) {
@@ -10,18 +11,6 @@ class UserHistory extends React.Component {
             username: ''
         };
         this.closeHistoryView = this.closeHistoryView.bind(this);
-    }
-
-    whiteBorderStyle() {
-        return {
-            background: 'white',
-            borderRadius: 'inherit',
-            padding: '10px',
-            borderColor: '#e7e7e7',
-            borderStyle: 'solid',
-            borderWidth: 'thin',
-            marginTop: '10px'
-        }
     }
 
     componentDidMount() {
@@ -83,7 +72,7 @@ class UserHistory extends React.Component {
                     <Button bsStyle='link' onClick={this.closeHistoryView}>Return to User Management</Button>
                 </ButtonToolbar>
                 <br/>
-                <div style={this.whiteBorderStyle()}>
+                <div style={whiteBorderStyle()}>
                 <ReactCollapsingTable
                         rows = { rows }
                         columns = { columns }

@@ -513,4 +513,27 @@ function dateToString(date){
     return dateString;
 }
 
-export { getPermissions, protocol, domain, downloadReportsCSV,downloadVolunteerAttendanceCSV , downloadAttendanceCSV, compareActivities, httpPost, httpPostFile, httpPatch, httpPatchFile, httpGet, httpGetFile, httpDelete, checkCredentials, history, withRole, getEarlierDate, getPrevSunday, getNextSaturday, dateToString }
+function borderStyle() {
+	return {
+		background: '#f8f8f8',
+		margin: '5px',
+		borderRadius: 'inherit',
+		padding: '15px',
+		borderColor: '#e7e7e7',
+		borderStyle: 'solid',
+		borderWidth: 'thin'
+	}
+}
+
+function whiteBorderStyle() {
+	return {
+		background: 'white',
+		borderRadius: 'inherit',
+		padding: '10px',
+		borderColor: '#e7e7e7',
+		borderStyle: 'solid',
+		borderWidth: 'thin'
+	}
+}
+
+export { borderStyle, whiteBorderStyle, getPermissions, protocol, domain, downloadReportsCSV,downloadVolunteerAttendanceCSV , downloadAttendanceCSV, compareActivities, httpPost, httpPostFile, httpPatch, httpPatchFile, httpGet, httpGetFile, httpDelete, checkCredentials, history, withRole, getEarlierDate, getPrevSunday, getNextSaturday, dateToString }

@@ -6,7 +6,7 @@ import AddStudentModal from '../components/AddStudentModal';
 import Autocomplete from "../components/Autocomplete";
 import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
 import { Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
-import { getPermissions, downloadAttendanceCSV, compareActivities, dateToString, getEarlierDate } from '../components/Helpers';
+import { getPermissions, downloadAttendanceCSV, compareActivities, dateToString, getEarlierDate, borderStyle, whiteBorderStyle } from '../components/Helpers';
 import { Redirect } from 'react-router-dom';
 
 class Attendance extends React.Component {
@@ -51,29 +51,6 @@ class Attendance extends React.Component {
         }
     }
 
-borderStyle() {
-return {
-    background: '#f8f8f8',
-    margin: '5px',
-    borderRadius: 'inherit',
-    padding: '15px',
-    borderColor: '#e7e7e7',
-    borderStyle: 'solid',
-    borderWidth: 'thin'
-}
-}
-whiteBorderStyle() {
-    return {
-        background: 'white',
-        borderRadius: 'inherit',
-        padding: '10px',
-        borderColor: '#e7e7e7',
-        borderStyle: 'solid',
-        borderWidth: 'thin'
-    }
-    }
-
-
     getCurrentDate() {
         const today = new Date();
         const month = today.getMonth() + 1;
@@ -99,6 +76,7 @@ whiteBorderStyle() {
             let canViewFlags = false;
             if(permissions.indexOf('add_studentflags') >= 0) {
                 canViewFlags = true;
+                console.log(attendanceItems.length);
                 for (var i = 0; i < attendanceItems.length; i++) {
                     let flags = await httpGet(`${protocol}://${domain}/api/flags/?student_id=${attendanceItems[i].student_id}&date=${date}&startdate=${dateToString(getEarlierDate(7))}&type=${"notifications"}`);
                     studentFlags[attendanceItems[i].student_id] = flags;
@@ -201,9 +179,6 @@ whiteBorderStyle() {
     }
 
     async addStudent(e, studentID) {
-        // Refresh attendance page.
-        await this.fetchAndBuild();
-
         const { students, attendance, activities, date } = this.state;
         const today = new Date();
         const self = this;
@@ -247,11 +222,13 @@ whiteBorderStyle() {
                 activityList['Key']['value'] = true;
                 activityList['Key']['attendanceItemID'] = result.id;
 
-                const row = { 'name': name, 'studentID': parseInt(studentID), 'time': result.time, 'activities': activityList };
+                const row = { 'name': name, 'studentID': parseInt(studentID), 'time': result.time, 'notifications': "", 'activities': activityList };
                 attendance.push(row);
                 self.setState({ attendance: attendance });
             }
         });
+        // Refresh attendance page.
+        await this.fetchAndBuild();
     }
 
     makeSuggestionsArray(suggestions) {
@@ -432,7 +409,7 @@ whiteBorderStyle() {
                 />
                 </div>
                 
-                <div style={this.borderStyle()}>
+                <div style={borderStyle()}>
                 {this.state.mobile?
                     <div 
                     >
@@ -460,7 +437,7 @@ whiteBorderStyle() {
                 {buttonToolbar}
                 </div>
                 <div
-                style={this.whiteBorderStyle()}>
+                style={whiteBorderStyle()}>
                 <ReactCollapsingTable
                         rows = { rows }
                         columns = { columns }

@@ -6,7 +6,7 @@ import AddVolunteerModal from '../components/AddVolunteerModal';
 import Autocomplete from "../components/Autocomplete";
 import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
 import { Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
-import { getPermissions, downloadVolunteerAttendanceCSV } from '../components/Helpers';
+import { getPermissions, downloadVolunteerAttendanceCSV, borderStyle, whiteBorderStyle } from '../components/Helpers';
 import { Redirect } from 'react-router-dom';
 
 class Volunteers extends React.Component {
@@ -36,28 +36,6 @@ class Volunteers extends React.Component {
         this.setDateToToday = this.setDateToToday.bind(this);
         this.refresh = this.refresh.bind(this);
     }
-
-    borderStyle() {
-        return {
-            background: '#f8f8f8',
-            margin: '5px',
-            borderRadius: 'inherit',
-            padding: '15px',
-            borderColor: '#e7e7e7',
-            borderStyle: 'solid',
-            borderWidth: 'thin'
-        }
-        }
-        whiteBorderStyle() {
-            return {
-                background: 'white',
-                borderRadius: 'inherit',
-                padding: '10px',
-                borderColor: '#e7e7e7',
-                borderStyle: 'solid',
-                borderWidth: 'thin'
-            }
-            }
 
     componentDidMount() {
         this.setState({date: this.getCurrentDate(), mobile: (window.innerWidth < 768)})
@@ -364,7 +342,7 @@ class Volunteers extends React.Component {
 					handler={this.addVolunteer}
 				/>
                 </div>
-                <div style={this.borderStyle()}>
+                <div style={borderStyle()}>
                 
                 {this.state.mobile?
                     <div 
@@ -394,7 +372,7 @@ class Volunteers extends React.Component {
                 </div>
                 <br />
                 <div
-                style={this.whiteBorderStyle()}>
+                style={whiteBorderStyle()}>
                 <ReactCollapsingTable
                         rows = { rows }
                         columns = { columns }
