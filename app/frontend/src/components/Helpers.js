@@ -273,7 +273,7 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 
 	// Build spreadsheet
 	var sheet = []
-	var columns = ['Date','First', 'Last', 'Check-In Time', 'Check-Out Time', 'Duration','Location', 'Description', 'Visit Number']
+	var columns = ['Date','First', 'Last', 'Check-In Time', 'Check-Out Time', 'Duration','Location', 'Description']
 	const keys = Object.keys(entries)
 	for (var i = 0; i < keys.length ; i++) {
 		var row = []
