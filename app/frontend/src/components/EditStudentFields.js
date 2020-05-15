@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ButtonToolbar } from 'react-bootstrap';
 import ReactCollapsingTable from 'react-collapsing-table';
 import AddStudentFieldModal from './AddStudentFieldModal';
-import { domain, httpGet, protocol } from './Helpers';
+import { domain, httpGet, protocol, whiteBorderStyle } from './Helpers';
 import StudentFieldCheckbox from './StudentFieldCheckbox';
 
 class EditStudentFields extends React.Component {
@@ -20,17 +20,7 @@ class EditStudentFields extends React.Component {
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
     }
-    whiteBorderStyle() {
-        return {
-            background: 'white',
-            borderRadius: 'inherit',
-            padding: '10px',
-            borderColor: '#e7e7e7',
-            borderStyle: 'solid',
-            borderWidth: 'thin',
-        }
-    }
-
+    
     async componentDidMount() {
         try {
             const fields = await httpGet(`${protocol}://${domain}/api/student_column/`);
@@ -155,7 +145,7 @@ class EditStudentFields extends React.Component {
                     onSubmit={this.closeModal} />
 
                 <div 
-                style = {this.whiteBorderStyle()}
+                style = {whiteBorderStyle()}
                 >
                 <ReactCollapsingTable
                         rows = { rows }

@@ -50,6 +50,21 @@ class VolunteerAttendanceItems(models.Model):
         managed = True
         db_table = 'volunteerattendance'
 
+class StudentFlags(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    student_id =  models.IntegerField(blank=True, null=True)
+    date = models.DateField(default=getCurrentDate)
+    time = models.TimeField(default=getCurrentTime)
+    food_insecurity_tag = models.BooleanField(blank=True, null=True)
+    housing_tag = models.BooleanField(blank=True, null=True)
+    acedemics_employment_tag = models.BooleanField(blank=True, null=True)
+    mental_health_tag = models.BooleanField(blank=True, null=True)
+    notes = models.CharField(max_length=20000, blank=True, null=True)
+    
+    class Meta:
+        managed = True
+        db_table = 'studentflags'
+
 class Activity(models.Model):
     activity_id = models.AutoField(unique=True, primary_key=True)
     is_showing = models.BooleanField(blank=True, null=True)

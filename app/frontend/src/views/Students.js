@@ -3,8 +3,12 @@ import { Button, ButtonToolbar, Form, FormControl, FormGroup, Label, ListGroup, 
 import { Redirect } from 'react-router-dom';
 import Autocomplete from '../components/Autocomplete';
 import Heatmap from '../components/Heatmap';
-import { dateToString, getPermissions, domain, getEarlierDate, getNextSaturday, getPrevSunday, httpDelete, httpGet, httpPatch, httpPost, protocol, httpPostFile, httpPatchFile, httpGetFile } from '../components/Helpers';
+import { dateToString, getPermissions, domain, getEarlierDate, getNextSaturday, getPrevSunday, httpDelete, httpGet, httpPatch, httpPost, protocol, httpPostFile, httpPatchFile, httpGetFile, borderStyle, whiteBorderStyle } from '../components/Helpers';
 import blankPic from '../images/blank_profile_pic.jpg';
+import AddFlagModal from '../components/AddFlagModal';
+import FlagOptions from '../components/FlagOptions';
+import ReactCollapsingTable from 'react-collapsing-table';
+import continuousColorLegend from 'react-vis/dist/legends/continuous-color-legend';
 
 class Students extends Component {
 
@@ -15,13 +19,21 @@ class Students extends Component {
       canViewStudentInfo: false,
       canViewHeatmap: false,
       canDeleteStudent: false,
-      heatMapJson: []
+      heatMapJson: [],
+      canViewFlags: false,
+      flagsJson: [],
+      showFlagModal: false,
+      flagRows: [],
+      flags: {"Food Insecurity": false, "Housing Insecurity": false, "Mental Health": false, "Acedemics/Employment": false}
     };
     this.display = this.display.bind(this);
     this.edit = this.edit.bind(this);
     this.handler = this.handler.bind(this);
     this.refresh = this.refresh.bind(this);
-
+    this.flag = this.flag.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.removeFlagRow = this.removeFlagRow.bind(this);
   }
 
 
@@ -53,6 +65,11 @@ class Students extends Component {
       if (permissions.indexOf('delete_students') >= 0) {
         canDeleteStudent = true;
       }
+      let canViewFlags = false;
+      if (permissions.indexOf('add_studentflags') >= 0){
+           canViewFlags = true;
+      }
+
       this.setState(function (previousState, currentProps) {
         return {
           mode: 'search',
@@ -68,6 +85,7 @@ class Students extends Component {
           picUpdated: false,
           canDeleteStudent: canDeleteStudent,
           canViewStudentKey: canViewStudentKey,
+          canViewFlags: canViewFlags
         };
         
       });
@@ -191,20 +209,29 @@ class Students extends Component {
       //get heatmap data for past 28 days (past 4 wks) up to the previous sunday ("the starting sunday")
       // to the saturday which ends this current week (i.e. "the ending saturday")
       //this ensures we are always getting exactly 5 weeks worth of data
+      // also gets flags for the past week 
       var startDate = getEarlierDate(28);
       startDate = getPrevSunday(startDate);
       var startDateString = dateToString(startDate);
       state.startDateString = startDateString;
       var today = getEarlierDate(0);
+      var todayDateString = dateToString(today);
+      var weekEarlier = getEarlierDate(7);
+      var weekEarlierString = dateToString(weekEarlier);
       var endDate = getNextSaturday(today);
       var endDateString = dateToString(endDate);
       state.endDateString = endDateString;
-
+      
       if (this.state.canViewHeatmap) {
         const heatMapJson = await httpGet(`${protocol}://${domain}/api/reports/individualHeatmap/?student_id=${state.id}&startdate=${startDateString}&enddate=${endDateString}`);
         state.heatMapJson = heatMapJson;
       }
 
+      if (this.state.canViewFlags){
+        const flagsJson = await httpGet(`${protocol}://${domain}/api/flags/?student_id=${state.id}&date=${todayDateString}&startdate=${weekEarlierString}&type=${"oneWeek"}`);
+        state.flagsJson = flagsJson['notifications'];
+        this.buildFlagRows(state.flagsJson);
+      }
       this.setState(function (previousState, currentProps) {
         return state;
       });
@@ -309,10 +336,13 @@ class Students extends Component {
   edit() {
     this.setState({ mode: 'edit' });
   }
+  //opens the page that let's admin view recent flags
+  flag(){
+    this.setState( {mode: 'flag' });
+  }
   
   async delete(evt, state) {
     evt.preventDefault();
-
     // Ensure we have studentInfoIds from the most recent POSTs
     var newState = {
       mode: 'search',
@@ -343,6 +373,13 @@ class Students extends Component {
     }
 
     httpDelete(`${protocol}://${domain}/api/students/`, state.profileData);
+    //removes flags associated with this student
+    var studentFlags = await httpGet(`${protocol}://${domain}/api/flags/?student_id=${state.id}&type=${"allFlags"}`);
+    studentFlags = studentFlags['notifications'];
+    for (var i = 0; i < studentFlags.length; i++) {
+       httpDelete(`${protocol}://${domain}/api/flags/?id=${studentFlags[i].id}`);
+    }
+    
 
     // Ensure that the autocomplete removes the entry
     var entryFound = false;
@@ -360,6 +397,17 @@ class Students extends Component {
       this.setState(function (previousState, currentProps) {
         return state;
       });
+  }
+
+  //opens AddFlagModal
+  openModal() {
+    this.setState({showFlagModal: true});
+  }
+
+  //Closes AddFlagModal
+  closeModal() {
+    this.setState({showFlagModal: false});
+    this.refresh();
   }
 
   handleNameChange(evt, state) {
@@ -391,6 +439,7 @@ class Students extends Component {
       return state;
     });
   }
+
 
   handleSubmit(evt, state) {
     evt.preventDefault();
@@ -577,11 +626,6 @@ class Students extends Component {
 
   renderEditInfo = () => {
     let info = [];
-
-
-
-
-
     for (var entry in this.state.profileInfo) {
       var label = this.state.profileInfo[entry].colInfo.name + ': ';
       if (this.state.profileInfo[entry].colInfo.is_showing) {
@@ -617,6 +661,69 @@ class Students extends Component {
     });
   }
 
+  // Allows the FlagOptions object to  update state here
+  removeFlagRow(id) {
+    const {flagRows} = this.state;
+    for (let i = 0; i < flagRows.length; i++) {
+        if (flagRows[i]['id'] === id) {
+            flagRows.splice(i, 1);
+        }
+    }
+    this.setState({flagRows: flagRows});
+  }
+
+  // adds recent notifications to the table   
+  buildFlagRows(flagsJson) {
+    var sheet = [];
+    var food = 0;
+    var edu = 0;
+    var mental = 0;
+    var house = 0;
+    var flags = {"Food Insecurity": false, "Housing Insecurity": false, "Mental Health": false, "Acedemics/Employment": false};
+    for (var i = 0; i < flagsJson.length; i++) {
+      var row = {}
+      let datetime = flagsJson[i].date + " " + flagsJson[i].time.substr(0, 8);
+
+      row['datetime'] = datetime;
+      row['flags'] = flagsJson[i].flags;//the flags
+      if (row['flags'].includes("Housing Insecurity")){
+        house++;
+      }
+      if (row['flags'].includes("Food Insecurity")){
+        food++;
+      }
+      if (row['flags'].includes("Acedemics/Employment")){
+        edu++;
+      }
+      if (row['flags'].includes("Mental Health")){
+        mental++;
+      }
+      if (flagsJson[i].note === null || flagsJson[i].notes === ""){
+        row['notes'] = "";//empty notes
+      }else{
+        row['notes'] = flagsJson[i].note;//the notes
+      }
+      
+      row['id'] = flagsJson[i].id;//flag id
+
+      sheet.push(row);
+    }
+  this.setState({ flagRows: sheet });
+  if (house >= 3){
+    flags['Housing Insecurity'] = true;
+  }
+  if (food >= 3){
+    flags['Food Insecurity'] = true;
+  }
+  if (edu >= 3){
+    flags['Acedemics/Employment'] = true;
+  }
+  if (mental >= 3){
+    flags['Mental Health'] = true;
+  }
+  this.setState({ flags: flags})
+}
+
   render() {
     
     let permissions = getPermissions()
@@ -651,8 +758,23 @@ class Students extends Component {
           <p><b>Note:</b> Data is displayed chronologically, with row 1 representing the oldest week and row 5 representing the current week.</p> 
           <Heatmap data={this.formatData(this.state)} heatMapType="individualStudent" /></div>
       }
+      let stuFlags = []
+      let viewFlags = []
+      if (this.state.canViewFlags){
+        stuFlags =
+          <div> 
+            {this.state.flags['Food Insecurity'] && <Label bsStyle="primary"> Food Insecurity </Label>}
+            {this.state.flags['Mental Health'] && <Label bsStyle="warning"> Mental Health </Label>}
+            {this.state.flags['Acedemics/Employment'] && <Label bsStyle="success"> Acedemics/Employment </Label>}
+            {this.state.flags['Housing Insecurity'] && <Label bsStyle="info"> Housing Insecurity </Label>}
+          </div>
+      //   viewFlags = 
 
-      //display
+      //     <Button align="right" variant="btn btn-primary" onClick={this.flag}>
+      //       View/Add Flags
+      //     </Button>
+
+      }
       return (
         <div className='content'>
           <h1
@@ -673,6 +795,7 @@ class Students extends Component {
           <div className='container-fluid no-padding'>
             <div className='row justify-content-start' style={{display: 'inline'}}>
               <div className='col-md-8 top-bottom-padding'>
+                {stuFlags}
                 <ListGroup>
                   <ListGroupItem>Name: {this.state.profileData.first_name} {this.state.profileData.last_name}</ListGroupItem>
                   { this.state.canViewStudentKey? <ListGroupItem>Student Key: {this.state.profileData.student_key} </ListGroupItem>: <ListGroupItem>Student Key: N/A </ListGroupItem>}
@@ -682,7 +805,8 @@ class Students extends Component {
                   Edit
                 </Button>
                 <Button style={{marginLeft:'10px'}} onClick={this.refresh}>Refresh</Button>
-			  </div>
+                {this.state.canViewFlags && <Button style={{marginLeft:'10px'}} variant="btn btn-primary" onClick={this.flag}>View/Add Flags</Button>}
+			        </div>
         	</div>
 		  </div>
       {heatmap}
@@ -738,6 +862,80 @@ class Students extends Component {
               </div>
             </div>
       
+      );
+    }
+    else if(this.state.mode === 'flag'){
+      const rows = this.state.flagRows.map(item =>
+        (
+           {
+               datetime: item.datetime,
+               flags: item.flags,
+               notes: item.notes,
+               id: item.id
+           }
+       )
+      ).sort((a, b) => {
+        return b.datetime.localeCompare(a.datetime);
+      });
+
+    const columns = [
+        {
+            accessor: 'datetime',
+            label: 'Date/Time',
+            priorityLevel: 1,
+            position: 1,
+            minWidth: 100,
+            sortable: true
+        },
+        {
+            accessor: 'flags',
+            label: 'Flag(s)',
+            priorityLevel: 2,
+            position: 2,
+            minWidth: 100,
+            sortable: true
+        },
+        {
+            accessor: 'notes',
+            label: 'Notes',
+            priorityLevel: 3,
+            position: 3,
+            minWidth: 100,
+            sortable: false
+        },
+        {
+          accessor: 'options',
+          label: 'Options',
+          priorityLevel: 4,
+          position: 4,
+          CustomComponent: FlagOptions,
+          sortable: false,
+          minWidth: 100
+      },
+    ];
+      return(
+        <div style={borderStyle()}>
+          <AddFlagModal studentInfo={this.state.profileData} student_id={this.state.id} show={this.state.showFlagModal} onSubmit={this.closeModal}/>
+          <h1> Recent Notification Flags for {this.state.profileData.first_name} {this.state.profileData.last_name}</h1>
+          <br/>
+          <Button bsStyle='link' onClick={this.display}>Return to Student Porofile Display</Button>
+          <br/>
+          <div style={whiteBorderStyle()}>
+            <ReactCollapsingTable
+              rows = { rows }
+              columns = { columns }
+              column = {'time'}
+              direction = {'descending'}
+              showPagination={ true }
+              callbacks = {{'options': this.removeFlagRow}}
+            />
+            <br/>
+          </div>
+          <div align="right">
+            <br/>
+            <Button bsStyle="default" onClick={this.openModal}>Add a New Flag</Button>
+          </div>
+        </div>
       );
     }
   }

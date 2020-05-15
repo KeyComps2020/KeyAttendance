@@ -124,7 +124,7 @@ class EditRoleModal extends React.Component {
                         <input
                             type="checkbox"
                             checked={checkbox.checked}
-                            disabled={this.state.row.name === 'Admin'}
+                            disabled={this.state.row.name != 'Admin'}
                             onChange={this.toggleCheckbox.bind(this, index)}
                         />
                         {checkbox.displayName}
