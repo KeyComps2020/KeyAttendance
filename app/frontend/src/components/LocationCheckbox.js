@@ -19,10 +19,10 @@ class LocationCheckbox extends Component {
 
 
     toggleCheckboxChange = () => {
-        const { toggleCheckbox, label } = this.props;
-        toggleCheckbox(this.state.isChecked, label, this.state.value)
+        const { toggleCheckbox } = this.props;
+        toggleCheckbox(this.state.isChecked, this.state.value)
     };
-    
+
     handleChange = e => {
         const name = e.target.name;
         const value = e.target.value;

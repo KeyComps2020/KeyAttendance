@@ -274,7 +274,7 @@ class Volunteers extends React.Component {
                    check_in: item.check_in,
                    volunteerId: item.volunteer_id,
                    date: this.state.date,
-                   location: this.state.location,
+                   location: item.location,
                    volunteerAttendanceItemID: item.volunteerAttendanceItemID
                }
            )

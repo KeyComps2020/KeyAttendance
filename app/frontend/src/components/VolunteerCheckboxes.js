@@ -28,12 +28,14 @@ class VolunteerCheckboxes extends React.Component {
         this.setState({
             volunteerID: this.props.row.volunteerID,
             volunteerAttendanceItemID: this.props.row.volunteerAttendanceItemID,
-            date: this.props.row.date
+            date: this.props.row.date,
+            location: this.props.row.location
+
         });
     }
 
     // Makes sure that the checkbox reflects whether it has been selected
-    toggleCheckbox = (isChecked, label, value) => {
+    toggleCheckbox = (isChecked, value) => {
         const { volunteerID, volunteerAttendanceItemID, date } = this.state;
         var self = this; // This is a cheap hack so the .then() function can have access to state
 
@@ -46,8 +48,9 @@ class VolunteerCheckboxes extends React.Component {
             // Add attendanceItem to database
             let body = {
                 "volunteer_id": volunteerID,
-                "volunteer_attendance_item_id": volunteerAttendanceItemID,
+                "id": volunteerAttendanceItemID,
                 "date":`${date}`,
+                "location": value,
             };
             httpPatch(`${protocol}://${domain}/api/volunteer_attendance/`, body)
             .then(function (result) {
@@ -63,8 +66,9 @@ class VolunteerCheckboxes extends React.Component {
         } else{
             let body = {
                 "volunteer_id": volunteerID,
-                "volunteer_attendance_item_id": volunteerAttendanceItemID,
+                "id": volunteerAttendanceItemID,
                 "date":`${date}`,
+                "location": '',
             };
             httpPatch(`${protocol}://${domain}/api/volunteer_attendance/`, body)
             .then(function (result) {
@@ -74,23 +78,24 @@ class VolunteerCheckboxes extends React.Component {
                         self.setState({error: errorCode, errorMsg: response.error})
                     });
                 } else {
-                    self.setState({location: " ", error: '', errorMsg: ''})
+                    self.setState({location: '', error: '', errorMsg: ''})
                 }
             });
-
         }
     }
 
     // Creates a checkbox for each activity
     createCheckboxes = () => {
         let boxes = [];
-        const value = this.props.row.location;
-        let checked = value !== '';
+        const {location} = this.state;
+        let checked = location !== '';
+        let type = "string"
       
         boxes.push(
             <LocationCheckbox
                 label={"Location"}
-                value={value}
+                value={location}
+                type = {type}
                 checked = {checked}
                 toggleCheckbox={this.toggleCheckbox}
             />
