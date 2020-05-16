@@ -10,7 +10,7 @@ class CheckoutVolunteer extends React.Component {
             row: {},
         }
 
-        this.deleteRow = this.deleteRow.bind(this);
+        this.checkOutVolunteer = this.checkOutVolunteer.bind(this);
     }
 
     componentDidMount() {
@@ -58,7 +58,7 @@ class CheckoutVolunteer extends React.Component {
         return(
             <Button 
                 bsStyle="danger" 
-                onClick={(e) => {this.checkOutVolunteer(e)}}>Delete
+                onClick={(e) => {this.checkOutVolunteer(e)}}>Check Out
             </Button>
         )
     }

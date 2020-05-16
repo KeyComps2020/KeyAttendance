@@ -220,11 +220,31 @@ class Volunteers extends React.Component {
     // Allows CheckoutVolunteer object to update state here
     checkOutVolunteer(volunteerID){
         const { volunteerAttendance } = this.state;
+        const today = new Date();
+        let name = "";
+        let description = "";
+        let location = "";
+        let check_in;
+        let id = 0;
+        let check_out;
         for (let i = 0; i < volunteerAttendance.length; i++) {
             if (volunteerAttendance[i].volunteerID === volunteerID) {
+                name = volunteerAttendance[i].name;
+                description = volunteerAttendance[i].description;
+                location = volunteerAttendance[i].location;
+                check_in = volunteerAttendance[i].check_in;
+                id = volunteerAttendance[i].volunteerAttendanceItemID;
+                check_out = `${today.getHours()}:${today.getMinutes() >= 10 ? today.getMinutes() : `0${today.getMinutes()}`}:${today.getSeconds() >= 10 ? today.getSeconds() : `0${today.getSeconds()}`}`;
                 volunteerAttendance.splice(i, 1);
             }
         }
+        const row = { 'name': name, 
+                      'volunteerID': parseInt(volunteerID), 
+                      'check_in': check_in , 
+                      'volunteerAttendanceItemID' : id, 
+                      'location': location,
+                      'description': description};
+        this.setState({})
     }
 
     openModal() {
@@ -399,7 +419,7 @@ class Volunteers extends React.Component {
                         column = {'check_in'}
                         direction = {'descending'}
                         showPagination={ true }
-                        callbacks = {{'options':this.removeVolunteerAttendanceRow, 'checkOutVolunteer':this.}}
+                        callbacks = {{'options':this.removeVolunteerAttendanceRow, 'checkOutVolunteer':this.checkOutVolunteer}}
                 />
                 </div>
             </div>
