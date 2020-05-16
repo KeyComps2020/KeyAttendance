@@ -8,6 +8,7 @@ import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
 import { Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 import { getPermissions, downloadVolunteerAttendanceCSV, borderStyle, whiteBorderStyle } from '../components/Helpers';
 import { Redirect } from 'react-router-dom';
+import CheckoutVolunteer from '../components/CheckoutVolunteer';
 
 class Volunteers extends React.Component {
 
@@ -30,6 +31,7 @@ class Volunteers extends React.Component {
         this.downloadCSV = this.downloadCSV.bind(this);
         this.addVolunteer = this.addVolunteer.bind(this);
         this.removeVolunteerAttendanceRow = this.removeVolunteerAttendanceRow.bind(this);
+        this.checkOutVolunteer = this.checkOutVolunteer.bind(this);
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.updateDate = this.updateDate.bind(this);
@@ -85,7 +87,11 @@ class Volunteers extends React.Component {
         var entries = {};
         for (var i = 0; i < volunteerAttendanceItems.length; i++) {
             if (entries[`${volunteerAttendanceItems[i].volunteer_id}`] == null) {
-                entries[`${volunteerAttendanceItems[i].volunteer_id}`] = {'check_in':volunteerAttendanceItems[i].check_in, 'itemID': volunteerAttendanceItems[i].id, 'location': volunteerAttendanceItems[i].location};
+                entries[`${volunteerAttendanceItems[i].volunteer_id}`] = {'check_in':volunteerAttendanceItems[i].check_in, 
+                                                                            'check_out': volunteerAttendanceItems[i].check_out,
+                                                                            'itemID': volunteerAttendanceItems[i].id, 
+                                                                            'location': volunteerAttendanceItems[i].location, 
+                                                                            'description': volunteerAttendanceItems[i].description};
             }
         }
 
@@ -104,6 +110,8 @@ class Volunteers extends React.Component {
             } 
             row['check_in'] = entries[ids[i]].check_in;
             row['location'] = entries[ids[i]].location;
+            row['description'] = entries[ids[i]].description;
+            row['check_out'] = entries[ids[i]].check_out;
             row['volunteerAttendanceItemID'] = entries[ids[i]].itemID;
             sheet.push(row)
         }
@@ -209,6 +217,16 @@ class Volunteers extends React.Component {
         this.fetchAndBuild();
     }
 
+    // Allows CheckoutVolunteer object to update state here
+    checkOutVolunteer(volunteerID){
+        const { volunteerAttendance } = this.state;
+        for (let i = 0; i < volunteerAttendance.length; i++) {
+            if (volunteerAttendance[i].volunteerID === volunteerID) {
+                volunteerAttendance.splice(i, 1);
+            }
+        }
+    }
+
     openModal() {
         this.setState({showVolunteerModal: true});
     }
@@ -253,6 +271,7 @@ class Volunteers extends React.Component {
                    volunteerId: item.volunteer_id,
                    date: this.state.date,
                    location: item.location,
+                   description:item.description,
                    volunteerAttendanceItemID: item.volunteerAttendanceItemID
                }
            )
@@ -278,10 +297,11 @@ class Volunteers extends React.Component {
                 sortable: true
             },
             {
-                accessor: 'volunteerAttendanceItemID',
+                accessor: 'checkOutVolunteer',
                 label: 'Check-Out Time',
                 priorityLevel: 3,
                 position: 3,
+                CustomComponent: CheckoutVolunteer,
                 minWidth: 100,
                 sortable: true
             },
@@ -379,7 +399,7 @@ class Volunteers extends React.Component {
                         column = {'check_in'}
                         direction = {'descending'}
                         showPagination={ true }
-                        callbacks = {{'options':this.removeVolunteerAttendanceRow}}
+                        callbacks = {{'options':this.removeVolunteerAttendanceRow, 'checkOutVolunteer':this.}}
                 />
                 </div>
             </div>
