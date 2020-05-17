@@ -206,45 +206,77 @@ class Volunteers extends React.Component {
     }
 
     // Allows the AttendanceOptions object to  update state here
-    removeVolunteerAttendanceRow(volunteerID) {
+    removeVolunteerAttendanceRow(id) {
         const { volunteerAttendance } = this.state;
         for (let i = 0; i < volunteerAttendance.length; i++) {
-            if (volunteerAttendance[i].volunteerID === volunteerID) {
+            if (volunteerAttendance[i].volunteerAttendanceItemID === id) {
                 volunteerAttendance.splice(i, 1);
             }
         }
         this.setState({volunteerAttendance: volunteerAttendance});
         this.fetchAndBuild();
+        this.refresh();
     }
 
     // Allows CheckoutVolunteer object to update state here
-    checkOutVolunteer(volunteerID){
+    checkOutVolunteer(id, checked_out){
         const { volunteerAttendance } = this.state;
         const today = new Date();
-        let name = "";
-        let description = "";
-        let location = "";
-        let check_in;
-        let id = 0;
-        let check_out;
-        for (let i = 0; i < volunteerAttendance.length; i++) {
-            if (volunteerAttendance[i].volunteerID === volunteerID) {
-                name = volunteerAttendance[i].name;
-                description = volunteerAttendance[i].description;
-                location = volunteerAttendance[i].location;
-                check_in = volunteerAttendance[i].check_in;
-                id = volunteerAttendance[i].volunteerAttendanceItemID;
-                check_out = `${today.getHours()}:${today.getMinutes() >= 10 ? today.getMinutes() : `0${today.getMinutes()}`}:${today.getSeconds() >= 10 ? today.getSeconds() : `0${today.getSeconds()}`}`;
-                volunteerAttendance.splice(i, 1);
+        if(checked_out){
+            let name = "";
+            let description = "";
+            let location = "";
+            let check_in;
+            let volunteerID = 0;
+            let check_out;
+            for (let i = 0; i < volunteerAttendance.length; i++) {
+                if (volunteerAttendance[i].volunteerAttendanceItemID === id) {
+                    name = volunteerAttendance[i].name;
+                    description = volunteerAttendance[i].description;
+                    location = volunteerAttendance[i].location;
+                    check_in = volunteerAttendance[i].check_in;
+                    volunteerID = volunteerAttendance[i].volunteerID;
+                    check_out = `${today.getHours()}:${today.getMinutes() >= 10 ? today.getMinutes() : `0${today.getMinutes()}`}:${today.getSeconds() >= 10 ? today.getSeconds() : `0${today.getSeconds()}`}`;
+                    volunteerAttendance.splice(i, 1);
+                }
             }
+            const row = { 'name': name, 
+                        'volunteerID': parseInt(volunteerID), 
+                        'check_in': check_in , 
+                        'volunteerAttendanceItemID' : id, 
+                        'location': location,
+                        'description': description,
+                        'check_out': check_out};
+            volunteerAttendance.push(row);
+            this.setState({volunteerAttendance: volunteerAttendance});
+            this.fetchAndBuild();
         }
-        const row = { 'name': name, 
-                      'volunteerID': parseInt(volunteerID), 
-                      'check_in': check_in , 
-                      'volunteerAttendanceItemID' : id, 
-                      'location': location,
-                      'description': description};
-        this.setState({})
+        else{
+            let name = "";
+            let description = "";
+            let location = "";
+            let check_in;
+            let volunteerID = 0;
+            for (let i = 0; i < volunteerAttendance.length; i++) {
+                if (volunteerAttendance[i].volunteerAttendanceItemID === id) {
+                    name = volunteerAttendance[i].name;
+                    description = volunteerAttendance[i].description;
+                    location = volunteerAttendance[i].location;
+                    check_in = volunteerAttendance[i].check_in;
+                    volunteerID = volunteerAttendance[i].volunteerID;
+                    volunteerAttendance.splice(i, 1);
+                }
+            }
+            const row = {'name': name, 
+                        'volunteerID': volunteerID, 
+                        'check_in': check_in , 
+                        'volunteerAttendanceItemID' : id, 
+                        'location': location,
+                        'description': description,};
+            volunteerAttendance.push(row);
+            this.setState({volunteerAttendance: volunteerAttendance});
+            this.fetchAndBuild();
+        }
     }
 
     openModal() {
@@ -292,6 +324,7 @@ class Volunteers extends React.Component {
                    date: this.state.date,
                    location: item.location,
                    description:item.description,
+                   check_out: item.check_out,
                    volunteerAttendanceItemID: item.volunteerAttendanceItemID
                }
            )
@@ -317,8 +350,8 @@ class Volunteers extends React.Component {
                 sortable: true
             },
             {
-                accessor: 'checkOutVolunteer',
-                label: 'Check-Out Time',
+                accessor: 'checkOut',
+                label: 'Check-Out Volunteer',
                 priorityLevel: 3,
                 position: 3,
                 CustomComponent: CheckoutVolunteer,
@@ -326,19 +359,27 @@ class Volunteers extends React.Component {
                 sortable: true
             },
             {
-                accessor: 'options',
-                label: 'Options',
+                accessor: 'check_out',
+                label: 'Check-out Time',
                 priorityLevel: 4,
                 position: 4,
+                minWidth: 100,
+                sortable: true
+            },
+            {
+                accessor: 'options',
+                label: 'Options',
+                priorityLevel: 5,
+                position: 5,
                 CustomComponent: VolunteerAttendanceOptions,
                 sortable: false,
                 minWidth: 100
             },
             { 
                 accessor: 'location',
-                label: 'Location',
-                priorityLevel: 5,
-                position: 5,
+                label: 'Additonal Info',
+                priorityLevel: 6,
+                position: 6,
                 minWidth: 2000,
                 CustomComponent: VolunteerCheckboxes,
                 sortable: false, 
@@ -419,7 +460,7 @@ class Volunteers extends React.Component {
                         column = {'check_in'}
                         direction = {'descending'}
                         showPagination={ true }
-                        callbacks = {{'options':this.removeVolunteerAttendanceRow, 'checkOutVolunteer':this.checkOutVolunteer}}
+                        callbacks = {{'options':this.removeVolunteerAttendanceRow, 'checkOut':this.checkOutVolunteer}}
                 />
                 </div>
             </div>

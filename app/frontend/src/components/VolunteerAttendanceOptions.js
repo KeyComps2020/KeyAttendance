@@ -7,7 +7,7 @@ class VolunteerAttendanceOptions extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            row: {},
+            volunteerAttendanceItemID: 0,
         }
 
         this.deleteRow = this.deleteRow.bind(this);
@@ -15,14 +15,14 @@ class VolunteerAttendanceOptions extends React.Component {
 
     componentDidMount() {
         this.setState({
-            row: this.props.row,
+            volunteerAttendanceItemID: this.props.row.volunteerAttendanceItemID,
         });
     }
 
     componentDidUpdate() {
-        if (this.props.row['volunteerID'] !== this.state.row['volunteerID']) {
+        if (this.props.row['volunteerAttendanceItemID'] !== this.state.volunteerAttendanceItemID) {
             this.setState({
-                row: this.props.row,
+                volunteerAttendanceItemID: this.props.row['volunteerAttendanceItemID'],
             })
         }
     }
@@ -32,12 +32,10 @@ class VolunteerAttendanceOptions extends React.Component {
         if (permissions.indexOf('delete_volunteerattendanceitems') < 0) {
             alert('Error: You are not authorized to delete volunteer attendance items');
         } else {
-            const {row} = this.state;
-            const id = row['volunteerAttendanceItemID'];
-           
-
+            const {volunteerAttendanceItemID} = this.state;
+            const id = volunteerAttendanceItemID;
             httpDelete(`${protocol}://${domain}/api/volunteer_attendance/?key=${id}`);  
-            this.props.CustomFunction(row['volunteerID']);
+            this.props.CustomFunction(volunteerAttendanceItemID);
         }
     }
 
