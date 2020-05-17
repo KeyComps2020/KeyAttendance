@@ -245,13 +245,6 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 	if (attendanceData.length === 0) {
 		return
 	}
-	// Build activity lookup table
-	// var activities = {}
-	// for (var i = 0; i < activityData.length; i++) {
-	// 	if (activityData[i].is_showing) {
-	// 		activities[activityData[i].name] = {'id': activityData[i].activity_id, 'ordering': activityData[i].ordering, 'type': activityData[i].type}
-	// 	}
-	// }
 
 	// Combine attendance items. Need to sort by date and student id.
 	var entries = {}
@@ -295,14 +288,23 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 				case 'Last':
 					break;
 				case 'Check-In Time':
-					row[j] = entries[keys[i].check_in]
+					row[j] = entries[keys[i]].check_in
+					break;
+				case 'Check-Out Time':
+					row[j] = entries[keys[i]].check_out
+					break;
+				case 'Location':
+					row[j] = entries[keys[i]].location
+					break;
+				case 'Description':
+					row[j] = entries[keys[i]].description
 					break;
 				default:
 					if (entries[keys[i]] == null){
 						row[j] = 'N/A';
 					}
 					else{
-						row[j] = entries[keys[i]]
+						row[j] = entries[keys[i]] //DURATION IS HITTING HERE
 					}
 			}
 		}

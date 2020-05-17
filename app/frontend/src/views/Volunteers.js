@@ -152,21 +152,6 @@ class Volunteers extends React.Component {
                         break;
                     }
                 }
-
-                // let activityList = {};
-                // for (var j = 0; j < activities.length; j++) {
-                //     const type = activities[j].type;
-                //     const value = type === 'boolean' ? false : '';
-                //     activityList[activities[j].name] = {
-                //         'activityID': activities[j].activity_id,
-                //         'attendanceItemID': 0,
-                //         'value': value,
-                //         'type': type
-                //     }
-                // }
-                // activityList['Key']['value'] = true;
-                // activityList['Key']['attendanceItemID'] = result.id;
-
                 const row = { 'name': name, 'volunteerID': parseInt(volunteerID), 'check_in': result.check_in , 'volunteerAttendanceItemID' : result.id};
                 volunteerAttendance.push(row);
                 self.setState({ volunteerAttendance: volunteerAttendance });
@@ -222,12 +207,13 @@ class Volunteers extends React.Component {
     checkOutVolunteer(id, checked_out){
         const { volunteerAttendance } = this.state;
         const today = new Date();
+        let name = "";
+        let description = "";
+        let location = "";
+        let check_in;
+        let volunteerID = 0;
+
         if(checked_out){
-            let name = "";
-            let description = "";
-            let location = "";
-            let check_in;
-            let volunteerID = 0;
             let check_out;
             for (let i = 0; i < volunteerAttendance.length; i++) {
                 if (volunteerAttendance[i].volunteerAttendanceItemID === id) {
@@ -252,11 +238,6 @@ class Volunteers extends React.Component {
             this.fetchAndBuild();
         }
         else{
-            let name = "";
-            let description = "";
-            let location = "";
-            let check_in;
-            let volunteerID = 0;
             for (let i = 0; i < volunteerAttendance.length; i++) {
                 if (volunteerAttendance[i].volunteerAttendanceItemID === id) {
                     name = volunteerAttendance[i].name;
