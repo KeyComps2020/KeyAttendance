@@ -253,11 +253,11 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`] = {'date':attendanceData[i].date, 'id': attendanceData[i].volunteer_id, 'check_in':attendanceData[i].check_in}
 		}
 		if (attendanceData[i].check_out !== null) {
-			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`][attendanceData[i].check_out] = attendanceData[i].check_out;
+			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`]["check_out"] = attendanceData[i].check_out;
 		} else if (attendanceData[i].location !== null) {
-			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`][attendanceData[i].location] = attendanceData[i].location;
+			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`]["location"] = attendanceData[i].location;
 		} else if (attendanceData[i].description !== null) {
-			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`][attendanceData[i].description] = attendanceData[i].description;
+			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`]["description"] = attendanceData[i].description;
 		}
 		// else {
 		// 	entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`][attendanceData[i].activity_id] = 'Y';
@@ -281,30 +281,38 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 		for (var j = 0; j < columns.length; j++) {
 			switch (columns[j]) {
 				case 'Date':
-					row[j] = entries[keys[i]].date
+					row[j] = entries[keys[i]].date;
 					break;
 				case 'First':
 					break;
 				case 'Last':
 					break;
 				case 'Check-In Time':
-					row[j] = entries[keys[i]].check_in
+					row[j] = entries[keys[i]].check_in;
 					break;
 				case 'Check-Out Time':
-					row[j] = entries[keys[i]].check_out
+					row[j] = entries[keys[i]].check_out;
 					break;
 				case 'Location':
-					row[j] = entries[keys[i]].location
+					row[j] = entries[keys[i]].location;
 					break;
 				case 'Description':
-					row[j] = entries[keys[i]].description
+					row[j] = entries[keys[i]].description;
+					break;
+				case 'Duration':
+					if (entries[keys[i]].check_out !== null && entries[keys[i]].check_in !== null){
+						row[j] = entries[keys[i]].check_out- entries[keys[i]].check_in
+					}
+					else{
+						row[j] = 'N/A';
+					}
 					break;
 				default:
 					if (entries[keys[i]] == null){
 						row[j] = 'N/A';
 					}
 					else{
-						row[j] = entries[keys[i]] //DURATION IS HITTING HERE
+						row[j] = entries[keys[i]]; //DURATION IS HITTING HERE
 					}
 			}
 		}
@@ -327,6 +335,7 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 	element.click();
 	document.body.removeChild(element);
 }
+
 async function downloadAttendanceCSV(startDate, endDate=null) {
 	// Get data
 	const url = (startDate === endDate || endDate === null) ? `${protocol}://${domain}/api/attendance/?day=${startDate}` : `${protocol}://${domain}/api/attendance/?startdate=${startDate}&enddate=${endDate}`;

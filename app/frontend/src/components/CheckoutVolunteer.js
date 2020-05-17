@@ -18,9 +18,19 @@ class CheckoutVolunteer extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({
-            volunteerAttendanceItemID: this.props.row.volunteerAttendanceItemID,
-        });
+        if (this.props.row.check_out === null){
+            this.setState({
+                volunteerAttendanceItemID: this.props.row.volunteerAttendanceItemID,
+            });
+        }
+        else{
+            this.setState({
+                volunteerAttendanceItemID: this.props.row.volunteerAttendanceItemID,
+                color:false,
+                text: false,
+                check_out: false,
+            });
+        }
     }
 
     componentDidUpdate() {

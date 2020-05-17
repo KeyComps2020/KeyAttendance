@@ -112,6 +112,9 @@ class Volunteers extends React.Component {
             row['location'] = entries[ids[i]].location;
             row['description'] = entries[ids[i]].description;
             row['check_out'] = entries[ids[i]].check_out;
+            if (row['check_out']!== null){
+                row['checked_out'] = true;
+            }
             row['volunteerAttendanceItemID'] = entries[ids[i]].itemID;
             sheet.push(row)
         }
@@ -152,7 +155,7 @@ class Volunteers extends React.Component {
                         break;
                     }
                 }
-                const row = { 'name': name, 'volunteerID': parseInt(volunteerID), 'check_in': result.check_in , 'volunteerAttendanceItemID' : result.id};
+                const row = { 'name': name, 'volunteerID': parseInt(volunteerID), 'check_in': result.check_in , 'volunteerAttendanceItemID' : result.id, 'checked_out': false};
                 volunteerAttendance.push(row);
                 self.setState({ volunteerAttendance: volunteerAttendance });
             }
@@ -232,7 +235,8 @@ class Volunteers extends React.Component {
                         'volunteerAttendanceItemID' : id, 
                         'location': location,
                         'description': description,
-                        'check_out': check_out};
+                        'check_out': check_out,
+                        'checked_out': true};
             volunteerAttendance.push(row);
             this.setState({volunteerAttendance: volunteerAttendance});
             this.fetchAndBuild();
@@ -253,7 +257,8 @@ class Volunteers extends React.Component {
                         'check_in': check_in , 
                         'volunteerAttendanceItemID' : id, 
                         'location': location,
-                        'description': description,};
+                        'description': description,
+                        'checked_out': false};
             volunteerAttendance.push(row);
             this.setState({volunteerAttendance: volunteerAttendance});
             this.fetchAndBuild();

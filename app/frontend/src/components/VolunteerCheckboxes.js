@@ -71,7 +71,7 @@ class VolunteerCheckboxes extends React.Component {
                 "volunteer_id": volunteerID,
                 "id": volunteerAttendanceItemID,
                 "date":`${date}`,
-                "location": '',
+                "location": null,
             };
             httpPatch(`${protocol}://${domain}/api/volunteer_attendance/`, body)
             .then(function (result) {
@@ -81,7 +81,7 @@ class VolunteerCheckboxes extends React.Component {
                         self.setState({error: errorCode, errorMsg: response.error})
                     });
                 } else {
-                    self.setState({location: '', error: '', errorMsg: ''})
+                    self.setState({location: "", error: "", errorMsg: ""})
                 }
             });
         }
@@ -120,7 +120,7 @@ class VolunteerCheckboxes extends React.Component {
                 "volunteer_id": volunteerID,
                 "id": volunteerAttendanceItemID,
                 "date":`${date}`,
-                "description": '',
+                "description": null,
             };
             httpPatch(`${protocol}://${domain}/api/volunteer_attendance/`, body)
             .then(function (result) {
@@ -130,7 +130,7 @@ class VolunteerCheckboxes extends React.Component {
                         self.setState({error: errorCode, errorMsg: response.error})
                     });
                 } else {
-                    self.setState({description: '', error: '', errorMsg: ''})
+                    self.setState({description: "", error: "", errorMsg: ""})
                 }
             });
         }
