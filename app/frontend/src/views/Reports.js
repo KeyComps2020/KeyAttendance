@@ -329,160 +329,81 @@ class Reports extends Component {
     render() {
         console.log("reports", this)
         const permissions = getPermissions();
-        /////////
-        return (
-          
-          <div className="content" style={{minWidth: 'fit-content'}}>
-          <h1 style={{textAlign: 'center', fontSize: '30px'}}>Reports Panel</h1>
-        <br />
-            <Tabs 
-            style={{background:'#f8f8f8', borderRadius: 'inherit', display: 'grid'}}
-            activeKey={this.state.tab} onSelect={this.handleTabSelect}>
-              <Tab key={1} eventKey={1} title="Hourly Attendance">
-                <h3
-                style={{textAlign: 'center', fontSize: '25px'}}
-                > Hourly Attendance </h3>
-                <div style={{margin: '20px'}}>
-                <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
-                <Button ostyle={{marginTop: '10px'}} nClick={this.downloadHourlyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Hourly'}</Button>
-                </ButtonToolbar>
-                <div style={whiteBorderStyle()}>
-                <p> Number of engagements per hour in <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
-                <p><b>Note:</b> Data is displayed chronologically, with the top row representing the oldest day and the bottom row representing the current day.</p>
-                {!this.state.mobile && 
-                  <Heatmap
-                  data = {this.state.byHourJson}
-                  heatMapType = "weekly" />
-                }{this.state.mobile && 
-                  <b>Mobile Does Not Display Visualization</b>
-                  }
-                </div>
-                </div>
-              </Tab>
-              <Tab key={2} eventKey={2} title="Daily Attendance">
-                <h3
-                style={{textAlign: 'center', fontSize: '25px'}}
-                > Daily Attendance </h3>
-                <div style={{margin: '20px'}}>
-                <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
-                <Button style={{marginTop: '10px'}} onClick={this.downloadWeeklyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Daily'}</Button>
-                </ButtonToolbar>
-                
-                <div style={whiteBorderStyle()}>
-                <p> Number of engagements per day in the past week from <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
-                {!this.state.mobile && 
-                <BarChart data = {this.state.byDayInPastWeekJson}/>
-                }{this.state.mobile && 
-                  <b>Mobile Does Not Display Visualization</b>
-                  }
-                </div>
-                </div>
-              </Tab>
-              <Tab key={3} eventKey={3} title="Annual Attendance">
-                <h3
-                style={{textAlign: 'center', fontSize: '25px'}}
-                > Annual Daily Attendance </h3>
-                <div style={{margin: '20px'}}>
-                <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
-                <Button style={{marginTop: '10px'}} onClick={this.downloadYearlyCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download Annual'}</Button>
-                </ButtonToolbar>
-                <div style={whiteBorderStyle()}>
-                <p> Number of engagements per day in the past year from <b>{this.state.startDateStringYear}</b> to <b>{this.state.endDateStringYear}</b>.</p>
-                <p><b>Note:</b> Data is displayed chronologically, with the leftmost column representing the oldest week and the rightmost column representing the current week.</p> 
-                {!this.state.mobile && 
-                <Heatmap data = {this.state.byDayHeatMap} heatMapType = "annual" />
-                }
-                {this.state.mobile && 
-                  <b>Mobile Does Not Display Visualization</b>
-                  }
-                </div>
-                </div>
-                </Tab>
-              <Tab key={4} eventKey={4} title="Multi-Date Attendance Sheet">
-                <h3
-                style={{textAlign: 'center', fontSize: '25px'}}
-                > Download Multi-Date Attendance Sheet </h3>
-                <div style={{margin: '20px'}}>
-                <p>Combines and downloads attendance sheets from multiple dates</p>
-                <Form style={{paddingRight: '5px', paddingLeft: '5px'}}>
-                  <FormGroup>
-                    <ControlLabel>Start Date</ControlLabel>{' '}
-                    <FormControl onChange={this.updateDateOne} value={this.state.dateOne} type="date"/>{'  '}
-                    <ControlLabel>End Date</ControlLabel>{' '}
-                    <FormControl onChange={this.updateDateTwo} value={this.state.dateTwo} type="date"/>{'  '}
-                    <Button style={{marginTop: '10px'}} onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>
-                  </FormGroup>
-                </Form>
-                </div>
-              </Tab>
-              <Tab key={5} eventKey={5} title="Attendance By Program">
-                <AttendanceByProgramReport/>
-              </Tab>
-              <Tab key={6} eventKey={6} title="New Students">
-                <NewStudentsReport/>
-              </Tab>
-              <Tab key={7} eventKey={7} title="Attendance Milestones">
-                <MilestoneReport/>
-              </Tab>
-            </Tabs>
-          </div>
-        );
-    }
-}
-/////////
+        
         if (permissions.includes('view_reports')) {
           return (
-            <div className="content">
+            <div className="content" style={{minWidth: 'fit-content'}}>
               <Layout/>
-              <Tabs activeKey={this.state.tab} onSelect={this.handleTabSelect}>
+              <h1 style={{textAlign: 'center', fontSize: '30px'}}>Reports Panel</h1>
+              <br />
+              <Tabs style={{background:'#f8f8f8', borderRadius: 'inherit', display: 'grid'}} activeKey={this.state.tab} onSelect={this.handleTabSelect}>
                 
                 <Tab key={1} eventKey={1} title="Hourly Attendance">
-                  <h3> Hourly Attendance </h3>
-                  <ButtonToolbar style={{ float: 'right'}}>
-                    <Button onClick={this.downloadHourlyCSV} disabled={this.state.buildingCSV}>
+                  <h3 style={{textAlign: 'center', fontSize: '25px'}}> Hourly Attendance </h3>
+                  <ButtonToolbar style={{ float: 'right', margin: '20px', display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
+                    <Button style={{marginTop: '10px'}} onClick={this.downloadHourlyCSV} disabled={this.state.buildingCSV}>
                       {this.state.buildingCSV ? 'Downloading...' : 'Download Hourly'}
                     </Button>
                   </ButtonToolbar>
-                  <p> Number of engagements per hour in <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
-                  <p><b>Note:</b> Data is displayed chronologically, with the top row representing the oldest day and the bottom row representing the current day.</p>
-                  <Heatmap
-                    data = {this.state.byHourJson}
-                    heatMapType = "weekly" />
+                  <div style={whiteBorderStyle()}>
+                    <p> Number of engagements per day in the past year from <b>{this.state.startDateStringYear}</b> to <b>{this.state.endDateStringYear}</b>.</p>
+                    <p><b>Note:</b> Data is displayed chronologically, with the leftmost column representing the oldest week and the rightmost column representing the current week.</p> 
+                    {!this.state.mobile && 
+                    <Heatmap data = {this.state.byDayHeatMap} heatMapType = "annual" />
+                    }
+                    {this.state.mobile && 
+                      <b>Mobile Does Not Display Visualization</b>
+                      }
+                  </div>
                 </Tab>
 
                 <Tab key={2} eventKey={2} title="Daily Attendance">
-                  <h3> Daily Attendance </h3>
-                  <ButtonToolbar style={{ float: 'right'}}>
-                    <Button onClick={this.downloadWeeklyCSV} disabled={this.state.buildingCSV}>
+                  <h3 style={{textAlign: 'center', fontSize: '25px'}}> Daily Attendance </h3>
+                  <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
+                    <Button style={{marginTop: '10px'}} onClick={this.downloadWeeklyCSV} disabled={this.state.buildingCSV}>
                       {this.state.buildingCSV ? 'Downloading...' : 'Download Daily'}
                     </Button>
                   </ButtonToolbar>
-                  <p> Number of engagements per day in the past week from <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
-                  <BarChart data = {this.state.byDayInPastWeekJson}/>
+                  <div style={whiteBorderStyle()}>
+                    <p> Number of engagements per day in the past week from <b>{this.state.startDateStringWeek}</b> to <b>{this.state.endDateStringWeek}</b>.</p>
+                    {!this.state.mobile && 
+                    <BarChart data = {this.state.byDayInPastWeekJson}/>
+                    }
+                    {this.state.mobile && 
+                      <b>Mobile Does Not Display Visualization</b>
+                      }
+                  </div>
                 </Tab>
 
                 <Tab key={3} eventKey={3} title="Annual Attendance">
-                  <h3> Annual Daily Attendance </h3>
-                  <ButtonToolbar style={{ float: 'right'}}>
-                    <Button onClick={this.downloadYearlyCSV} disabled={this.state.buildingCSV}>
+                  <h3 style={{textAlign: 'center', fontSize: '25px'}}> Annual Daily Attendance </h3>
+                  <ButtonToolbar style={{ display: 'inline-block', marginTop:'10px', marginBottom:'10px'}}>
+                    <Button style={{marginTop: '10px'}} onClick={this.downloadYearlyCSV} disabled={this.state.buildingCSV}>
                       {this.state.buildingCSV ? 'Downloading...' : 'Download Annual'}
                     </Button>
                   </ButtonToolbar>
-                  <p> Number of engagements per day in the past year from <b>{this.state.startDateStringYear}</b> to <b>{this.state.endDateStringYear}</b>.</p>
-                  <p><b>Note:</b> Data is displayed chronologically, with the leftmost column representing the oldest week and the rightmost column representing the current week.</p> 
-                  <Heatmap data = {this.state.byDayHeatMap} heatMapType = "annual" />
+                  <div style={whiteBorderStyle()}>
+                    <p> Number of engagements per day in the past year from <b>{this.state.startDateStringYear}</b> to <b>{this.state.endDateStringYear}</b>.</p>
+                    <p><b>Note:</b> Data is displayed chronologically, with the leftmost column representing the oldest week and the rightmost column representing the current week.</p> 
+                    {!this.state.mobile && 
+                    <Heatmap data = {this.state.byDayHeatMap} heatMapType = "annual" />
+                    }
+                    {this.state.mobile && 
+                      <b>Mobile Does Not Display Visualization</b>
+                      }
+                  </div>
                 </Tab>
 
                 <Tab key={4} eventKey={4} title="Multi-Date Attendance Sheet">
-                  <h3> Download Multi-Date Attendance Sheet </h3>
+                  <h3 style={{textAlign: 'center', fontSize: '25px'}}> Download Multi-Date Attendance Sheet </h3>
                   <p>Combines and downloads attendance sheets from multiple dates</p>
-                  <Form inline style={{paddingRight: '5px', paddingLeft: '5px'}}>
+                  <Form style={{paddingRight: '5px', paddingLeft: '5px'}}>
                     <Form.Group>
                       <Form.Label>Start Date</Form.Label>{' '}
                       <Form.Control onChange={this.updateDateOne} value={this.state.dateOne} type="date"/>{'  '}
                       <Form.Label>End Date</Form.Label>{' '}
                       <Form.Control onChange={this.updateDateTwo} value={this.state.dateTwo} type="date"/>{'  '}
-                      <Button onClick={this.downloadCSV} disabled={this.state.buildingCSV}>
+                      <Button style={{marginTop: '10px'}} onClick={this.downloadCSV} disabled={this.state.buildingCSV}>
                         {this.state.buildingCSV ? 'Downloading...' : 'Download'}
                       </Button>
                     </Form.Group>
