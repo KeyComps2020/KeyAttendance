@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, ButtonToolbar } from 'react-bootstrap';
 import ReactCollapsingTable from 'react-collapsing-table';
 import AddStudentFieldModal from './AddStudentFieldModal';
+import ChangeStudentStatusParams from './ChangeStudentStatusParams';
 import { domain, httpGet, protocol, whiteBorderStyle } from './Helpers';
 import StudentFieldCheckbox from './StudentFieldCheckbox';
 
@@ -10,7 +11,8 @@ class EditStudentFields extends React.Component {
         super(props);
         this.state = {
             fields: [],
-            showModal: false
+            showModal: false,
+            showStatusModal: false
         };
 
         this.createNewField = this.createNewField.bind(this);
@@ -19,6 +21,8 @@ class EditStudentFields extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
+        this.openStatusModal = this.openStatusModal.bind(this);
+        this.closeStatusModal = this.closeStatusModal.bind(this);
     }
     
     async componentDidMount() {
@@ -87,6 +91,14 @@ class EditStudentFields extends React.Component {
         this.setState({showModal: false, fields: fields});
     }
 
+    openStatusModal() {
+        this.setState({showStatusModal: true});
+    }
+
+    closeStatusModal() {
+        this.setState({showStatusModal: false});
+    }
+
     render() {
         const rows = this.state.fields.map(field =>
             (
@@ -140,10 +152,10 @@ class EditStudentFields extends React.Component {
                 <br />
                 <ButtonToolbar style={{ marginBottom: '10px'}}>
                     <Button onClick={this.openModal}>New Student Profile Field</Button>
+                    <Button style={{float: "right"}} onClick={this.openStatusModal}> Change Frequent User/Attendee Range </Button>
                 </ButtonToolbar>
-                <AddStudentFieldModal show={this.state.showModal}
-                    onSubmit={this.closeModal} />
-
+                <AddStudentFieldModal show={this.state.showModal} onSubmit={this.closeModal} />
+                <ChangeStudentStatusParams show={this.state.showStatusModal} onSubmit= {this.closeStatusModal} />
                 <div 
                 style = {whiteBorderStyle()}
                 >

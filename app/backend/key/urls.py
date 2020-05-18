@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from key.views import volunteers, volunteer_attendance, attendance, students, activities, users, studentkeysuggestions, misc, reports, groups, permissions, student_info, student_column, history, flags
+from key.views import status, volunteers, volunteer_attendance, attendance, students, activities, users, studentkeysuggestions, misc, reports, groups, permissions, student_info, student_column, history, flags
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('history/', history.History.as_view()),
     path('student_info/', student_info.StudentInfo.as_view()),
     path('student_column/', student_column.StudentColumn.as_view()),
+    path('status/', status.Status.as_view()),
     re_path(r'^reports/(?P<vizType>\w*)/$', reports.Reports.as_view()),
     #above regex maps to: /api/reports/vizType/?arg1=blah&arg2=blah
     re_path(r'^suggestions/(?P<reqType>\w*)/$', studentkeysuggestions.StudentKeySuggestions.as_view())

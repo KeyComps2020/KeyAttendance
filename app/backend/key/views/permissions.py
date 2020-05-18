@@ -24,7 +24,8 @@ class Permissions(APIView):
                 ~Q(codename = 'delete_studentcolumn') & ~Q(codename = 'view_studentcolumn') &
                 ~Q(codename = 'delete_studentinfo') & ~Q(codename = 'change_reports') & ~Q(codename = 'delete_reports') &
                 ~Q(codename = 'add_reports') & ~Q(codename = 'add_cityspanstudents') & ~Q(codename = 'delete_cityspanstudents') & 
-                ~Q(codename = 'view_cityspanstudents') & ~Q(codename = 'veiw_flags') & ~Q(codename = 'change_flags') & ~Q(codename= 'delete_flags'))
+                ~Q(codename = 'view_cityspanstudents') & ~Q(codename = 'veiw_flags') & ~Q(codename = 'change_flags') & ~Q(codename= 'delete_flags') &
+                ~Q(codename = 'view_status') & ~Q(codename = 'change_status'))
             permissionsList.extend(list(permissions))
         serializer = PermissionSerializer(permissionsList, many=True)
         return Response(serializer.data, content_type='application/json')

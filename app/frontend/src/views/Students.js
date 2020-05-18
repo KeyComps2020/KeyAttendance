@@ -85,7 +85,8 @@ class Students extends Component {
           picUpdated: false,
           canDeleteStudent: canDeleteStudent,
           canViewStudentKey: canViewStudentKey,
-          canViewFlags: canViewFlags
+          canViewFlags: canViewFlags,
+          status: null
         };
         
       });
@@ -170,7 +171,10 @@ class Students extends Component {
       const studentProfileJson = await httpGet(`${protocol}://${domain}/api/students/?id=` + state.id);
       state.profileData = studentProfileJson;
       const studentProfileEx = await httpGet(`${protocol}://${domain}/api/student_info/?student_id=${state.id}`);
-      
+      const studentStatus = await httpGet(`${protocol}://${domain}/api/status/?student_id=${state.id}&type=${'status'}`);
+      console.log(studentStatus['status'])
+      state.status = studentStatus['status'];
+
       for (var i in studentProfileEx) {
         if (studentProfileEx[i].photo_url !== null && this.state.picUpdated == false) {
           var objectUrl = `${protocol}://${domain}/${studentProfileEx[i].photo_url}`;
@@ -759,7 +763,6 @@ class Students extends Component {
           <Heatmap data={this.formatData(this.state)} heatMapType="individualStudent" /></div>
       }
       let stuFlags = []
-      let viewFlags = []
       if (this.state.canViewFlags){
         stuFlags =
           <div> 
@@ -768,12 +771,6 @@ class Students extends Component {
             {this.state.flags['Acedemics/Employment'] && <Label bsStyle="success"> Acedemics/Employment </Label>}
             {this.state.flags['Housing Insecurity'] && <Label bsStyle="info"> Housing Insecurity </Label>}
           </div>
-      //   viewFlags = 
-
-      //     <Button align="right" variant="btn btn-primary" onClick={this.flag}>
-      //       View/Add Flags
-      //     </Button>
-
       }
       return (
         <div className='content'>
@@ -798,6 +795,7 @@ class Students extends Component {
                 {stuFlags}
                 <ListGroup>
                   <ListGroupItem>Name: {this.state.profileData.first_name} {this.state.profileData.last_name}</ListGroupItem>
+                  <ListGroupItem>Status: {this.state.status}</ListGroupItem>
                   { this.state.canViewStudentKey? <ListGroupItem>Student Key: {this.state.profileData.student_key} </ListGroupItem>: <ListGroupItem>Student Key: N/A </ListGroupItem>}
                   {this.renderDisplayInfo(this.state.parsedInfo)}
                 </ListGroup>

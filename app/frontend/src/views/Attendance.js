@@ -27,7 +27,7 @@ class Attendance extends React.Component {
             canCreateStudent: false,
             mobile: false,
             canVeiwFlags: false,
-            studentFlags: {}
+            studentFlags: {},
         }
 
         this.downloadCSV = this.downloadCSV.bind(this);
@@ -62,7 +62,6 @@ class Attendance extends React.Component {
         const { date } = this.state;
         let {studentFlags} = this.state;
         try {
-
             const students = await httpGet(`${protocol}://${domain}/api/students/`);
             const attendanceItems = await httpGet(`${protocol}://${domain}/api/attendance/?day=${date}`);
             let activities = await httpGet(`${protocol}://${domain}/api/activities/`);
@@ -76,7 +75,6 @@ class Attendance extends React.Component {
             let canViewFlags = false;
             if(permissions.indexOf('add_studentflags') >= 0) {
                 canViewFlags = true;
-                console.log(attendanceItems.length);
                 for (var i = 0; i < attendanceItems.length; i++) {
                     let flags = await httpGet(`${protocol}://${domain}/api/flags/?student_id=${attendanceItems[i].student_id}&date=${date}&startdate=${dateToString(getEarlierDate(7))}&type=${"notifications"}`);
                     studentFlags[attendanceItems[i].student_id] = flags;

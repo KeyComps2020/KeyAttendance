@@ -138,7 +138,7 @@ class StudentInfo(models.Model):
 class Students(models.Model):
     first_name = models.TextField(blank=True, null=True)
     last_name = models.TextField(blank=True, null=True)
-    id = models.AutoField(blank=True, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     student_key = models.TextField(blank=True, null=True)
     history = HistoricalRecords()
     #photo = models.ImageField(blank=True, null=True, upload_to='profile_photos/')
@@ -167,3 +167,13 @@ class CitySpanStudents(models.Model):
     class Meta:
         managed = True
         db_table = 'cityspanstudents'
+
+class StudentStatusParameters(models.Model):
+    frequent = models.IntegerField(blank=True, null=True)
+    attendee = models.IntegerField(blank=True, null=True)
+    time_range = models.IntegerField(blank=True, null=True)
+    id = models.AutoField(primary_key=True, unique=True)
+
+    class Meta:
+        managed = True
+        db_table = 'studentstatusparameters'
