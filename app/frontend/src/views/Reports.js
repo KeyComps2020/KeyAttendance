@@ -78,7 +78,7 @@ class Reports extends Component {
         this.setState({dateTwo: e.target.value});
       }
 
-      async downloadCSV() { //if your gonna refactor this to use fat arrow notation, just do downloadcsv = async() =>
+      async downloadCSV() { //if youre gonna refactor this to use fat arrow notation, just do downloadcsv = async() =>
           if (this.state.dateOne === "" || this.state.dateTwo === "") {
             return
           }

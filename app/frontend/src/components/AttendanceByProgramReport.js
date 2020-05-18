@@ -95,7 +95,7 @@ class AttendanceByProgramReport extends React.Component {
                 <Form inline style={{paddingRight: '5px', paddingLeft: '5px'}}>
                   <Form.Group>
                     <Form.Label>Program: </Form.Label>{' '}
-                    <Form.Control componentClass="select" 
+                    <Form.Control as="select" 
                       name="type" 
                       onChange={this.handleActivityDropdownSelect}
                       defaultValue="string"

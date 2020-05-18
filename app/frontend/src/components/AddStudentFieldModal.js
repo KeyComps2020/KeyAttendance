@@ -143,7 +143,7 @@ class AddStudentFieldModal extends React.Component {
                                 onChange={this.handleChange}
 							/>
                             <br/>
-                            <Form.Control componentClass="select" 
+                            <Form.Control as="select" 
                             name="type" 
                             onChange={this.handleChange}
                             defaultValue={this.state.type}

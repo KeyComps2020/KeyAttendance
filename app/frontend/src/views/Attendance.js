@@ -42,7 +42,7 @@ class Attendance extends React.Component {
     }
 
     componentDidMount() {
-        console.log("attendance has mounted")
+        this.fetchAndBuild() //this causes a shitton of rerendering but is necessary because of 2019's ways of initializing states
     }
 
     componentDidUpdate() {
