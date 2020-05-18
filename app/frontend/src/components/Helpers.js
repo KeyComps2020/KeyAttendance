@@ -266,7 +266,7 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 
 	// Build spreadsheet
 	var sheet = []
-	var columns = ['Date','First', 'Last', 'Check-In Time', 'Check-Out Time', 'Duration','Location', 'Description']
+	var columns = ['Date','First', 'Last', 'Check-In Time', 'Check-Out Time','Location', 'Description']
 	const keys = Object.keys(entries)
 	for (var i = 0; i < keys.length ; i++) {
 		var row = []
@@ -298,14 +298,6 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 					break;
 				case 'Description':
 					row[j] = entries[keys[i]].description;
-					break;
-				case 'Duration':
-					if (entries[keys[i]].check_out !== null && entries[keys[i]].check_in !== null){
-						row[j] = entries[keys[i]].check_out- entries[keys[i]].check_in
-					}
-					else{
-						row[j] = 'N/A';
-					}
 					break;
 				default:
 					if (entries[keys[i]] == null){
