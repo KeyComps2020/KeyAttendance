@@ -197,13 +197,13 @@ class Heatmap extends Component {
                     }
                   }} />
             
-            <LabelSeries   //https://uber.github.io/react-vis/documentation/series-reference/label-series
+            {/*<LabelSeries   //https://uber.github.io/react-vis/documentation/series-reference/label-series
               style={{pointerEvents: 'none'}}
               data={data}
               labelAnchorX="middle"
               labelAnchorY="baseline"
               getLabel={d => `${d.color}`}
-            />
+            />*/}
 
           </XYPlot>
         </div>
