@@ -46,7 +46,7 @@ class Flags(APIView):
         
         elif (request.query_params['type'] == "allFlags"):
             inRange = StudentFlags.objects.filter(student_id=request.query_params['student_id'])
-            return self.flags()
+            return self.flags(inRange)
         
         elif (request.query_params['type'] == 'notifications'):
             enddate = request.query_params['date']
