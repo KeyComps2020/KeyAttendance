@@ -305,152 +305,7 @@ class Attendance extends React.Component {
     render() {
         console.log("attendance has rendered", this)
         const permissions = getPermissions();
-        ////////////
-        if (permissions.indexOf('view_attendanceitems') < 0) {
-            return (<Redirect to='/notfound'/>);
-        }
-        const rows = this.state.attendance.map(item =>
-            (
-               {
-                   name: item.name,
-                   time: item.time,
-                   activities: item.activities,
-                   studentID: item.studentID,
-                   date: this.state.date,
-                   notifications: item.notifications
-               }
-           )
-        ).sort((a, b) => {
-            return b.time.localeCompare(a.time); // For some reason the table doesn't automatically sort.
-        });
-
-        const columns = [
-            {
-                accessor: 'name',
-                label: 'Name',
-                priorityLevel: 1,
-                position: 1,
-                minWidth: 100,
-                sortable: true
-            },
-            {
-                accessor: 'time',
-                label: 'Check-in Time',
-                priorityLevel: 2,
-                position: 2,
-                minWidth: 100,
-                sortable: true
-            },
-            {
-                accessor: 'options',
-                label: 'Options',
-                priorityLevel: 3,
-                position: 3,
-                CustomComponent: AttendanceOptions,
-                sortable: false,
-                minWidth: 100
-            },
-            {
-                accessor: 'notifications',
-                label: 'Notifications',
-                priorityLevel: 4,
-                position: 4,
-                sortable: false,
-                minWidth: 100
-            },
-            { 
-                accessor: 'activities',
-                label: 'Activities',
-                priorityLevel: 5,
-                position: 5,
-                minWidth: 2000,
-                CustomComponent: ActivityCheckboxes,
-                sortable: false, 
-            }
-        ];
-
-        const buildingCSV = this.state.buildingCSV;
-
-        let buttonToolbar;
-        if (this.state.canCreateStudent) {
-            buttonToolbar = <ButtonToolbar style={{ marginBottom: '2em'}}>
-                <Button onClick={this.openModal}>Create New Student
-                </Button>
-                <Button onClick={this.refresh}>Refresh</Button>
-                {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
-                {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
-            </ButtonToolbar>
-        } else {
-            buttonToolbar = <ButtonToolbar style={{  marginBottom: '2em'}}>
-                <Button onClick={this.refresh}>Refresh</Button>
-                {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
-                {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
-            </ButtonToolbar>
-        }
-
-        return (
-            <div className='content' style={{minWidth: 'fit-content'}}>
-                <AddStudentModal studentFields={this.state.studentFields} show={this.state.showStudentModal} onSubmit={this.closeModal}/>
-                <div style={{textAlign: 'center'}}>
-                <h1
-                style={{fontSize: '25px'}}
-                >{this.state.date}</h1> 
-                <h1
-                style={{marginTop: '0px', fontSize: '30px'}}
-                >Attendance</h1>
-                </div>
-                <br/>
-                <div style={{marginLeft:'10px'}} >
-                <Autocomplete
-                    
-                    label={'Check-in Student:'}
-					suggestions={this.state.suggestionsArray}
-					handler={this.addStudent}
-                />
-                </div>
-                
-                <div style={borderStyle()}>
-                {this.state.mobile?
-                    <div 
-                    >
-                    {<Form inline >
-                        <FormGroup >
-                            <ControlLabel>Date:</ControlLabel>{' '}
-                            <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
-                        </FormGroup>
-                    </Form>}
-                    </div>
-                    :
-                    
-                    <div 
-                style = {{float: 'right'}}>
-                {<Form inline >
-                    <FormGroup >
-                        <ControlLabel>Date:</ControlLabel>{' '}
-                        <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
-                    </FormGroup>
-                </Form>}
-                </div>
-                }
-                
-                <div>
-                {buttonToolbar}
-                </div>
-                <div
-                style={whiteBorderStyle()}>
-                <ReactCollapsingTable
-                        rows = { rows }
-                        columns = { columns }
-                        column = {'time'}
-                        direction = {'descending'}
-                        showPagination={ true }
-                        callbacks = {{'options':this.removeAttendanceRow}}
-                />
-                </div>
-            </div>
-            </div>
-        )
-                ////////////////
+        
         if (permissions.includes('view_attendanceitems')) {
 
             const rows = this.state.attendance.map(item =>
@@ -460,7 +315,8 @@ class Attendance extends React.Component {
                     time: item.time,
                     activities: item.activities,
                     studentID: item.studentID,
-                    date: this.state.date
+                    date: this.state.date,
+                    notifications: item.notifications,
                 }
             )
             ).sort((a, b) => {
@@ -493,6 +349,14 @@ class Attendance extends React.Component {
                     sortable: false,
                     minWidth: 100
                 },
+                {
+                    accessor: 'notifications',
+                    label: 'Notifications',
+                    priorityLevel: 4,
+                    position: 4,
+                    sortable: false,
+                    minWidth: 100
+                },
                 { 
                     accessor: 'activities',
                     label: 'Activities',
@@ -507,48 +371,83 @@ class Attendance extends React.Component {
             const buildingCSV = this.state.buildingCSV;
 
             let buttonToolbar;
-            if (this.state.canCreateStudent) {
-                buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
-                    <Button onClick={this.refresh}>Refresh</Button>
-                    {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
-                    {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
-                    <Button onClick={this.openModal}>Create New Student</Button>
-                </ButtonToolbar>
-            } else {
-                buttonToolbar = <ButtonToolbar style={{ float: 'right' }}>
-                    <Button onClick={this.refresh}>Refresh</Button>
-                    {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
-                    {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
-                </ButtonToolbar>
-            }
+        if (this.state.canCreateStudent) {
+            buttonToolbar = <ButtonToolbar style={{ marginBottom: '2em'}}>
+                <Button onClick={this.openModal}>Create New Student
+                </Button>
+                <Button onClick={this.refresh}>Refresh</Button>
+                {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
+                {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
+            </ButtonToolbar>
+        } else {
+            buttonToolbar = <ButtonToolbar style={{  marginBottom: '2em'}}>
+                <Button onClick={this.refresh}>Refresh</Button>
+                {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
+                {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
+            </ButtonToolbar>
+        }
 
             return (
-                <div className='content'>
+                <div className='content' style={{minWidth: 'fit-content'}}>
                     <Layout {...this.history}/>
                     <AddStudentModal studentFields={this.state.studentFields} show={this.state.showStudentModal} onSubmit={this.closeModal}/>
-                    <h1>Attendance for {this.state.date}</h1>
-                    <br/>
-                    {buttonToolbar}
-                    {!this.state.mobile && <Form inline style={{ float: 'right', paddingRight: '5px', paddingLeft: '5px'}}>
-                        <Form.Group>
-                            <Form.Label>Date:</Form.Label>{' '}
-                            <Form.Control onChange={this.updateDate} value={this.state.date} type="date"/>
-                        </Form.Group>
-                    </Form>}
-                    <Autocomplete
-                        label={'Check-in Student:'}
-                        suggestions={this.state.suggestionsArray}
-                        handler={this.addStudent}
-                    />
-                    <br/>
-                    <ReactCollapsingTable
-                            rows = { rows }
-                            columns = { columns }
-                            column = {'time'}
-                            direction = {'descending'}
-                            showPagination={ true }
-                            callbacks = {{'options':this.removeAttendanceRow}}
-                    />
+                    <div style={{textAlign: 'center'}}>
+                <h1
+                style={{fontSize: '25px'}}
+                >{this.state.date}</h1> 
+                <h1
+                style={{marginTop: '0px', fontSize: '30px'}}
+                >Attendance</h1>
+                </div>
+                <br/>
+                <div style={{marginLeft:'10px'}} >
+                        <Autocomplete
+                            
+                            label={'Check-in Student:'}
+                            suggestions={this.state.suggestionsArray}
+                            handler={this.addStudent}
+                        />
+                        </div>
+                        
+                        <div style={borderStyle()}>
+                        {this.state.mobile?
+                            <div 
+                            >
+                            {<Form inline >
+                                <FormGroup >
+                                    <ControlLabel>Date:</ControlLabel>{' '}
+                                    <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
+                                </FormGroup>
+                            </Form>}
+                            </div>
+                            :
+                            
+                            <div 
+                        style = {{float: 'right'}}>
+                        {<Form inline >
+                            <FormGroup >
+                                <ControlLabel>Date:</ControlLabel>{' '}
+                                <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
+                            </FormGroup>
+                        </Form>}
+                        </div>
+                        }
+                        
+                        <div>
+                        {buttonToolbar}
+                        </div>
+                        <div
+                        style={whiteBorderStyle()}>
+                        <ReactCollapsingTable
+                                rows = { rows }
+                                columns = { columns }
+                                column = {'time'}
+                                direction = {'descending'}
+                                showPagination={ true }
+                                callbacks = {{'options':this.removeAttendanceRow}}
+                        />
+                        </div>
+                    </div>
                 </div>
             );
         } else {
