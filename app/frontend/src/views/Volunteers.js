@@ -136,6 +136,7 @@ class Volunteers extends React.Component {
         // make sure we don't already have this volunteer.
         for (let i = 0; i < volunteerAttendance.length; i++) {
             if (parseInt(volunteerID) === volunteerAttendance[i].volunteerID) {
+                alert('Error: This volunteer has already been checked in');
                 return;
             }
         }
