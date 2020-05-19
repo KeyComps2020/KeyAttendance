@@ -3,6 +3,7 @@ from datetime import datetime
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import Permission, Group
 
+#TODO: Add volunteers payload attribuete??
 def jwt_payload_handler(user):
     return {
         'user_id': user.pk,

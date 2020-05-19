@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ControlLabel, Form, FormGroup, Label, Well } from 'react-bootstrap';
+import { Button, Form, Badge } from 'react-bootstrap';
 
 class FileUploader extends React.Component {
 	
@@ -38,17 +38,15 @@ class FileUploader extends React.Component {
 	}
   
 	render() {
-	  return (
+	  return (//TODO: figure out if the input tag should be a Form.Control tag.
 		<Form>
-			<FormGroup>
-			<ControlLabel style={{display: 'inline-block'}}>{this.props.label}</ControlLabel>{' '}
-				<Well style={{display: 'inline-block'}}>
+			<Form.Group>
+			<Form.Label style={{display: 'inline-block'}}>{this.props.label}</Form.Label>{' '}
 					<input style={{display: 'inline-block'}} onChange={this.handleChange} placeholder={null} type="file"/>
-				</Well>
 				{' '}<Button style={{display: 'inline-block'}} onClick={this.submit}>Upload</Button>
-			</FormGroup>
-			{this.state.error !== "Upload Successful" && <Label bsStyle="danger">{this.state.error}</Label>}
-			{this.state.error == "Upload Successful" && <Label bsStyle="success">{this.state.error}</Label>}		
+			</Form.Group>
+			{this.state.error !== "Upload Successful" && <Badge variant="danger">{this.state.error}</Badge>}
+			{this.state.error === "Upload Successful" && <Badge variant="success">{this.state.error}</Badge>}		
 		</Form>
 	  );
 	}

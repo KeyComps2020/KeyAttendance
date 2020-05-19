@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, ButtonToolbar, Form, FormControl, FormGroup, Label, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Button, ButtonToolbar, Form, ListGroup, Badge } from "react-bootstrap";
 import { Redirect } from 'react-router-dom';
 import Autocomplete from '../components/Autocomplete';
 import Heatmap from '../components/Heatmap';
@@ -9,6 +9,8 @@ import AddFlagModal from '../components/AddFlagModal';
 import FlagOptions from '../components/FlagOptions';
 import ReactCollapsingTable from 'react-collapsing-table';
 import continuousColorLegend from 'react-vis/dist/legends/continuous-color-legend';
+import Layout from '../components/Layout';
+
 
 class Students extends Component {
 
@@ -176,7 +178,7 @@ class Students extends Component {
       state.status = studentStatus['status'];
 
       for (var i in studentProfileEx) {
-        if (studentProfileEx[i].photo_url !== null && this.state.picUpdated == false) {
+        if (studentProfileEx[i].photo_url !== null && this.state.picUpdated === false) {
           var objectUrl = `${protocol}://${domain}/${studentProfileEx[i].photo_url}`;
           this.setState({src: objectUrl, uploadedPic: true});
         }
@@ -189,12 +191,12 @@ class Students extends Component {
         try {
           const studentInfoJson = await httpGet(`${protocol}://${domain}/api/student_info/?student_id=${state.id}`);
           if (studentInfoJson.length === 0) {
-            var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+            let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
             state.profileInfo = this.parseCols(studentColumnJson);
             state.profileInfoPrelim = this.parseCols(studentColumnJson);
             state = this.addTypes(state);
           } else {
-            var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+            let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
             state.profileInfo = this.parseCols(studentColumnJson);
             state.profileInfoPrelim = this.parseCols(studentColumnJson);
             state = this.addTypes(state);
@@ -205,7 +207,7 @@ class Students extends Component {
           }
         }
         catch (e) {
-          var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+          let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
           state.profileInfo = this.parseCols(studentColumnJson);
         }
       }
@@ -359,11 +361,11 @@ class Students extends Component {
       const studentInfoJson = await httpGet(`${protocol}://${domain}/api/student_info/?student_id=${state.id}`);
 
       if (studentInfoJson.length === 0) {
-        var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+        let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
         newState.profileInfo = this.parseCols(studentColumnJson);
         newState = this.addTypes(newState);
       } else {
-        var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+        let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
         newState.profileInfo = this.parseCols(studentColumnJson);
         newState = this.addTypes(newState);
 
@@ -372,7 +374,7 @@ class Students extends Component {
       }
     } 
     catch (e) {
-      var studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
+      let studentColumnJson = await httpGet(`${protocol}://${domain}/api/student_column/`);
       newState.profileInfo = this.parseCols(studentColumnJson);
     }
 
@@ -461,11 +463,11 @@ class Students extends Component {
       httpPatch(`${protocol}://${domain}/api/students/`, state.profileData);
     }
     var posted = false;
-    for (var field in state.profileInfo) {
-      var field = state.profileInfo[field];
+    state.profileInfo.array.forEach(field => { //originally: for (let field of state.profileInfo) {
       if (field.updated) {
+        
         if (field.studentInfoId) {
-          if (field.colInfo.name == 'photopath') {
+          if (field.colInfo.name === 'photopath') {
             httpPatchFile(`${protocol}://${domain}/api/student_info/?id=` + field.studentInfoId, field.patchPost)
               .then(function (result) {
                 if ('error' in result) {
@@ -482,7 +484,7 @@ class Students extends Component {
           }
         } else {
             field.patchPost.student_id = state.id;
-            if (field.colInfo.name == 'photopath') {
+            if (field.colInfo.name === 'photopath') {
               httpPostFile(`${protocol}://${domain}/api/student_info/`, field.patchPost)
                 .then(function (result) {
                   if ('error' in result) {
@@ -504,7 +506,7 @@ class Students extends Component {
             }
         }
       }
-    }
+    })
     
     if (posted) {
       this.updateStudentInfo();
@@ -612,14 +614,14 @@ class Students extends Component {
     let info = [];
     
     var fields = this.state.profileInfo;
-    for (var field in fields) {
-      if (fields[field].colInfo.is_showing === true) {
+    for (let field of fields) {
+      if (field.colInfo.is_showing === true) {
         var value = 'N/A';
-        if (fields[field].value !== null && fields[field].value !== null !== '') {
-          value = fields[field].value;
+        if (field.value !== null && field.value !== null !== '') {
+          value = field.value;
         }
-        var innerHtml = fields[field].colInfo.name + ': ' + value;
-        info.push(<ListGroupItem key={field}>{innerHtml}</ListGroupItem>);
+        var innerHtml = field.colInfo.name + ': ' + value;
+        info.push(<ListGroup.Item key={field}>{innerHtml}</ListGroup.Item>);
       }
     }
 
@@ -633,10 +635,10 @@ class Students extends Component {
     for (var entry in this.state.profileInfo) {
       var label = this.state.profileInfo[entry].colInfo.name + ': ';
       if (this.state.profileInfo[entry].colInfo.is_showing) {
-        info.push(<Label key={entry + 'label'}>{label}</Label>)
+        info.push(<Badge key={entry + 'label'}>{label}</Badge>)
 
         var type = this.state.profileInfo[entry].colInfo.type;
-        info.push(<FormControl key={label} type={type} id={entry} defaultValue={this.state.profileInfo[entry].value} onChange={evt => this.handleInfoChange(evt, this.state)} />);
+        info.push(<Form.Control key={label} type={type} id={entry} defaultValue={this.state.profileInfo[entry].value} onChange={evt => this.handleInfoChange(evt, this.state)} />);
         info.push(<br key={entry + 'break'}/>);
       }
     }
@@ -729,7 +731,7 @@ class Students extends Component {
 }
 
   render() {
-    
+    console.log("students", this)
     let permissions = getPermissions()
     if (permissions.indexOf('view_students') < 0) {
       return (<Redirect to='/attendance' />);
@@ -737,9 +739,8 @@ class Students extends Component {
     if (this.state.mode === 'search') {
       return (
         <div className='content'>
-          <h1
-          style={{textAlign: 'center', fontSize: '30px'}}
-          > Key Students </h1>
+          <Layout {...this.history}/>
+          <h1 style={{textAlign: 'center', fontSize: '30px'}}> Key Students </h1>
           <div className='container-fluid no-padding' style={{display: 'table'}}>
             <div className='row justify-content-start' style={{display: 'grid'}}>
               <div className='col-md-12 to-front top-bottom-padding'>
@@ -766,10 +767,10 @@ class Students extends Component {
       if (this.state.canViewFlags){
         stuFlags =
           <div> 
-            {this.state.flags['Food Insecurity'] && <Label bsStyle="primary"> Food Insecurity </Label>}
-            {this.state.flags['Mental Health'] && <Label bsStyle="warning"> Mental Health </Label>}
-            {this.state.flags['Acedemics/Employment'] && <Label bsStyle="success"> Acedemics/Employment </Label>}
-            {this.state.flags['Housing Insecurity'] && <Label bsStyle="info"> Housing Insecurity </Label>}
+            {this.state.flags['Food Insecurity'] && <Badge variant="primary"> Food Insecurity </Badge>}
+            {this.state.flags['Mental Health'] && <Badge variant="warning"> Mental Health </Badge>}
+            {this.state.flags['Acedemics/Employment'] && <Badge variant="success"> Acedemics/Employment </Badge>}
+            {this.state.flags['Housing Insecurity'] && <Badge variant="info"> Housing Insecurity </Badge>}
           </div>
       }
       return (
@@ -794,9 +795,9 @@ class Students extends Component {
               <div className='col-md-8 top-bottom-padding'>
                 {stuFlags}
                 <ListGroup>
-                  <ListGroupItem>Name: {this.state.profileData.first_name} {this.state.profileData.last_name}</ListGroupItem>
-                  <ListGroupItem>Status: {this.state.status}</ListGroupItem>
-                  { this.state.canViewStudentKey? <ListGroupItem>Student Key: {this.state.profileData.student_key} </ListGroupItem>: <ListGroupItem>Student Key: N/A </ListGroupItem>}
+                  <ListGroup.Item>Name: {this.state.profileData.first_name} {this.state.profileData.last_name}</ListGroup.Item>
+                  <ListGroup.Item>Status: {this.state.status}</ListGroup.Item>
+                  { this.state.canViewStudentKey? <ListGroup.Item>Student Key: {this.state.profileData.student_key} </ListGroup.Item>: <ListGroup.Item>Student Key: N/A </ListGroup.Item>}
                   {this.renderDisplayInfo(this.state.parsedInfo)}
                 </ListGroup>
                 <Button variant="btn btn-primary" onClick={this.edit}>
@@ -819,43 +820,41 @@ class Students extends Component {
       let deleteButton = []
       if (this.state.canDeleteStudent) {
         deleteButton = <ButtonToolbar>
-          <Button bsStyle="danger" onClick={evt => { if (window.confirm('Are you sure you wish to delete this student?')) this.delete(evt, this.state) }}>Delete</Button>
+          <Button variant="danger" onClick={evt => { if (window.confirm('Are you sure you wish to delete this student?')) this.delete(evt, this.state) }}>Delete</Button>
         </ButtonToolbar>
       }
       
       return (
         <div className='content'>
-          <h1
-          style={{textAlign: 'center', fontSize: '30px'}}
-          > Student Profile </h1>
+          <h1 style={{textAlign: 'center', fontSize: '30px'}}> Student Profile </h1>
           <br />
               <div 
               style={this.styleDesign()}
               className='col-md-8 top-bottom-padding' id="root">
                 <Form inline 
                 className='col-md-8 top-bottom-padding' onSubmit={evt => this.handleSubmit(evt, this.state)}>
-                  <FormGroup>
-                    <Label>First Name: </Label>
-                      <FormControl type="text" id="first_name" defaultValue={this.state.profileData.first_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
-                    <Label>Last Name: </Label>
-                      <FormControl type="text" id="last_name" defaultValue={this.state.profileData.last_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
-                      <Label>Student Key: </Label>
+                  <Form.Group>
+                    <Form.Label>First Name: </Form.Label>
+                      <Form.Control type="text" id="first_name" defaultValue={this.state.profileData.first_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
+                    <Form.Label>Last Name: </Form.Label>
+                      <Form.Control type="text" id="last_name" defaultValue={this.state.profileData.last_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
+                      <Form.Label>Student Key: </Form.Label>
                       
                       { this.state.canViewStudentKey?
-                      <FormControl type="text" id="student_key" defaultValue={this.state.profileData.student_key} onChange={evt => this.handleNameChange(evt, this.state)} />:
-                      <FormControl type="text" id="student_key" defaultValue="N/A" disabled={true} onChange={evt => this.handleNameChange(evt, this.state)} />}
+                      <Form.Control type="text" id="student_key" defaultValue={this.state.profileData.student_key} onChange={evt => this.handleNameChange(evt, this.state)} />:
+                      <Form.Control type="text" id="student_key" defaultValue="N/A" disabled={true} onChange={evt => this.handleNameChange(evt, this.state)} />}
                       <br/>
                     
                     {this.renderEditInfo(this.state.parsedInfo)}
 
                     <br/>
                     <ButtonToolbar>
-                      <Button bsStyle="primary" type="submit">Submit</Button>
-                      <Button bsStyle="default" onClick={this.display}>Cancel</Button>
+                      <Button variant="primary" type="submit">Submit</Button>
+                      <Button variant="default" onClick={this.display}>Cancel</Button>
                     </ButtonToolbar>
                     <br />
                     {deleteButton}
-                  </FormGroup>
+                  </Form.Group>
                 </Form>
               </div>
             </div>
@@ -916,7 +915,7 @@ class Students extends Component {
           <AddFlagModal studentInfo={this.state.profileData} student_id={this.state.id} show={this.state.showFlagModal} onSubmit={this.closeModal}/>
           <h1> Recent Notification Flags for {this.state.profileData.first_name} {this.state.profileData.last_name}</h1>
           <br/>
-          <Button bsStyle='link' onClick={this.display}>Return to Student Porofile Display</Button>
+          <Button variant='link' onClick={this.display}>Return to Student Porofile Display</Button>
           <br/>
           <div style={whiteBorderStyle()}>
             <ReactCollapsingTable
@@ -931,7 +930,7 @@ class Students extends Component {
           </div>
           <div align="right">
             <br/>
-            <Button bsStyle="default" onClick={this.openModal}>Add a New Flag</Button>
+            <Button variant="default" onClick={this.openModal}>Add a New Flag</Button>
           </div>
         </div>
       );

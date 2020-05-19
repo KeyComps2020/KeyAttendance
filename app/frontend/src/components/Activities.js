@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactCollapsingTable from 'react-collapsing-table';
+import { Button, ButtonToolbar } from 'react-bootstrap';
 import { httpGet, httpPatch, domain, protocol } from './Helpers';
 import ShiftDownButton from './ShiftDownButton';
 import ShiftUpButton from './ShiftUpButton';
 import ShowActivityCheckbox from './ShowActivityCheckbox';
-import { Button, ButtonToolbar } from 'react-bootstrap';
 import AddActivityModal from './AddActivityModal';
 
 class Activities extends React.Component {
@@ -48,7 +48,7 @@ class Activities extends React.Component {
         };
     }
 
-    patchActivityOrder(id1, id2) {
+    patchActivityOrder(id1, id2) {//TODO: what is this doin
         let { activities } = this.state;
         let self = this;
         let body = { activity_id1: id1, activity_id2: id2 };

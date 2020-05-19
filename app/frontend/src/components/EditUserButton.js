@@ -53,7 +53,7 @@ class EditUserButton extends React.Component {
         return(
             <div>
                 <EditUserModal show={this.state.showUserModal} row={this.props.row} onDelete={this.closeModalDelete} onSubmit={this.closeModal}/>
-                <Button bsStyle="link" onClick={this.openModal}>Edit User</Button>
+                <Button variant="link" onClick={this.openModal}>Edit User</Button>
             </div>
         )
     }

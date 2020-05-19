@@ -11,8 +11,6 @@
 
 # django migrations: done locally in the folder
 
-# production
-build/
  
 # dependencies
 node_modules/
@@ -28,5 +26,3 @@ coverage/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-

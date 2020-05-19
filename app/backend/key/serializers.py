@@ -1,7 +1,10 @@
 from rest_framework import serializers
-from rest_framework_jwt.settings import api_settings
+from rest_framework_jwt.settings import api_settings #TODO:Unused??
 from django.contrib.auth.models import User, Group, Permission
 from .models import Volunteers, VolunteerAttendanceItems, Students, AttendanceItems, Activity, Reports, StudentInfo, StudentColumn, StudentSuggestions, CitySpanStudents, StudentFlags, StudentStatusParameters
+
+# This file tells django how to serialize objects/data (convert to a bytestream for transmission)
+#TODO: Consider doing `fields='__all__'` since it looks like every serializer uses all fields of its corresponding model
 
 class VolunteerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,6 +19,7 @@ class VolunteerSerializer(serializers.ModelSerializer):
 class VolunteerAttendanceItemSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
+            'id',
             'volunteer_id',
             'date',
             'check_in',
@@ -23,8 +27,10 @@ class VolunteerAttendanceItemSerializer(serializers.ModelSerializer):
             'id',
             'location',
             'description',
+
         )
         model = VolunteerAttendanceItems
+
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:

@@ -54,7 +54,7 @@ class EditRoleButton extends React.Component {
         return(
             <div>
                 <EditRoleModal show={this.state.showModal} row={this.props.row} onDelete={this.closeModalDelete} onSubmit={this.closeModal}/>
-                <Button bsStyle="link" onClick={this.openModal}>Edit User Role</Button>
+                <Button variant="link" onClick={this.openModal}>Edit User Role</Button>
             </div>
         )
     }

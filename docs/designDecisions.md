@@ -6,6 +6,19 @@ Options: pipenv, venv, virtualenv
 Decision: virtualenv
 Reason: Most popular, most support, easiset to use, sustainable between python versions
 
+## Web Framework
+Options: Django
+
+## Application Structure
+Options: Django templates, SPA with React, Django REST framework for providing API endpoints and React in its own app called "frontend".
+https://dev.to/valentinogagliardi/react--django-rest-framework--love--ofp
+
+
+## Django View Types
+Options: Function, Class based, Generic
+Decision: Class based
+Reason: Original group (2019) did it
+
 ## Database Type
 Options: SQL/RDBS, NoSQL
 Decision: SQL/RDBS
@@ -24,11 +37,10 @@ Reason: The Key has expressed they care more about minimizing maintenance than t
 ## Host
 Options: EC2, ...
 
-## Framework
-Options: Django, ...
-
 ## File Renewals
 Options: .gitignore
 Decision: adding all folders of auto-generated files made during instance startup to the .gitignore file
 Reason: For the sake of 1) robustness, 2) not encountering unexpected problems during re-instancing, 3) allowing the students working on this project to see how Django, 
 
+## Routing through the app
+Options: component, [render](https://reacttraining.com/react-router/web/api/Route/render-func)

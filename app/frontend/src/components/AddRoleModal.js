@@ -1,6 +1,6 @@
 import React from 'react';
+import { Alert, Button, Modal, Form, FormControl } from 'react-bootstrap';
 import { httpPost, domain, protocol } from './Helpers';
-import { Alert, Button, Modal, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 class AddRoleModal extends React.Component {
     
@@ -154,12 +154,10 @@ class AddRoleModal extends React.Component {
 				</Modal.Header>
 
 				<Modal.Body>
-					<form>
-						<FormGroup
-                            validationState={this.validateInput()}
-                        >
-							<ControlLabel>Role Name</ControlLabel>
-							<FormControl
+					<Form>
+						<Form.Group validationState={this.validateInput()}>
+							<Form.Label>Role Name</Form.Label>
+							<Form.Control
                                 type="text"
                                 name="name"
 								value={this.state.name}
@@ -169,15 +167,15 @@ class AddRoleModal extends React.Component {
 							<br/>
 							{this.createCheckboxes()}
 							<FormControl.Feedback />
-						</FormGroup>
-					</form>
+						</Form.Group>
+					</Form>
 				</Modal.Body>
 
 				<Modal.Footer>
-                    {this.state.error && <Alert bsStyle='danger'>Invalid input. Please check your fields and try again.</Alert>}
-                    {this.state.backendError && <Alert bsStyle='danger'>{errorMsg}</Alert>}
+                    {this.state.error && <Alert variant='danger'>Invalid input. Please check your fields and try again.</Alert>}
+                    {this.state.backendError && <Alert variant='danger'>{errorMsg}</Alert>}
 					<Button onClick={this.cancel}>Cancel</Button>
-					<Button onClick={this.submit} bsStyle="primary">Create</Button>
+					<Button onClick={this.submit} variant="primary">Create</Button>
 				</Modal.Footer>
 			</Modal>
         )

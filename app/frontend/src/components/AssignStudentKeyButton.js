@@ -7,7 +7,7 @@ class AssignStudentKeyButton extends React.Component {
     render() {
         return(
             <div>
-                <Button bsStyle="link" onClick={() => this.props.CustomFunction(this.props.row['id'])}>Assign Student Key</Button>
+                <Button variant="link" onClick={() => this.props.CustomFunction(this.props.row['id'])}>Assign Student Key</Button>
             </div>
         )
     }

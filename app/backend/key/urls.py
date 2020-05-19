@@ -5,8 +5,6 @@ from django.conf import settings
 
 urlpatterns = [
     path('activities/', activities.Activities.as_view()),
-    path('volunteers/', volunteers.Volunteers.as_view()),
-    path('volunteer_attendance/', volunteer_attendance.VolunteerAttendance.as_view()),
     path('students/', students.Students.as_view()),
     path('flags/', flags.Flags.as_view()),
     path('attendance/', attendance.Attendance.as_view()),

@@ -5,10 +5,11 @@ import VolunteerCheckboxes from'../components/VolunteerCheckboxes';
 import AddVolunteerModal from '../components/AddVolunteerModal';
 import Autocomplete from "../components/Autocomplete";
 import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
-import { Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 import { getPermissions, downloadVolunteerAttendanceCSV, borderStyle, whiteBorderStyle } from '../components/Helpers';
+import { Button, ButtonToolbar, Form } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import CheckoutVolunteer from '../components/CheckoutVolunteer';
+import Layout from '../components/Layout';
 
 class Volunteers extends React.Component {
 
@@ -85,7 +86,7 @@ class Volunteers extends React.Component {
         const {volunteerAttendanceItems, volunteers } = this.state;
         // Combine attendance items. Need to sort by volunteer id.
         var entries = {};
-        for (var i = 0; i < volunteerAttendanceItems.length; i++) {
+        for (let i = 0; i < volunteerAttendanceItems.length; i++) {
             if (entries[`${volunteerAttendanceItems[i].volunteer_id}`] == null) {
                 entries[`${volunteerAttendanceItems[i].volunteer_id}`] = {'check_in':volunteerAttendanceItems[i].check_in, 
                                                                             'check_out': volunteerAttendanceItems[i].check_out,
@@ -98,10 +99,10 @@ class Volunteers extends React.Component {
         // Build table of the form [{name, check_in,...}]
         var sheet = [];
         const ids = Object.keys(entries);
-        for (var i = 0; i < ids.length; i++) {
+        for (let i = 0; i < ids.length; i++) {
             var row = {}
             // match volunteer data to current id
-            for (var j = 0; j < volunteers.length; j++) { // unfortunately, volunteer data isn't in any particular order. O(n) it is!
+            for (let j = 0; j < volunteers.length; j++) { // unfortunately, volunteer data isn't in any particular order. O(n) it is!
                 if (volunteers[j].id === parseInt(ids[i])) {
                     row['name'] = `${volunteers[j].first_name} ${volunteers[j].last_name}`;
                     row['volunteerID'] = volunteers[j].id;
@@ -150,7 +151,7 @@ class Volunteers extends React.Component {
             } else {
                 // Add new row to table
                 let name = "";
-                for (var j = 0; j < volunteers.length; j++) {
+                for (let j = 0; j < volunteers.length; j++) {
                     if (volunteers[j].id === parseInt(volunteerID)) {
                         name = `${volunteers[j].first_name} ${volunteers[j].last_name}`;
                         break;
@@ -298,161 +299,162 @@ class Volunteers extends React.Component {
     }
 
     render() {
+        console.log("attendance", this)
         const permissions = getPermissions();
-        if (permissions.indexOf('view_volunteerattendanceitems') < 0) {
-            return (<Redirect to='/notfound'/>);
-        }
-        const rows = this.state.volunteerAttendance.map(item =>
-            (
-               {    
-                   name: item.name,
-                   check_in: item.check_in,
-                   volunteerId: item.volunteer_id,
-                   date: this.state.date,
-                   location: item.location,
-                   description:item.description,
-                   check_out: item.check_out,
-                   volunteerAttendanceItemID: item.volunteerAttendanceItemID
-               }
-           )
-        ).sort((a, b) => {
-            return b.check_in.localeCompare(a.check_in); // For some reason the table doesn't automatically sort.
-        });
+        if (permissions.includes('view_volunteerattendanceitems')) {
+            const rows = this.state.volunteerAttendance.map(item =>
+                (
+                {    
+                    name: item.name,
+                    check_in: item.check_in,
+                    volunteerId: item.volunteer_id,
+                    date: this.state.date,
+                    location: item.location,
+                    description:item.description,
+                    check_out: item.check_out,
+                    volunteerAttendanceItemID: item.volunteerAttendanceItemID
+                }
+            )
+            ).sort((a, b) =>b.check_in.localeCompare(a.check_in)); //doesn't automatically sort (don't know why)
 
-        const columns = [
-            {
-                accessor: 'name',
-                label: 'Name',
-                priorityLevel: 1,
-                position: 1,
-                minWidth: 100,
-                sortable: true
-            },
-            {
-                accessor: 'check_in',
-                label: 'Check-in Time',
-                priorityLevel: 2,
-                position: 2,
-                minWidth: 100,
-                sortable: true
-            },
-            {
-                accessor: 'checkOut',
-                label: 'Check-Out Volunteer',
-                priorityLevel: 3,
-                position: 3,
-                CustomComponent: CheckoutVolunteer,
-                minWidth: 100,
-                sortable: true
-            },
-            {
-                accessor: 'check_out',
-                label: 'Check-out Time',
-                priorityLevel: 4,
-                position: 4,
-                minWidth: 100,
-                sortable: true
-            },
-            {
-                accessor: 'options',
-                label: 'Options',
-                priorityLevel: 5,
-                position: 5,
-                CustomComponent: VolunteerAttendanceOptions,
-                sortable: false,
-                minWidth: 100
-            },
-            { 
-                accessor: 'location',
-                label: 'Additonal Info',
-                priorityLevel: 6,
-                position: 6,
-                minWidth: 2000,
-                CustomComponent: VolunteerCheckboxes,
-                sortable: false, 
-            },
-        ];
+            const columns = [
+                {
+                    accessor: 'name',
+                    label: 'Name',
+                    priorityLevel: 1,
+                    position: 1,
+                    minWidth: 100,
+                    sortable: true
+                },
+                {
+                    accessor: 'check_in',
+                    label: 'Check-in Time',
+                    priorityLevel: 2,
+                    position: 2,
+                    minWidth: 100,
+                    sortable: true
+                },
+                {
+                    accessor: 'checkOut',
+                    label: 'Check-Out Volunteer',
+                    priorityLevel: 3,
+                    position: 3,
+                    CustomComponent: CheckoutVolunteer,
+                    minWidth: 100,
+                    sortable: true
+                },
+                {
+                    accessor: 'check_out',
+                    label: 'Check-out Time',
+                    priorityLevel: 4,
+                    position: 4,
+                    minWidth: 100,
+                    sortable: true
+                },
+                {
+                    accessor: 'options',
+                    label: 'Options',
+                    priorityLevel: 5,
+                    position: 5,
+                    CustomComponent: VolunteerAttendanceOptions,
+                    sortable: false,
+                    minWidth: 100
+                },
+                { 
+                    accessor: 'location',
+                    label: 'Additonal Info',
+                    priorityLevel: 6,
+                    position: 6,
+                    minWidth: 2000,
+                    CustomComponent: VolunteerCheckboxes,
+                    sortable: false, 
+                },
+            ];
 
-        const buildingCSV = this.state.buildingCSV;
+            const buildingCSV = this.state.buildingCSV;
 
-        let buttonToolbar;
-        if (this.state.canCreateVolunteer) {
-            buttonToolbar = <ButtonToolbar>
-                <Button onClick={this.openModal}>Create New Volunteer</Button>
-                <Button onClick={this.refresh}>Refresh</Button>
-                {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
-                {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
-            </ButtonToolbar>
-        } else {
-            buttonToolbar = <ButtonToolbar>
-                <Button onClick={this.refresh}>Refresh</Button>
-                {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
-                {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
-            </ButtonToolbar>
-        }
+            let buttonToolbar;
+            if (this.state.canCreateVolunteer) {
+                buttonToolbar = <ButtonToolbar>
+                    <Button onClick={this.openModal}>Create New Volunteer</Button>
+                    <Button onClick={this.refresh}>Refresh</Button>
+                    {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
+                    {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
+                </ButtonToolbar>
+            } else {
+                buttonToolbar = <ButtonToolbar>
+                    <Button onClick={this.refresh}>Refresh</Button>
+                    {!this.state.mobile && <Button onClick={this.setDateToToday}>Go To Today</Button>}
+                    {!this.state.mobile && <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>}
+                </ButtonToolbar>
+            }
 
-        return (
-            <div className='content' style={{minWidth: 'fit-content'}}>
-                <AddVolunteerModal  show={this.state.showVolunteerModal} onSubmit={this.closeModal}/>
-                <div style={{textAlign: 'center'}}>
-                <h1
-                style={{fontSize: '25px'}}
-                >{this.state.date}</h1> 
-                <h1
-                style={{marginTop: '0px', fontSize: '30px'}}
-                >Volunteer Attendance</h1>
-                </div>
-                <br/>
-                <div style={{marginLeft:'10px'}} >
-                <Autocomplete
-                    label={'Check-in Volunteer:'}
-					suggestions={this.state.suggestionsArray}
-					handler={this.addVolunteer}
-				/>
-                </div>
-                <div style={borderStyle()}>
-                
-                {this.state.mobile?
-                    <div 
-                    >
-                    {<Form inline >
-                        <FormGroup >
-                            <ControlLabel>Date:</ControlLabel>{' '}
-                            <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
-                        </FormGroup>
+            return (
+                <div className='content' style={{minWidth: 'fit-content'}}>
+                    <Layout {...this.history}/>
+                    <AddVolunteerModal  show={this.state.showVolunteerModal} onSubmit={this.closeModal}/>
+                    <div style={{textAlign: 'center'}}>
+                    <h1
+                    style={{fontSize: '25px'}}
+                    >{this.state.date}</h1> 
+                    <h1
+                    style={{marginTop: '0px', fontSize: '30px'}}
+                    >Volunteer Attendance</h1>
+                    </div>
+                    <br/>
+                    <div style={{marginLeft:'10px'}} >
+                    <Autocomplete
+                        label={'Check-in Volunteer:'}
+                        suggestions={this.state.suggestionsArray}
+                        handler={this.addVolunteer}
+                    />
+                    </div>
+                    <div style={borderStyle()}>
+                    
+                    {this.state.mobile?
+                        <div 
+                        >
+                        {<Form inline>
+                            <Form.Group >
+                                <Form.Label>Date:</Form.Label>{' '}
+                                <Form.Control onChange={this.updateDate} value={this.state.date} type="date"/>
+                            </Form.Group>
+                        </Form>}
+                        </div>
+                        :
+                        
+                        <div 
+                    style = {{float: 'right'}}>
+                    {<Form>
+                        <Form.Group >
+                            <Form.Label>Date:</Form.Label>{' '}
+                            <Form.Control onChange={this.updateDate} value={this.state.date} type="date"/>
+                        </Form.Group>
                     </Form>}
                     </div>
-                    :
+                    }
                     
-                    <div 
-                style = {{float: 'right'}}>
-                {<Form inline >
-                    <FormGroup >
-                        <ControlLabel>Date:</ControlLabel>{' '}
-                        <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
-                    </FormGroup>
-                </Form>}
+                    <div>
+                    {buttonToolbar}
+                    </div>
+                    <br />
+                    <div
+                    style={whiteBorderStyle()}>
+                    <ReactCollapsingTable
+                            rows = { rows }
+                            columns = { columns }
+                            column = {'check_in'}
+                            direction = {'descending'}
+                            showPagination={ true }
+                            callbacks = {{'options':this.removeVolunteerAttendanceRow, 'checkOut':this.checkOutVolunteer}}
+                    />
+                    </div>
                 </div>
-                }
-                
-                <div>
-                {buttonToolbar}
                 </div>
-                <br />
-                <div
-                style={whiteBorderStyle()}>
-                <ReactCollapsingTable
-                        rows = { rows }
-                        columns = { columns }
-                        column = {'check_in'}
-                        direction = {'descending'}
-                        showPagination={ true }
-                        callbacks = {{'options':this.removeVolunteerAttendanceRow, 'checkOut':this.checkOutVolunteer}}
-                />
-                </div>
-            </div>
-            </div>
-        )
+            )
+        } else {
+            return (<Redirect to='/notfound' />);
+        }
     }
 }
 

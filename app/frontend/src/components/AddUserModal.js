@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, FormControl, Modal } from 'react-bootstrap';
 import { httpPost, domain, protocol } from './Helpers';
 
 class AddUserModal extends React.Component {
@@ -179,12 +179,12 @@ class AddUserModal extends React.Component {
 				</Modal.Header>
 
 				<Modal.Body>
-					<form>
-						<FormGroup
+					<Form>
+						<Form.Group
 							validationState={this.validateInput()}
 						>
-							<ControlLabel>Username</ControlLabel>
-							<FormControl
+							<Form.Label>Username</Form.Label>
+							<Form.Control
                                 type="text"
                                 name="username"
 								value={this.state.username}
@@ -192,8 +192,8 @@ class AddUserModal extends React.Component {
 								onChange={this.handleChange}
 							/>
 							<br/>
-                            <ControlLabel>First Name</ControlLabel>
-							<FormControl
+                            <Form.Label>First Name</Form.Label>
+							<Form.Control
                                 type="text"
                                 name="first_name"
 								value={this.state.first_name}
@@ -201,8 +201,8 @@ class AddUserModal extends React.Component {
 								onChange={this.handleChange}
 							/>
 							<br/>
-                            <ControlLabel>Last Name</ControlLabel>
-							<FormControl
+                            <Form.Label>Last Name</Form.Label>
+							<Form.Control
                                 type="text"
                                 name="last_name"
 								value={this.state.last_name}
@@ -210,8 +210,8 @@ class AddUserModal extends React.Component {
 								onChange={this.handleChange}
 							/>
 							<br/>
-							<ControlLabel>Password</ControlLabel>
-							<FormControl
+							<Form.Label>Password</Form.Label>
+							<Form.Control
                                 type="password"
                                 name="password"
 								value={this.state.password}
@@ -219,8 +219,8 @@ class AddUserModal extends React.Component {
 								onChange={this.handleChange}
 							/>
                             <br />
-                            <ControlLabel>Confirm Password</ControlLabel>
-							<FormControl
+                            <Form.Label>Confirm Password</Form.Label>
+							<Form.Control
                                 type="password"
                                 name="confirmPassword"
 								value={this.state.confirmPassword || ''}
@@ -228,25 +228,25 @@ class AddUserModal extends React.Component {
 								onChange={this.handleChange}
 							/>
                             <br />
-                            <ControlLabel>Active</ControlLabel>
-							<FormControl
+                            <Form.Label>Active</Form.Label>
+							<Form.Control
                                 type="checkbox"
                                 checked={this.state.is_active}
 								value={this.state.is_active}
 								onChange={this.handleActiveCheckbox}
 							/>
-                            <ControlLabel>User Roles</ControlLabel>
+                            <Form.Label>User Roles</Form.Label>
                             {this.createRadioOptions()}
 							<FormControl.Feedback />
-						</FormGroup>
-					</form>
+						</Form.Group>
+					</Form>
 				</Modal.Body>
 
 				<Modal.Footer>
-                    {this.state.error && <Alert bsStyle='danger'>Invalid input. Please check your fields and try again.</Alert>}
-                    {this.state.backendError && <Alert bsStyle='danger'>{errorMsg}</Alert>}
+                    {this.state.error && <Alert variant='danger'>Invalid input. Please check your fields and try again.</Alert>}
+                    {this.state.backendError && <Alert variant='danger'>{errorMsg}</Alert>}
 					<Button onClick={this.cancel}>Cancel</Button>
-					<Button onClick={this.submit} bsStyle="primary">Create</Button>
+					<Button onClick={this.submit} variant="primary">Create</Button>
 				</Modal.Footer>
 			</Modal>
         )

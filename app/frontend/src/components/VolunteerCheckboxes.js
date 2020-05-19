@@ -1,5 +1,5 @@
 import React from 'react';
-import { Label } from 'react-bootstrap';
+import { Badge } from 'react-bootstrap';
 import { httpPatch, domain, protocol } from './Helpers';
 import LocationCheckbox from './LocationCheckbox.js';
 import DescriptionCheckbox from './DescriptionCheckbox.js'
@@ -174,7 +174,7 @@ class VolunteerCheckboxes extends React.Component {
             <span className="container">
                 <span className="row">
                     <span className="col-sm-12">
-                        {this.state.error !== "" && <Label bsStyle="danger">Error {this.state.error}: {errorMsg} </Label>}
+                        {this.state.error !== "" && <Badge variant="danger">Error {this.state.error}: {errorMsg} </Badge>}
                         {this.createCheckboxes()}
                     </span>
                 </span>

@@ -69,7 +69,7 @@ class UserHistory extends React.Component {
                 <h1 style={{fontSize: '30px', textAlign: 'center'}}>User History: {this.state.username}</h1>
                 <br />
                 <ButtonToolbar style={{ float: 'left' }}>
-                    <Button bsStyle='link' onClick={this.closeHistoryView}>Return to User Management</Button>
+                    <Button variant='link' onClick={this.closeHistoryView}>Return to User Management</Button>
                 </ButtonToolbar>
                 <br/>
                 <div style={whiteBorderStyle()}>

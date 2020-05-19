@@ -1,32 +1,25 @@
-import React from 'react';
-import { Route, Switch, withRouter } from 'react-router';
-import Layout from './Layout';
-import Login from '../views/Login';
-import Attendance from '../views/Attendance';
-import Students from '../views/Students';
-import Volunteers from '../views/Volunteers';
-import Reports from '../views/Reports';
-import Admin from '../views/Admin';
-import NotFound from '../views/NotFound';
-import { checkCredentials } from './Helpers';
+/*
+    This file and layout.js handles almost all of the routing for the app
+    There are 2 ways this works:
+      * using the <Redirect> tag from react-router-dom. This works in 
+        places where we're injecting HTML and overwrites the current location
+            example usage: in layout, if a user is not logged in and at a 
+            location other than the login page, we redirect them to the login 
+            page. We don't want that other page in their history!
+      * using this.props.history.push(path). Pretty sure this is just 
 
-class Router extends React.Component {
+*/
 
-    render() {
-        return (
-            <Layout show={this.props.location.pathname !== '/'}>
-                <Switch>
-                    <Route exact path='/' component={Login}/>
-                    <Route exact path='/attendance' render={() => checkCredentials(Attendance)}/>
-                    <Route path='/students' component={(props) => checkCredentials(Students)}/> {/* Referencing the component this way causes a re-mount every time the NavBar button is clicked, which solves our problem of refreshing the page but costs some performance in the frontend and calls to the database */}
-                    <Route path='/reports' render={() => checkCredentials(Reports)}/>
-                    <Route path='/volunteers' render={() => checkCredentials(Volunteers)}/>
-                    <Route path='/admin' render={() => checkCredentials(Admin)}/>
-                    <Route render={() => checkCredentials(NotFound)}/>
-                </Switch>
-            </Layout>
-        );
-    }
-}
+import React, { Component } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import Layout from './components/Layout';
+import Login from './views/Login';
+import Attendance from './views/Attendance';
+import Students from './views/Students';
+import Volunteers from './views/Volunteers';
+import Reports from './views/Reports';
+import Admin from './views/Admin';
+import NotFound from './views/NotFound';
 
-export default withRouter(Router);
+const component = (props) => {return useHistory();}
