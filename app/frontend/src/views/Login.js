@@ -1,6 +1,8 @@
+
+
 import React from 'react';
-import { Alert, Button, ControlLabel, FormControl, FormGroup, Well } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import { Alert, Button, Form } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom'; //for when you're already logged in: bypass the login page
 import { domain, protocol } from '../components/Helpers';
 
 class Login extends React.Component {
@@ -20,8 +22,8 @@ class Login extends React.Component {
         this.submit = this.submit.bind(this);
     }
 
-    componentDidMount() {
-        if (localStorage.getItem('loggedIn') != null) {
+    componentDidMount() { //this is always invoked as soon as a react component is mounted: https://reactjs.org/docs/react-component.html
+        if (window.localStorage.getItem('loggedIn') != null) {
             this.setState({firstLogin: false});
         }
     }
@@ -43,7 +45,7 @@ class Login extends React.Component {
             body: JSON.stringify({username: this.state.username, password: this.state.password})
         }).then(response => {
             if (response.status >= 400) {
-                // If we get a negative response, display some sort of error and wipe the fields.
+                // If we get a negative response, display some sort of error and wipe the fields. (see bottom of <Form>)
                 this.setState({error: true, username: "", password: ""});
             } else {
                 response.json().then(result => {
@@ -60,43 +62,43 @@ class Login extends React.Component {
     }
 
     render() {
-        const centerStyle={'textAlign':'center'}
+        //console.log("login has rendered", this)
         const token = window.localStorage.getItem("key_credentials");
+
+        //if we're already logged in, just redirect to /attendance
         if (token !== null) {
             return (<Redirect to='/attendance'/>);
         } else {
             return (
                 <div className='center'>
                     <div className='login-container'>
-                        <Well>
-                            <h2 style={centerStyle}>Key Attendance</h2>
-                                <h4 style={centerStyle}>Sign In</h4>
-                                    <form onSubmit={e => this.submit(e)}>
-                                        <FormGroup>
-                                            <ControlLabel>Username</ControlLabel>
-                                            <FormControl
-                                                type="text"
-                                                value={this.state.username}
-                                                placeholder="Username"
-                                                onChange={this.onUsernameChange}
-                                            />
-                                            <br/>
-                                            <ControlLabel>Password</ControlLabel>
-                                            <FormControl
-                                                type="password"
-                                                value={this.state.password}
-                                                placeholder='Password'
-                                                 onChange={this.onPasswordChange}
-                                             />
-                                        </FormGroup>
-                                        <Button block type="submit" bsStyle="primary">Continue</Button>
-                                        <br/>
-                                        {this.state.error && <Alert bsStyle='danger'>Invalid username or password. Please try again.</Alert>}
-                                        {!this.state.firstLogin && <Alert bsStyle='info'>You have been logged out.</Alert>}
-                                    </form>
-                                </Well>
-                            </div>
-                        </div> 
+                        <h1 className='center-text' children='Key Attendance'/> {/** We can use the built in children prop... */}
+                        <h6 className='center-text'>Sign In</h6> {/** ...to do stuff like this (same effect, different way!) */}
+                        <Form onSubmit={e => this.submit(e)}>
+                            <Form.Group>
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={this.state.username}
+                                    placeholder="Username"
+                                    onChange={this.onUsernameChange}
+                                />
+                                <br/>
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    value={this.state.password}
+                                    placeholder='Password'
+                                    onChange={this.onPasswordChange}
+                                />
+                            </Form.Group>
+                            <Button block type="submit" variant="primary">Continue</Button>
+                            <br/>
+                            <Alert show={!this.state.firstLogin} variant='info'>You have been logged out.</Alert>
+                            <Alert show={this.state.error} variant='danger'>Invalid username or password.</Alert>
+                        </Form>
+                    </div>
+                </div> 
             );
         }
     }

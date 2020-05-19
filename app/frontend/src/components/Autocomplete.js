@@ -3,9 +3,9 @@
  */
 
 import React, { Component, Fragment } from "react";
+import { Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 import "./Autocomplete.css"
-import { Form, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 
 class Autocomplete extends Component {
   static propTypes = {
@@ -205,15 +205,12 @@ class Autocomplete extends Component {
       }
     }
 
-    return (
-      <Fragment>
-        <Form inline
-          onSubmit={handleSubmit}>
-          <FormGroup
-            controlId="formInlineName"
-          >
-            <ControlLabel>{this.props.label === undefined ? 'Search:' : this.props.label}</ControlLabel>{' '}
-            <FormControl
+    return ( //Note: new React allows fragments without keys or attributes to be declared <>like this</>
+      <Fragment> 
+        <Form inline onSubmit={handleSubmit}>
+          <Form.Group controlId="formInlineName">
+            <Form.Label>{this.props.label === undefined ? 'Search:' : this.props.label}</Form.Label>{' '}
+            <Form.Control
               autoComplete="off"
               type="text"
               value={userInput}
@@ -222,7 +219,7 @@ class Autocomplete extends Component {
               placeholder={this.props.hasUsername ? 'Name or Username' : 'Name'}
             />
             {suggestionsListComponent}
-          </FormGroup>{' '}
+          </Form.Group>{' '}
         </Form>
       </Fragment>
     );

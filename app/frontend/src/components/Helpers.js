@@ -1,13 +1,5 @@
 //Helper functions for date selection in data visualizations
-
-
 import React from 'react';
-import { Redirect } from 'react-router-dom';
-import createBrowserHistory from 'history/createBrowserHistory';
-
-// Store helper functions that we'll probably re-use here!
-
-const history = createBrowserHistory();
 
 //For local development
 const domain = '127.0.0.1:8000'
@@ -17,14 +9,15 @@ const protocol = 'http'
 // const domain = 'www.keyattendance.com'
 // const protocol = 'https'
 
+// Store helper functions that we'll probably re-use here!
+
 
 function httpPost(url, body={}) {
 	const token = window.localStorage.getItem("key_credentials");
 
 	// if we don't have a token, we shouldn't be trying to call this function.
 	if (token === null) {
-		history.push(`/`)
-		return
+		return {'error' : 'no credentials', 'response' : null}
 	}
 
 	return fetch(url, {
@@ -36,7 +29,6 @@ function httpPost(url, body={}) {
 			// Logout if we got a token validation error
 			if (response.status === 403) {
 				logout()
-				history.push(`/`)
 			}
 			return {'error' : response.status, 'response' : response.json()}
 		} else {
@@ -50,8 +42,7 @@ function httpPostFile(url, body={}) {
 
     // if we don't have a token, we shouldn't be trying to call this function.
     if (token === null) {
-        history.push(`/`)
-        return
+        return {'error' : 'no credentials', 'response' : null}
     }
 
     var form = new FormData()
@@ -68,7 +59,6 @@ function httpPostFile(url, body={}) {
             // Logout if we got a token validation error
             if (response.status === 403) {
                 logout()
-                history.push(`/`)
             }
             return {'error' : response.status, 'response' : response.json()}
         } else {
@@ -82,8 +72,7 @@ function httpPatch(url, body={}) {
 
 	// if we don't have a token, we shouldn't be trying to call this function.
 	if (token === null) {
-		history.push(`/`)
-		return
+		return {'error' : 'no credentials', 'response' : null}
 	}
 
 	return fetch(url, {
@@ -95,7 +84,6 @@ function httpPatch(url, body={}) {
 			// Logout if we got a token validation error
 			if (response.status === 403) {
 				logout()
-				history.push(`/`)
 			}
 			return {'error' : response.status, 'response' : response.json()}
 		} else if (response) {
@@ -111,8 +99,7 @@ function httpPatchFile(url, body={}) {
 
 	// if we don't have a token, we shouldn't be trying to call this function.
 	if (token === null) {
-			history.push(`/`)
-			return
+		return {'error' : 'no credentials', 'response' : null}
 	}
 
 	var form = new FormData()
@@ -130,7 +117,6 @@ function httpPatchFile(url, body={}) {
 					// Logout if we got a token validation error
 					if (response.status === 403) {
 							logout()
-							history.push(`/`)
 					}
 					return {'error' : response.status, 'response' : response.json()}
 			} else {
@@ -143,8 +129,7 @@ function httpGet(url) {
 	const token = window.localStorage.getItem("key_credentials");
 	// if we don't have a token, we shouldn't be trying to call this function.
 	if (token === null) {
-		history.push(`/`)
-		return
+		return {'error' : 'no credentials', 'response' : null}
 	}
 
 	return fetch(url, {
@@ -155,7 +140,6 @@ function httpGet(url) {
 			// Logout if we got a token validation error
 			if (response.status === 403) {
 				logout()
-				history.push(`/`)
 			}
 			return {'error' : response.status, 'response' : response.json()}
 		} else {
@@ -168,8 +152,7 @@ function httpGetFile(url) {
 	const token = window.localStorage.getItem("key_credentials");
 	// if we don't have a token, we shouldn't be trying to call this function.
 	if (token === null) {
-		history.push(`/`)
-		return
+		return {'error' : 'no credentials', 'response' : null}
 	}
 
 	return fetch(url, {
@@ -180,7 +163,6 @@ function httpGetFile(url) {
 			// Logout if we got a token validation error
 			if (response.status === 403) {
 				logout()
-				history.push(`/`)
 			}
 			return {'error' : response.status, 'response' : response.json()}
 		} else {
@@ -194,8 +176,7 @@ function httpDelete(url, body={}) {
 
 	// if we don't have a token, we shouldn't be trying to call this function.
 	if (token === null) {
-		history.push(`/`)
-		return
+		return {'error' : 'no credentials', 'response' : null}
 	}
   
 	return fetch(url, {
@@ -207,7 +188,6 @@ function httpDelete(url, body={}) {
 			// Logout if we got a token validation error
 			if (response.status === 403) {
 				logout()
-				history.push(`/`)
 			}
 			return {'error' : response.status, 'response' : response.json()}
 		} else {
@@ -224,14 +204,9 @@ function compareActivities(a,b) {
 	return 0;
 }
 
-function decodeToken(token) {
-	let partitions = token.split('.');
-    return JSON.parse(atob(partitions[1]));
-}
-
 function logout() {
-	window.localStorage.removeItem("key_credentials");
-	window.localStorage.removeItem("permissions");
+	window.localStorage.clear()
+	//Router should take care of navigation back to login page
 }
 
 
@@ -248,7 +223,7 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 
 	// Combine attendance items. Need to sort by date and student id.
 	var entries = {}
-	for (var i = 0; i < attendanceData.length; i++) {
+	for (let i = 0; i < attendanceData.length; i++) {
 		if (entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`] == null) {
 			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`] = {'date':attendanceData[i].date, 'id': attendanceData[i].volunteer_id, 'check_in':attendanceData[i].check_in}
 		}
@@ -266,19 +241,19 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 
 	// Build spreadsheet
 	var sheet = []
-	var columns = ['Date','First', 'Last', 'Check-In Time', 'Check-Out Time', 'Duration','Location', 'Description']
+	var columns = ['Date','First', 'Last', 'Check-In Time', 'Check-Out Time','Location', 'Description']
 	const keys = Object.keys(entries)
-	for (var i = 0; i < keys.length ; i++) {
+	for (let i = 0; i < keys.length ; i++) {
 		var row = []
 		// match student data to current id
-		for (var j = 0; j < volunteerData.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
+		for (let j = 0; j < volunteerData.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
 			if (volunteerData[j].id === entries[keys[i]].id) {
 				row[1] = volunteerData[j].first_name;
 				row[2] = volunteerData[j].last_name;
 				break;
 			}
 		} 
-		for (var j = 0; j < columns.length; j++) {
+		for (let j = 0; j < columns.length; j++) {
 			switch (columns[j]) {
 				case 'Date':
 					row[j] = entries[keys[i]].date;
@@ -298,14 +273,6 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 					break;
 				case 'Description':
 					row[j] = entries[keys[i]].description;
-					break;
-				case 'Duration':
-					if (entries[keys[i]].check_out !== null && entries[keys[i]].check_in !== null){
-						row[j] = entries[keys[i]].check_out- entries[keys[i]].check_in
-					}
-					else{
-						row[j] = 'N/A';
-					}
 					break;
 				default:
 					if (entries[keys[i]] == null){
@@ -349,7 +316,7 @@ async function downloadAttendanceCSV(startDate, endDate=null) {
 	}
 	// Build activity lookup table
 	var activities = {}
-	for (var i = 0; i < activityData.length; i++) {
+	for (let i = 0; i < activityData.length; i++) {
 		if (activityData[i].is_showing) {
 			activities[activityData[i].name] = {'id': activityData[i].activity_id, 'ordering': activityData[i].ordering, 'type': activityData[i].type}
 		}
@@ -357,7 +324,7 @@ async function downloadAttendanceCSV(startDate, endDate=null) {
 
 	// Combine attendance items. Need to sort by date and student id.
 	var entries = {}
-	for (var i = 0; i < attendanceData.length; i++) {
+	for (let i = 0; i < attendanceData.length; i++) {
 		if (entries[`${attendanceData[i].student_id}${attendanceData[i].date}`] == null) {
 			entries[`${attendanceData[i].student_id}${attendanceData[i].date}`] = {'date':attendanceData[i].date, 'id': attendanceData[i].student_id}
 		}
@@ -373,16 +340,16 @@ async function downloadAttendanceCSV(startDate, endDate=null) {
 	// Build spreadsheet
 	var sheet = []
 	var columns = ['Date','First', 'Last', 'Student Key']
-	for (var i = 0; i < activityData.length; i++) {
+	for (let i = 0; i < activityData.length; i++) {
 		if (activityData[i].is_showing) {
 			columns.push(activityData[i].name)
 		}
 	}
 	const keys = Object.keys(entries)
-	for (var i = 0; i < keys.length ; i++) {
+	for (let i = 0; i < keys.length ; i++) {
 		var row = []
 		// match student data to current id
-		for (var j = 0; j < studentData.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
+		for (let j = 0; j < studentData.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
 			if (studentData[j].id === entries[keys[i]].id) {
 				row[1] = studentData[j].first_name;
 				row[2] = studentData[j].last_name;
@@ -390,7 +357,7 @@ async function downloadAttendanceCSV(startDate, endDate=null) {
 				break;
 			}
 		} 
-		for (var j = 0; j < columns.length; j++) {
+		for (let j = 0; j < columns.length; j++) {
 			switch (columns[j]) {
 				case 'Date':
 					row[j] = entries[keys[i]].date
@@ -453,21 +420,7 @@ function downloadReportsCSV(json, columnHeaders, title) {
 	document.body.removeChild(element);
 }
 
-// Makes sure that we have a valid token, else redirects to login screen
-const checkCredentials = (Component) => {
-	const token = window.localStorage.getItem("key_credentials");
-	const permissions = window.localStorage.getItem('permissions')
-	if (token === null || permissions === null) {
-		return <Redirect to='/'/>;
-	}
-	let tokenData = decodeToken(token);
-	if (tokenData.exp < Date.now() / 1000) { 
-		logout();
-		return <Redirect to='/'/>;
-	} else {
-		return <Component/>;
-	}
-}
+
 
 function getPermissions() {
 	let permissions = window.localStorage.getItem('permissions')
@@ -547,4 +500,4 @@ function whiteBorderStyle() {
 	}
 }
 
-export { borderStyle, whiteBorderStyle, getPermissions, protocol, domain, downloadReportsCSV,downloadVolunteerAttendanceCSV , downloadAttendanceCSV, compareActivities, httpPost, httpPostFile, httpPatch, httpPatchFile, httpGet, httpGetFile, httpDelete, checkCredentials, history, withRole, getEarlierDate, getPrevSunday, getNextSaturday, dateToString }
+export { borderStyle, whiteBorderStyle, getPermissions, protocol, domain, downloadReportsCSV,downloadVolunteerAttendanceCSV , downloadAttendanceCSV, compareActivities, httpPost, httpPostFile, httpPatch, httpPatchFile, httpGet, httpGetFile, httpDelete, withRole, getEarlierDate, getPrevSunday, getNextSaturday, dateToString }

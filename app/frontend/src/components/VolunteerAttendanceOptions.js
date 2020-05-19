@@ -43,7 +43,7 @@ class VolunteerAttendanceOptions extends React.Component {
         console.log(this.state)
         return(
             <Button 
-                bsStyle="danger" 
+                variant="danger" 
                 onClick={(e) => { if (window.confirm('Are you sure you wish to delete this volunteer?')) this.deleteRow(e)}}>Delete
             </Button>
         )

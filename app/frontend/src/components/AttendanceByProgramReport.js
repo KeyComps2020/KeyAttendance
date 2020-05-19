@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { httpGet, protocol, domain, downloadReportsCSV } from './Helpers';
 
 class AttendanceByProgramReport extends React.Component {
@@ -92,22 +92,25 @@ class AttendanceByProgramReport extends React.Component {
 				>Attendance by Program </h3>
 				<div style={{margin: '20px'}}>
 				<p>Downloads a spreadsheet containing all attendance records between two dates for a given program.</p>
-                <Form style={{paddingRight: '5px', paddingLeft: '5px'}}>
-                  <FormGroup>
-                    <ControlLabel>Program: </ControlLabel>{' '}
-                    <FormControl componentClass="select" 
+                <Form inline style={{paddingRight: '5px', paddingLeft: '5px'}}>
+                  <Form.Group>
+                    <Form.Label>Program: </Form.Label>{' '}
+                    <Form.Control as="select" 
                       name="type" 
                       onChange={this.handleActivityDropdownSelect}
                       defaultValue="string"
                     >
                     	{activityList}
-                    </FormControl>{'  '}
-                    <ControlLabel>Start Date:</ControlLabel>{' '}
-                    <FormControl onChange={this.updateStartDate} value={this.state.startDate} type="date"/>{'  '}
-                    <ControlLabel>End Date:</ControlLabel>{' '}
-                    <FormControl onChange={this.updateEndDate} value={this.state.endDate} type="date"/>{'  '}
+                    </Form.Control>{'  '}
+
+                    <Form.Label>Start Date:</Form.Label>{' '}
+                    <Form.Control onChange={this.updateStartDate} value={this.state.startDate} type="date"/>{'  '}
+
+                    <Form.Label>End Date:</Form.Label>{' '}
+                    <Form.Control onChange={this.updateEndDate} value={this.state.endDate} type="date"/>{'  '}
+
                     <Button style={{marginTop: '10px'}} onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>
-                  </FormGroup>
+                  </Form.Group>
                 </Form>
 			</div>
 			</div>

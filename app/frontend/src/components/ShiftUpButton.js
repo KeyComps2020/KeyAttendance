@@ -33,7 +33,7 @@ class ShiftUpButton extends React.Component {
     render() {
         return(
             <div>
-                <Button bsStyle="primary" onClick={this.handleButtonClick}>Shift Up</Button>
+                <Button variant="primary" onClick={this.handleButtonClick}>Shift Up</Button>
             </div>
         )
     }

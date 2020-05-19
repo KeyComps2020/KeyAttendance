@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { httpPatch, domain, protocol, httpGet } from './Helpers';
 
 class ChangeStudentStatusParams extends React.Component {
@@ -144,12 +144,12 @@ class ChangeStudentStatusParams extends React.Component {
 				</Modal.Header>
 
 				<Modal.Body>
-					<form>
-                        <FormGroup
+					<Form>
+                        <Form.Group
                             validationState={this.validateInput()}>
-                            <ControlLabel>Benchmark Attendance for Frequent User:</ControlLabel>
+                            <Form.Label>Benchmark Attendance for Frequent User:</Form.Label>
                             <br/>
-                            <FormControl
+                            <Form.Control
                                 type="text"
                                 name="frequent"
                                 value={this.state.frequent}
@@ -159,9 +159,9 @@ class ChangeStudentStatusParams extends React.Component {
 							/>
                             <br/>
                             <br/>
-                            <ControlLabel>Benchmark Attendance for Attendee:</ControlLabel>
+                            <Form.Label>Benchmark Attendance for Attendee:</Form.Label>
                             <br/>
-                            <FormControl
+                            <Form.Control
                                 type="text"
                                 name="attendee"
                                 value={this.state.attendee}
@@ -171,9 +171,9 @@ class ChangeStudentStatusParams extends React.Component {
 							/>
 							<br/>
                             <br/>
-                            <ControlLabel>Within how many days?</ControlLabel>
+                            <Form.Label>Within how many days?</Form.Label>
                             <br/>
-                            <FormControl
+                            <Form.Control
                                 type="text"
                                 name="time_range"
                                 value={this.state.time_range}
@@ -181,8 +181,8 @@ class ChangeStudentStatusParams extends React.Component {
                                 placeholder={this.state.time_range}
                                 onChange={this.handleChange}
 							/>
-						</FormGroup>
-					</form>
+						</Form.Group>
+					</Form>
 				</Modal.Body>
 
 				<Modal.Footer>

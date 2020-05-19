@@ -131,7 +131,7 @@ class VolunteerAttendance(APIView):
 
         if 'date' in request.data and request.data['date'] != '' and not isValidDateTime(request.data['date']):
             return False
-        if 'check_in' in request.data and request.data['date'] != '' and not isValidTime(request.data['check_in']):
+        if 'time' in request.data and request.data['date'] != '' and not isValidTime(request.data['check_in']):
             return False
         return True
 

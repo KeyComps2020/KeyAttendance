@@ -8,6 +8,7 @@ import {
     LabelSeries
 } from 'react-vis';
 import PropTypes from "prop-types";
+
 class BarChart extends React.Component {
 
     static propTypes = {
@@ -36,7 +37,7 @@ class BarChart extends React.Component {
                 width={chartWidth}
                 height={chartHeight}
                 yDomain={chartDomain}
-            >
+            > https://uber.github.io/react-vis/documentation/series-reference/bar-series
                 <XAxis />
                 <YAxis />
                 <VerticalBarSeries

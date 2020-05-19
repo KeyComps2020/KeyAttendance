@@ -103,7 +103,7 @@ class Reports(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'dailyattendance'
+        db_table = 'reports'
 
 class StudentColumn(models.Model):
     info_id = models.AutoField(unique=True, primary_key=True)

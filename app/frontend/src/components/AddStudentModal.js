@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import { Button, FormControl, Form, Modal } from 'react-bootstrap';
 import { httpPost, domain, protocol } from './Helpers';
 
 class AddStudentModal extends React.Component {
@@ -132,7 +132,11 @@ class AddStudentModal extends React.Component {
 				default:
 					break;
 			}
-			info.push(<div  key={field.info_id}><ControlLabel>{fieldName}</ControlLabel><FormControl value={this.state.studentInfo[fieldName]} name={fieldName} type={type} onChange={this.handleInfoChange} /><br/></div>);
+			info.push(	<div  key={field.info_id}>
+							<Form.Label>{fieldName}</Form.Label>
+							<Form.Control value={this.state.studentInfo[fieldName]} name={fieldName} type={type} onChange={this.handleInfoChange} />
+							<br/>
+						</div>);
 		}
 		return info;
 	}
@@ -155,13 +159,13 @@ class AddStudentModal extends React.Component {
 				</Modal.Header>
 
 				<Modal.Body>
-					<form>
-						<FormGroup
+					<Form>
+						<Form.Group
 							controlId="addStudentForm"
 							validationState={this.validateInput()}
 						>
-							<ControlLabel>First Name</ControlLabel>
-							<FormControl
+							<Form.Label>First Name</Form.Label>
+							<Form.Control
 								type="text"
 								value={this.state.firstName}
 								placeholder="First"
@@ -169,8 +173,8 @@ class AddStudentModal extends React.Component {
 							/>
 							<FormControl.Feedback />
 							<br/>
-							<ControlLabel>Last Name</ControlLabel>
-							<FormControl
+							<Form.Label>Last Name</Form.Label>
+							<Form.Control
 								type="text"
 								value={this.state.lastName}
 								placeholder="Last"
@@ -179,13 +183,13 @@ class AddStudentModal extends React.Component {
 							<br/>
 							{this.createStudentInfoFields()}
 							<FormControl.Feedback />
-						</FormGroup>
-					</form>
+						</Form.Group>
+					</Form>
 				</Modal.Body>
 
 				<Modal.Footer>
 					<Button onClick={this.cancel}>Cancel</Button>
-					<Button onClick={this.submit} bsStyle="primary">Create</Button>
+					<Button onClick={this.submit} variant="primary">Create</Button>
 				</Modal.Footer>
 			</Modal>
         )

@@ -20,7 +20,7 @@
 
 import PropTypes from "prop-types";
 import React, { Component } from 'react';
-import { HeatmapSeries, XAxis, XYPlot, YAxis } from 'react-vis';
+import { HeatmapSeries, XAxis, XYPlot, YAxis, LabelSeries} from 'react-vis';
 import ContinuousColorLegend from 'react-vis/dist/legends/continuous-color-legend';
 import "./React-vizLegends.scss";
 
@@ -173,43 +173,51 @@ class Heatmap extends Component {
     return (
       <div>
         <div style={{margin:20}}>
-      <XYPlot
-        width={this.scaleWidth(heatMapType, dataLength)}
-        height={this.scaleHeight(heatMapType)}
-        margin={{top: 30, left: 45}}
-        xType="ordinal"
-        yType={this.axisType(heatMapType)}
-        yDomain={this.reverseYAxis(heatMapType, yArray)}
-        >
-        <XAxis orientation='top'/>
-        <YAxis orientation='left'/>
+          <XYPlot
+            width={this.scaleWidth(heatMapType, dataLength)}
+            height={this.scaleHeight(heatMapType)}
+            margin={{top: 30, left: 45}}
+            xType="ordinal"
+            yType={this.axisType(heatMapType)}
+            yDomain={this.reverseYAxis(heatMapType, yArray)}
+            >
+            <XAxis orientation='top'/>
+            <YAxis orientation='left'/>
 
-        <HeatmapSeries
-            className="heatmap-series-example"
-            colorRange = {this.colorRange(data, heatMapType)}
+            <HeatmapSeries
+                className="heatmap-series-example"
+                colorRange = {this.colorRange(data, heatMapType)}
+                  data={data}
+                  style={{
+                    stroke: 'black',
+                    strokeWidth: '1px',
+                    rectStyle: {
+                      rx: 1,
+                      ry: 1
+                    }
+                  }} />
+            
+            {/*<LabelSeries   //https://uber.github.io/react-vis/documentation/series-reference/label-series
+              style={{pointerEvents: 'none'}}
               data={data}
-              style={{
-                stroke: 'black',
-                strokeWidth: '1px',
-                rectStyle: {
-                  rx: 1,
-                  ry: 1
-                }
-              }} />
+              labelAnchorX="middle"
+              labelAnchorY="baseline"
+              getLabel={d => `${d.color}`}
+            />*/}
 
-      </XYPlot>
+          </XYPlot>
+        </div>
+
+        <ContinuousColorLegend
+        width={300}
+        startTitle={minLegendLabel}
+        midTitle={Math.round((maxLegendLabel+minLegendLabel)/2)}
+        endTitle= {maxLegendLabel}
+        startColor="#F5FBFD"
+        endColor={maxHeatMapColor}
+        height={100}
+        />
       </div>
-
-      <ContinuousColorLegend
-      width={300}
-      startTitle={minLegendLabel}
-      midTitle={Math.round((maxLegendLabel+minLegendLabel)/2)}
-      endTitle= {maxLegendLabel}
-      startColor="#F5FBFD"
-      endColor={maxHeatMapColor}
-      height={100}
-      />
-</div>
       
     );
   };

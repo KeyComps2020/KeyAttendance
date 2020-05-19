@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { httpGet, protocol, domain, downloadReportsCSV } from './Helpers';
 
 class NewStudentsReport extends React.Component {
@@ -70,13 +70,15 @@ class NewStudentsReport extends React.Component {
 				<div style={{margin: '20px'}}>
 				<p>Downloads a spreadsheet containing all students that were checked in for the first time between two dates</p>
                 <Form style={{paddingRight: '5px', paddingLeft: '5px'}}>
-                  <FormGroup>
-                    <ControlLabel>Start Date:</ControlLabel>{' '}
-                    <FormControl onChange={this.updateStartDate} value={this.state.startDate} type="date"/>{'  '}
-                    <ControlLabel>End Date:</ControlLabel>{' '}
-                    <FormControl onChange={this.updateEndDate} value={this.state.endDate} type="date"/>{'  '}
-                    <Button style={{marginTop: '10px'}} onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>
-                  </FormGroup>
+                  <Form.Group>
+                    <Form.Label>Start Date:</Form.Label>{' '}
+                    <Form.Control onChange={this.updateStartDate} value={this.state.startDate} type="date"/>{'  '}
+
+                    <Form.Label>End Date:</Form.Label>{' '}
+                    <Form.Control onChange={this.updateEndDate} value={this.state.endDate} type="date"/>{'  '}
+
+                    <Button onClick={this.downloadCSV} disabled={buildingCSV}>{buildingCSV ? 'Downloading...' : 'Download'}</Button>
+                  </Form.Group>
                 </Form>
 			</div>
 			</div>

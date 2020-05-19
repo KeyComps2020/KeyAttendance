@@ -33,7 +33,7 @@ class UserHistoryButton extends React.Component {
     render() {
         return(
             <div>
-                <Button bsStyle="link" onClick={this.handleClick}>View History</Button>
+                <Button variant="link" onClick={this.handleClick}>View History</Button>
             </div>
         )
     }
