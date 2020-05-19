@@ -223,7 +223,7 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 
 	// Combine attendance items. Need to sort by date and student id.
 	var entries = {}
-	for (var i = 0; i < attendanceData.length; i++) {
+	for (let i = 0; i < attendanceData.length; i++) {
 		if (entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`] == null) {
 			entries[`${attendanceData[i].volunteer_id}${attendanceData[i].date}`] = {'date':attendanceData[i].date, 'id': attendanceData[i].volunteer_id, 'check_in':attendanceData[i].check_in}
 		}
@@ -243,17 +243,17 @@ async function downloadVolunteerAttendanceCSV(startDate, endDate = null){
 	var sheet = []
 	var columns = ['Date','First', 'Last', 'Check-In Time', 'Check-Out Time', 'Duration','Location', 'Description']
 	const keys = Object.keys(entries)
-	for (var i = 0; i < keys.length ; i++) {
+	for (let i = 0; i < keys.length ; i++) {
 		var row = []
 		// match student data to current id
-		for (var j = 0; j < volunteerData.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
+		for (let j = 0; j < volunteerData.length; j++) { // unfortunately, student data isn't in any particular order. O(n) it is!
 			if (volunteerData[j].id === entries[keys[i]].id) {
 				row[1] = volunteerData[j].first_name;
 				row[2] = volunteerData[j].last_name;
 				break;
 			}
 		} 
-		for (var j = 0; j < columns.length; j++) {
+		for (let j = 0; j < columns.length; j++) {
 			switch (columns[j]) {
 				case 'Date':
 					row[j] = entries[keys[i]].date;
@@ -508,4 +508,4 @@ function whiteBorderStyle() {
 	}
 }
 
-export { borderStyle, whiteBorderStyle, getPermissions, protocol, domain, downloadReportsCSV,downloadVolunteerAttendanceCSV , downloadAttendanceCSV, compareActivities, httpPost, httpPostFile, httpPatch, httpPatchFile, httpGet, httpGetFile, httpDelete, checkCredentials, history, withRole, getEarlierDate, getPrevSunday, getNextSaturday, dateToString }
+export { borderStyle, whiteBorderStyle, getPermissions, protocol, domain, downloadReportsCSV,downloadVolunteerAttendanceCSV , downloadAttendanceCSV, compareActivities, httpPost, httpPostFile, httpPatch, httpPatchFile, httpGet, httpGetFile, httpDelete, withRole, getEarlierDate, getPrevSunday, getNextSaturday, dateToString }

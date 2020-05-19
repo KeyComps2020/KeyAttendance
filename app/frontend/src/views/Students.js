@@ -739,9 +739,8 @@ class Students extends Component {
     if (this.state.mode === 'search') {
       return (
         <div className='content'>
-          <h1
-          style={{textAlign: 'center', fontSize: '30px'}}
-          > Key Students </h1>
+          <Layout {...this.history}/>
+          <h1 style={{textAlign: 'center', fontSize: '30px'}}> Key Students </h1>
           <div className='container-fluid no-padding' style={{display: 'table'}}>
             <div className='row justify-content-start' style={{display: 'grid'}}>
               <div className='col-md-12 to-front top-bottom-padding'>
@@ -827,16 +826,14 @@ class Students extends Component {
       
       return (
         <div className='content'>
-          <h1
-          style={{textAlign: 'center', fontSize: '30px'}}
-          > Student Profile </h1>
+          <h1 style={{textAlign: 'center', fontSize: '30px'}}> Student Profile </h1>
           <br />
               <div 
               style={this.styleDesign()}
               className='col-md-8 top-bottom-padding' id="root">
                 <Form inline 
                 className='col-md-8 top-bottom-padding' onSubmit={evt => this.handleSubmit(evt, this.state)}>
-                  <FormGroup>
+                  <Form.Group>
                     <Form.Label>First Name: </Form.Label>
                       <Form.Control type="text" id="first_name" defaultValue={this.state.profileData.first_name} onChange={evt => this.handleNameChange(evt, this.state)} /> <br/>
                     <Form.Label>Last Name: </Form.Label>
@@ -857,7 +854,7 @@ class Students extends Component {
                     </ButtonToolbar>
                     <br />
                     {deleteButton}
-                  </FormGroup>
+                  </Form.Group>
                 </Form>
               </div>
             </div>

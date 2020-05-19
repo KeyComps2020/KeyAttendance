@@ -50,7 +50,7 @@ class Layout extends Component {
           {nav}
         </Link>
     ) //use Link from react-router-dom instead of Nav.Link from react-boostrap!
-      //this way it's still being managed by <BrowserRouter>. In other words, 
+      //Since we're doing this and passing `history` to layout, it's still being managed by <BrowserRouter>. In other words, 
       //you now don't manually need to do this.props.history.push(`/${nav}`)} 
       //if you're confused, go check out the `troubleshooting` entry on this.
     return (

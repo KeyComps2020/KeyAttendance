@@ -8,7 +8,7 @@ import AttendanceOptions from '../components/AttendanceOptions';
 import AddStudentModal from '../components/AddStudentModal';
 import Autocomplete from "../components/Autocomplete";
 import { getPermissions, downloadAttendanceCSV, compareActivities, dateToString, getEarlierDate, borderStyle, whiteBorderStyle } from '../components/Helpers';
-import { httpPost, httpGet, domain, protocol, getPermissions, downloadAttendanceCSV, compareActivities } from '../components/Helpers';
+import { httpPost, httpGet, domain, protocol } from '../components/Helpers';
 
 class Attendance extends React.Component {
 
@@ -413,11 +413,11 @@ class Attendance extends React.Component {
                         {this.state.mobile?
                             <div 
                             >
-                            {<Form inline >
-                                <FormGroup >
-                                    <ControlLabel>Date:</ControlLabel>{' '}
-                                    <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
-                                </FormGroup>
+                            {<Form>
+                                <Form.Group >
+                                    <Form.Label>Date:</Form.Label>{' '}
+                                    <Form.Control onChange={this.updateDate} value={this.state.date} type="date"/>
+                                </Form.Group>
                             </Form>}
                             </div>
                             :
@@ -425,10 +425,10 @@ class Attendance extends React.Component {
                             <div 
                         style = {{float: 'right'}}>
                         {<Form inline >
-                            <FormGroup >
-                                <ControlLabel>Date:</ControlLabel>{' '}
-                                <FormControl onChange={this.updateDate} value={this.state.date} type="date"/>
-                            </FormGroup>
+                            <Form.Group >
+                                <Form.Label>Date:</Form.Label>{' '}
+                                <Form.Control onChange={this.updateDate} value={this.state.date} type="date"/>
+                            </Form.Group>
                         </Form>}
                         </div>
                         }

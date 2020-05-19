@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Button, FormControl, Form, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { httpDelete, httpPatch, domain, protocol } from './Helpers';
 
 class EditRoleModal extends React.Component {
@@ -124,7 +124,7 @@ class EditRoleModal extends React.Component {
                         <input
                             type="checkbox"
                             checked={checkbox.checked}
-                            disabled={this.state.row.name != 'Admin'}
+                            disabled={this.state.row.name !== 'Admin'}
                             onChange={this.toggleCheckbox.bind(this, index)}
                         />
                         {checkbox.displayName}
@@ -150,7 +150,7 @@ class EditRoleModal extends React.Component {
 							<Form.Label>User Role</Form.Label>
 							<p>{this.state.row.name}</p>
                             {this.createCheckboxes()}
-							<FormControl.Feedback />
+							<Form.Control.Feedback />
 						</Form.Group>
 					</Form>
 				</Modal.Body>
