@@ -11,7 +11,7 @@ From requirements.txt:
  * [psycopg2](https://www.psycopg.org/docs/usage.html) - PostgreSQL database adapter for the Python programming language. 
  * [PyJWT](https://pyjwt.readthedocs.io/en/latest/) - JSON web tokens for python (to be used with djangorestframework-jwt).
  * [pytz](https://pypi.org/project/pytz/) - Used for timezone calculations.
- * [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) - Used for [testing](https://www.valentinog.com/blog/drf/#django-rest-with-react-a-sprinkle-of-testing).
+ * [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) - Used for [testing](https://www.valentinog.com/blog/drf/#django-rest-with-react-a-sprinkle-of-testing). Not currently implemented.
 
  ## Javascript
  From package-lock.json:

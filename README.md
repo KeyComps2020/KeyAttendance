@@ -1,19 +1,28 @@
-# Key Comps 2018-19
+# Key Comps 2020
+
+This project is the 3rd iteration of the Carleton comprehensive project that has resulted in an attendance tracking application for the Northfield Union of Youth's Key Youth Center.
+Advisor: Sneha Narayan
+Members: Isabel, Justin, Liam, Maddie, Sahil
 
 ## Running the application
+All instructions for running the app can be found in the `docs` folder. If this is your first time setting it up, definitely start there. Otherwise, here is a breif synopsis of local startup:
 
-The folder "app" contains a django app (located in `/backend`) and a react frontend (located in `/frontend`).
-
-To start up the backend locally, you'll first need to install "virtualenv". If you're using virtualenv for the first time, cd into `/app/backend/` and run `virtualenv env` to initialize the virtual environment. For all further uses of virtualenv, first activate virtualenv by running `source /env/bin/activate` on a unix machine or `"env/Scripts/activate` on a windows machine, then run `pip install -r requirements.txt` to install any packages you have yet to download, and finally `manage.py runserver` to run the backend.
-
-To run the frontend, you'll need to install Node. In a new terminal window, cd into `app/frontend/`, run `npm install` to update your javascript dependencies, then `npm start` to run the development server. This should automatically open `localhost:3000` in your browser, and will automatically update for any changes you make in your local javascript files.
-
-The initial tutorial the 2019 group followed to set up this arrangement can be found [here](https://wsvincent.com/django-rest-framework-react-tutorial/)
+* The folder "app" contains a django app (located in `/backend`) and a react frontend (located in `/frontend`).
+* Start the backend locally:
+    * navigate to `/backend`
+    * activate your virtualenv 
+    * start the local server with `manage.py runserver`
+* Start the frontend:
+    * navigate to `app/frontend/`
+    * start the react app with `npm start`. This should automatically open `localhost:3000` in your browser, and will automatically update for any changes you make in your local javascript files.
 
 ## Git Workflow
+The master branch was renamed to `develop` by 2019.
+The 2019 group opted for feature branches with appropiate naming conventions: "For instance, if you are adding a feature that installs a bouncy house in the living room, the branch would be called `feature/add_bouncy_house_to_living_room`"
 
-* When starting to work on an issue, create a new branch off of 'develop' using git flow-ish naming style of a prefix followed by an objective summary. For instance, if you are adding a feature that installs a bouncy house in the living room, the branch would be called 'feature/add_bouncy_house_to_living_room'
-* When you're done with a branch, create a pull request back to develop. Ideally 1 or 2 people should approve the pull request prior to merging it to ensure that we don't miss any obvious issues.
+2020 thought that for a project with such few people, it was fine to just do local development with braches for each individual.
+
+When you're done with a branch, create a pull request back to develop. Ideally 1 or 2 people should approve the pull request prior to merging it to ensure that we don't miss any obvious issues.
 
 ## Further Reading
 
