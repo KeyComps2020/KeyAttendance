@@ -14,18 +14,18 @@ From requirements.txt:
  * [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) - Used for [testing](https://www.valentinog.com/blog/drf/#django-rest-with-react-a-sprinkle-of-testing). Not currently implemented.
 
  ## Javascript
- From package-lock.json:
+ From package.json, with a few pertinent subdependencies:
  * [node-sass](https://www.npmjs.com/package/node-sass) - bindings for node to SASS stylesheet processor
  * papaparse - csv parser.
- * prop-types - used to typecheck the prop types for react components. not currently implemented.
+ * prop-types - used to typecheck the prop types for react components. Not currently implemented.
  * react - bigboi
  * react-bootstrap - bootstrap styling for react apps (Alert, Form, etc.).
  * bootstrap - the actual css files that react-bootstrap uses to build its the components we use for styling.
     * Note: this dependency was added in 2020, because we decided hard-coding a version of bootstrap in as link in `index.html` could break react-bootstrap, which counts on the most recent version (read: it did break it, so we had to fix it).
  * react-collapsing-table - DOM structure thats not in bootstrap but is useful
- * react-dom - used for testing in tests.js. Allows react components to be rendered in an HTML file directly.
- * react-router-dom - wrapper for react-router that adds web functionality (as opposed to native)
+ * react-dom - allows react components to be rendered in an HTML file directly. Also used for testing in `App.test.js` (but 2020 has no idea how that works lol).
+ * react-router-dom - wrapper for react-router that adds web functionality (as opposed to native). Creates the illusion of a regular site (like there's different pages that you're pulling from the server everytime you navigate somewhere).
    * react-router - Used for navigating between pages in a react app
    * [history](https://www.npmjs.com/package/history) - API for managing session history.
  * react-scripts - allows react commands from command line through npm.
- * react-vis - used for creating the heatmap
+ * react-vis - used for creating the data visualization stuff (heatmap and graphs)
