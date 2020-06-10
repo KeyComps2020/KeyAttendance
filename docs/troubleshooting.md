@@ -12,6 +12,11 @@ Make sure that npm is reachable from your $PATH variable. You can see your $PATH
 ### can't create keydb
 Remember to have the posgresql service running in the background and to end each command with a semicolon if you are running them out of psql.
 
+### for loops are throwing redelcaration warnings or aren't what I expect them to be 
+If you're new to Javascript (like me), you might run into some issues with the syntax. Two important things I caught myself doing all the time were:
+* Not using `let` instead of `var`. [Variable scoping](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript#Variables) is different that pretty much everything else in JavaScript. The tldr is that `let` is what feels normal, and `var` declares global variables. If you're doing `for (var i; etc...)`, then i has been delcared globally and you'll run into a redeclaration warning.
+* The difference between in-loops and of-loops. The tldr is that `for e in elements` returns the index, and `for e of elements` returns the actual element.
+
 ### react-bootstrap components aren't rendering
 Check that the version of react-bootstrap you are using coincides with the version of bootstrap css. Both can be found in package.lock.
 Oftentimes, the way to include bootstrap as styling for a webapp is a `<link>` tag (intentionally lowercase -- not the react component `Link`) in index.html (the page that is served) with a static reference to some version of bootstrap. We (2020) opted to not do this: We're always going to be using the most recent version of react-bootstrap, which is usually built on the most recent version of bootstrap, so it doesn't make sense to hard-code in a version that could become outdated (2020 had to deal with this first hand, because the react-bootstrap v1.01 was built for use with bootstrap4, but the 2019 group had hard-coded in bootstrap 3 in index.html). 
@@ -32,6 +37,8 @@ Originally, the webapp's history stuff relied on a wrapper (aka higher order com
 
 Feel free to look more into the [bootstrap side](https://react-bootstrap.github.io/components/navs/#nav-item-props) and [router side](https://reacttraining.com/react-router/web/api/NavLink).
 
+Also, [this](https://stackoverflow.com/questions/27928372/react-router-urls-dont-work-when-refreshing-or-writing-manually) is a good stack overflow explanation.
+
 Note: Eventually, the app should probably move away from class components using state to functional components using hooks. More on this in `FutureWork.md`
 
 ### why does the navbar in layout.js use Link from react-router-dom instead of Nav.Link from react-bootstrap?
@@ -47,17 +54,23 @@ The process of logging out involves 2 steps: clearing the token in the browser (
 
 ### my functional component is just a regular function
 function name must start with CAPITAL LETTER!
-    * const ThisIsFnComp = (inputs) => {...}
-    * function ThisIsAlsoFnComp (inputs) {...}
-    * const tookMe2HoursToFigureOutThisIsNotADangFnComponent
-Also, you should have a return statement and take in props probably
+* `const ThisIsFnComp = (inputs) => {...}`
+* `function ThisIsAlsoFnComp (inputs) {...}`
+* `const tookMe2HoursToFigureOutThisIsNotADangFnComponent = (inputs) => {...}`
 
-Most helpful link so far:
-https://stackoverflow.com/questions/27928372/react-router-urls-dont-work-when-refreshing-or-writing-manually
+Remember not to mix up how you're returning things also! Pop Quiz! Which of these return null, and which return an empty object?
+* `... => {}`
+* `... => {{}}`
+* `... => ({})`
+* `... => {return {}}`
+* `... => (return {})`
+* `... => null`
+* `... => {null}`
 
 
-### the values returned from my class function are not what I expect them to be
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind#Examples
-https://medium.com/front-end-weekly/do-i-still-need-to-bind-react-functions-in-2019-6d0fe72f40d7
-https://dev.to/aman_singh/why-do-we-need-to-bind-methods-inside-our-class-component-s-constructor-45bn
-Importantly, the different ways of declaring functions inside classes in React have different effects on the scope of those functions; The tldr of this is that If you do `function x() {`, then you must bind it to the class so that any instance of it uses it the right way. You don't have do bind it (because it's automatically bound) if you do `x = () => {`. 
+### the values returned from my class component's function(s) are not what I expect them to be
+* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind#Examples
+* https://medium.com/front-end-weekly/do-i-still-need-to-bind-react-functions-in-2019-6d0fe72f40d7
+* https://dev.to/aman_singh/why-do-we-need-to-bind-methods-inside-our-class-component-s-constructor-45bn
+
+Importantly, the different ways of declaring functions inside class components in React have different effects on the scope of those functions; The tldr of this is that If you do `function x() {`, then you must bind it to the class so that any instance of it uses it the right way. You don't have to manually bind it (because it's automatically bound) if you do `x = () => {`. 
